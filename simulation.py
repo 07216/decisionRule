@@ -10,6 +10,7 @@ import numpy as np
 class simulation:
     def __init__(self,decisionSolver):
         self.xi = decisionSolver.xi
+        self.prob = decisionSolver.prob
         self.t = decisionSolver.t
         self.T = decisionSolver.T
         self.limt = decisionSolver.limt
@@ -50,6 +51,8 @@ class simulation:
                 demand[j] = 0
             '''
             demand[j] = np.random.poisson(p)
+            demand[j] *= self.prob[t*self.T*self.j+j+1]
+            demand[j] = int(demand[j] + 1)
         #print demand
         return demand.values()
     
@@ -72,6 +75,7 @@ class simulation:
                 #benefit += product[j] * self.v[j] *self.xi[1+t*self.j+j]
                 #benefit += min(tmpDemand[j],1) * self.v[j]
                 if min(tmpDemand[j],int(product[j])+1) != 0:
+                    #print min(tmpDemand[j],int(product[j])+1)
                     #print min(tmpDemand[j],int(product[j]))
                     for k in self.refJ[j]:
                         c[k] -= min(tmpDemand[j],int(product[j])+1)
@@ -89,6 +93,7 @@ class simulation:
                 #benefit += product[j] * self.v[j] *self.xi[1+t*self.j+j]
                 #benefit += min(tmpDemand[j],1) * self.v[j]
                 if min(tmpDemand[j],int(product[j])+1) != 0:
+                    #print min(tmpDemand[j],int(product[j])+1)
                     #print min(tmpDemand[j],int(product[j]))
                     for k in self.refJ[j]:
                         c[k] -= min(tmpDemand[j],int(product[j])+1)

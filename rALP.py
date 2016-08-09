@@ -14,7 +14,11 @@ class rALP:
         self.i = relrALP.f
         self.j = relrALP.i
         self.t = relrALP.n
-        self.t = 50
+        
+        
+        self.t = 50#customized periods
+        
+        
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
         self.A = np.zeros((self.i,self.j),dtype=np.float)

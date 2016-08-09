@@ -14,9 +14,13 @@ class decisionRule:
         self.i = relrALP.f
         self.j = relrALP.i
         self.t = relrALP.n
-        self.t = 2
-        self.T = 10
-        self.limt = 2
+
+        
+        self.t = 2#customized periods
+        self.T = 10#how a periods long
+        self.limt = 2#observed history
+        
+        
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
         self.A = np.zeros((self.i,self.j),dtype=np.float)
