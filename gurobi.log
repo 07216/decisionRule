@@ -12645,3 +12645,179 @@ Barrier solve interrupted - model solved by another algorithm
 Solved with dual simplex
 Solved in 45 iterations and 0.08 seconds
 Optimal objective  1.655780041e+05
+
+Gurobi 6.5.2 (win64) logging started 08/09/16 14:30:54
+
+Optimize a model with 9696 rows, 35496 columns and 53352 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 3e+01]
+  Objective range [2e-02, 9e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [2e+01, 5e+01]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 9558 rows and 35136 columns
+Presolve time: 0.06s
+Presolved: 138 rows, 360 columns, 716 nonzeros
+
+Ordering time: 0.00s
+
+Barrier statistics:
+ AA' NZ     : 3.560e+02
+ Factor NZ  : 1.756e+03
+ Factor Ops : 3.501e+04 (less than 1 second per iteration)
+ Threads    : 1
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0   1.08536105e+04  1.99784357e+03  1.29e+01 5.07e+02  1.95e+02     0s
+
+Barrier performed 0 iterations in 0.08 seconds
+Barrier solve interrupted - model solved by another algorithm
+
+
+Solved with dual simplex
+Solved in 93 iterations and 0.09 seconds
+Optimal objective  2.988180276e+03
+Optimize a model with 9696 rows, 35496 columns and 53352 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 3e+01]
+  Objective range [2e-02, 9e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [2e+01, 5e+01]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 9558 rows and 35136 columns
+Presolve time: 0.06s
+Presolved: 138 rows, 360 columns, 716 nonzeros
+
+Ordering time: 0.00s
+
+Barrier statistics:
+ AA' NZ     : 3.560e+02
+ Factor NZ  : 1.756e+03
+ Factor Ops : 3.501e+04 (less than 1 second per iteration)
+ Threads    : 1
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0   1.08536105e+04  1.99784357e+03  1.29e+01 5.07e+02  1.95e+02     0s
+   1   2.85612012e+03  8.57889294e+03  1.12e+00 0.00e+00  2.99e+01     0s
+   2   2.11895920e+03  3.51836025e+03  1.55e-15 0.00e+00  3.85e+00     0s
+   3   2.72011190e+03  3.21047946e+03  1.04e-14 0.00e+00  1.35e+00     0s
+   4   2.89490420e+03  3.05461080e+03  9.84e-14 0.00e+00  4.39e-01     0s
+   5   2.94353036e+03  2.99864025e+03  2.73e-14 0.00e+00  1.51e-01     0s
+   6   2.98313255e+03  2.99051552e+03  1.99e-13 3.41e-13  2.03e-02     0s
+
+Barrier performed 6 iterations in 0.08 seconds
+Barrier solve interrupted - model solved by another algorithm
+
+
+Solved with dual simplex
+Solved in 93 iterations and 0.10 seconds
+Optimal objective  2.988180276e+03
+Optimize a model with 9696 rows, 35496 columns and 53352 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 3e+01]
+  Objective range [2e-02, 9e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [2e+01, 5e+01]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 9558 rows and 35136 columns
+Presolve time: 0.06s
+Presolved: 138 rows, 360 columns, 716 nonzeros
+
+Ordering time: 0.00s
+
+Barrier statistics:
+ AA' NZ     : 3.560e+02
+ Factor NZ  : 1.756e+03
+ Factor Ops : 3.501e+04 (less than 1 second per iteration)
+ Threads    : 1
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0   1.08536105e+04  1.99784357e+03  1.29e+01 5.07e+02  1.95e+02     0s
+
+Barrier performed 0 iterations in 0.06 seconds
+Barrier solve interrupted - model solved by another algorithm
+
+
+Solved with dual simplex
+Solved in 93 iterations and 0.08 seconds
+Optimal objective  2.988180276e+03
+Optimize a model with 1968 rows, 5568 columns and 7920 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 3e+01]
+  Objective range [2e-02, 9e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [2e+01, 5e+01]
+Presolve removed 1941 rows and 5504 columns
+Presolve time: 0.02s
+Presolved: 27 rows, 64 columns, 124 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    3.3528190e+03   3.563439e+00   0.000000e+00      0s
+Extra 20 simplex iterations after uncrush
+      29    2.9881803e+03   0.000000e+00   0.000000e+00      0s
+
+Solved in 29 iterations and 0.02 seconds
+Optimal objective  2.988180276e+03
+Optimize a model with 1968 rows, 5568 columns and 7920 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 3e+01]
+  Objective range [2e-03, 9e+01]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [2e+01, 5e+01]
+Presolve removed 1934 rows and 5502 columns
+Presolve time: 0.02s
+Presolved: 34 rows, 66 columns, 128 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    9.8224726e+02   3.301883e+01   0.000000e+00      0s
+Extra 5 simplex iterations after uncrush
+      11    8.7542213e+02   0.000000e+00   0.000000e+00      0s
+
+Solved in 11 iterations and 0.02 seconds
+Optimal objective  8.754221285e+02
+Optimize a model with 1968 rows, 5568 columns and 7920 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 3e+01]
+  Objective range [2e-03, 9e+01]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [2e+01, 5e+01]
+Presolve removed 1934 rows and 5502 columns
+Presolve time: 0.02s
+Presolved: 34 rows, 66 columns, 128 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    9.8224726e+02   3.301883e+01   0.000000e+00      0s
+Extra 5 simplex iterations after uncrush
+      11    8.7542213e+02   0.000000e+00   0.000000e+00      0s
+
+Solved in 11 iterations and 0.02 seconds
+Optimal objective  8.754221285e+02
+Optimize a model with 1968 rows, 5568 columns and 7920 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 3e+01]
+  Objective range [2e-02, 9e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [2e+01, 5e+01]
+Presolve removed 1941 rows and 5504 columns
+Presolve time: 0.00s
+Presolved: 27 rows, 64 columns, 124 nonzeros
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    3.3528190e+03   3.563439e+00   0.000000e+00      0s
+Extra 20 simplex iterations after uncrush
+      29    2.9881803e+03   0.000000e+00   0.000000e+00      0s
+
+Solved in 29 iterations and 0.00 seconds
+Optimal objective  2.988180276e+03

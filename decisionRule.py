@@ -14,9 +14,9 @@ class decisionRule:
         self.i = relrALP.f
         self.j = relrALP.i
         self.t = relrALP.n
-        self.t = 5
+        self.t = 2
         self.T = 10
-        self.limt = 5
+        self.limt = 2
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
         self.A = np.zeros((self.i,self.j),dtype=np.float)
@@ -67,7 +67,7 @@ class decisionRule:
         for t in range(0,self.t):
             for j in range(0,self.j):
                 self.xi[1+t*self.j+j] *= 100
-        #print self.xi
+        print sum(self.xi)
                 
     def echoInput(self):
         print "i:%d"%self.i
@@ -148,19 +148,19 @@ class decisionRule:
         for t in range(0,self.limt):
             for j in range(0,self.j):
                 for p in range(0,t*self.j+1):
-                    if self.v[j,0] * self.xi[p,0] ==0:
+                    if self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.xi[p,0] ==0:
                         continue
-                    obj += self.v[j,0] * self.x[t,j,p] * self.xi[p,0]
+                    obj += self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.x[t,j,p] * self.xi[p,0]
                     #obj += self.v[j,0] * self.x[j,p]
         #after first limt time
         for t in range(self.limt,self.t):
             for j in range(0,self.j):
                 #first element of xi = 1
-                obj += self.v[j,0] * self.x[t,j,0]
+                obj += self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.x[t,j,0]
                 for p in range(1,self.limt*self.j+1):
-                    if self.v[j,0] * self.xi[(t-self.limt)*self.j+p,0] ==0:
+                    if self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.xi[(t-self.limt)*self.j+p,0] ==0:
                         continue
-                    obj += self.v[j,0] * self.x[t,j,p] * self.xi[(t-self.limt)*self.j+p,0]
+                    obj += self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.x[t,j,p] * self.xi[(t-self.limt)*self.j+p,0]
                     
         self.m.setObjective(obj,GRB.MAXIMIZE)
     
