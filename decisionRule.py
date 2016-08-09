@@ -197,18 +197,18 @@ class decisionRule:
                     if self.A[p,ii] ==0 :
                         continue
                     for j in range(0,t*self.j+1):
-                        #rhs[j] += self.xi[1+t*self.j+ii,0] * self.A[p,ii] * self.x[t,ii,j]
-                        rhs[j] += self.A[p,ii] * self.x[t,ii,j]
+                        rhs[j] += self.prob[t*self.T*self.j+ii+1,0] * self.A[p,ii] * self.x[t,ii,j]
+                        #rhs[j] += self.A[p,ii] * self.x[t,ii,j]
             #from limt to final time
             for t in range(self.limt,self.t):
                 for ii in range(0,self.j):
                     if self.A[p,ii] ==0:
                         continue
-                    #rhs[0] += self.xi[1+t*self.j+ii,0] * self.A[p,ii] * self.x[t,ii,0]
-                    rhs[0] += self.A[p,ii] * self.x[t,ii,0]
+                    rhs[0] += self.prob[t*self.T*self.j+ii+1,0] * self.A[p,ii] * self.x[t,ii,0]
+                    #rhs[0] += self.A[p,ii] * self.x[t,ii,0]
                     for j in range((t-self.limt)*self.j+1,t*self.j+1):
-                        #rhs[j] += self.xi[1+t*self.j+ii,0] * self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
-                        rhs[0] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
+                        rhs[j] += self.prob[t*self.T*self.j+ii+1,0] * self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
+                        #rhs[j] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
             for j in range(0,self.t*self.j+1):
                 self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j],'Z1 %d %d' %(p,j))
         #Gamma for w^T Gamma = Z2
