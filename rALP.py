@@ -16,7 +16,7 @@ class rALP:
         self.t = relrALP.n
         
         
-        self.t = 50#customized periods
+        self.t = 20#customized periods
         
         
         #Sparse P

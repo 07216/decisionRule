@@ -9,70 +9,29 @@ from gurobipy import *
 import numpy as np
 
 class decisionRule:
-    def __init__(self,relrALP):
+    def __init__(self):
         self.m = Model("Decision Rule Approch")
-        self.i = relrALP.f
-        self.j = relrALP.i
-        self.t = relrALP.n
-
-        
-        self.t = 2#customized periods
-        self.T = 10#how a periods long
-        self.limt = 2#observed history
         
         
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
-        self.A = np.zeros((self.i,self.j),dtype=np.float)
-        self.xi = np.zeros((self.t*self.j+1,1),dtype=np.float)
-        self.prob = np.zeros((self.t*self.T*self.j+1,1),dtype=np.float)
-        self.c = np.zeros((self.i,1),dtype=np.float)
-        self.h = np.zeros((2*(self.t*self.j+1),1),dtype=np.float)
+        #self.prob = np.zeros((self.t*self.T*self.j+1,1),dtype=np.float)
         #Sparse W
         #self.W = np.zeros((2*(self.t*self.j+1),self.t*self.j+1),dtype=np.float)
-        self.v = np.zeros((self.j,1),dtype=np.float)
-        self.rALP = relrALP
-        #look resources I required by J
-        self.refJ = relrALP.dicAforJ
-        
-    def construct(self):
-        #construct A
-        for item in self.rALP.listA:
-            #Hint Item[1] is from 1 to ...
-            #print item
-            self.A[item[0],item[1]-1] = 1
-        #construct c
-        for item in range(0,self.i):
-            self.c[item] = self.rALP.flight[item][2]
-            #self.c[item] = 2
-        #construct h
-        self.h[0] = 1
-        self.h[1] = -1
-        for t in range(0,self.t):
-            for j in range(0,self.j):
-                self.h[2*(1+t*self.j+j)] = self.cal(t,j,1e-5)
-                self.h[2*(1+t*self.j+j)+1] = 0
-        #construct v
-        for j in range(0,self.j):
-            self.v[j] = self.rALP.pval[j]
-        #construct Exi
-        self.xi[0] = 1
-        self.prob[0] = 1
-        for t in range(0,self.t * self.T):
-            for j in range(0,self.j):
-                index = self.rALP.prdic[j]
-                self.prob[1+t*self.j+j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
-        for t in range(0,self.t):
-            for j in range(0,self.j):
-                self.xi[1+t*self.j+j] = 0
-                for T in range(0,self.T):
-                    self.xi[1+t*self.j+j] += self.prob[1+(t*self.T+T)*self.j+j]
-        
-        for t in range(0,self.t):
-            for j in range(0,self.j):
-                self.xi[1+t*self.j+j] *= 100
-        print sum(self.xi)
-                
+
+    def inputDemand(self,recorder):
+        self.i = recorder.i
+        self.j = recorder.j
+        self.t = recorder.t
+        self.A = recorder.A
+        self.xi = recorder.xi
+        self.v = recorder.v
+        self.c = recorder.c
+        self.h = recorder.h
+        self.refJ = recorder.refJ
+        self.t = recorder.t
+        self.limt  = recorder.limt
+           
     def echoInput(self):
         print "i:%d"%self.i
         print "j:%d"%self.j
@@ -87,21 +46,6 @@ class decisionRule:
         print self.A
         print "xi:"
         print self.xi
-        
-    def cal(self,t,j,minp):
-        s = 0
-        for T in range(0,self.T):
-            index = self.rALP.prdic[j]
-            p = self.rALP.bdic[(t*self.T+T,index[0],index[1],index[2])]
-            i = 0
-            q = p
-            tmp = 1
-            while(q>minp):
-                i = i+1
-                tmp = tmp*(i+1)
-                q = (p**(i+1))/tmp
-            s += i
-        return s
     
     def echoVal(self):
         for x in self.h:
@@ -125,23 +69,21 @@ class decisionRule:
         for p in range(0,self.i):
             for i in range(0,2*(self.t*self.j+1)):
                 self.l[p,i] = self.m.addVar(lb=0, name = 'Lambda %d %d' % (p,i))
+                '''
         #add Gamma
         self.g = {}
-        '''
-        for t in range(0,self.limt):
-            for p in range(0,self.i):
-                for i in range(0,2*(t*self.j+1)):
-                    self.g[t,p,i] = self.m.addVar(lb=0, name = 'Gamma %d %d %d' % (t,p,i))
-        '''
         for t in range(0,self.t):
-            for p in range(0,self.i):
+            for p in range(0,self.j):
                 for i in range(0,2*(self.t*self.j+1)):
                     self.g[t,p,i] = self.m.addVar(ub=0, name = 'Gamma %d %d %d' % (t,p,i))
-            '''
-        #add Beta
-        for i in range(0,2*(self.t*self.j+1)):
-            self.b[i] = self.m.addVar(lb=0, name = 'Beta %d' %i)
-            '''
+        '''
+        #add Omega
+        self.o = {}
+        for t in range(0,self.t):
+            for p in range(0,self.j):
+                for i in range(0,2*(self.t*self.j+1)):
+                    self.o[t,p,i] = self.m.addVar(lb=0, name = 'Omega %d %d %d' %(t,p,i))
+
         self.m.update()
         
         #x size for first limt t, (self.j , t*self.j+1)
@@ -152,19 +94,19 @@ class decisionRule:
         for t in range(0,self.limt):
             for j in range(0,self.j):
                 for p in range(0,t*self.j+1):
-                    if self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.xi[p,0] ==0:
+                    if self.v[j,0] * self.xi[p,0] ==0:
                         continue
-                    obj += self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.x[t,j,p] * self.xi[p,0]
+                    obj += self.v[j,0] * self.x[t,j,p] * self.xi[p,0]
                     #obj += self.v[j,0] * self.x[j,p]
         #after first limt time
         for t in range(self.limt,self.t):
             for j in range(0,self.j):
                 #first element of xi = 1
-                obj += self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.x[t,j,0]
+                obj += self.v[j,0] * self.x[t,j,0]
                 for p in range(1,self.limt*self.j+1):
-                    if self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.xi[(t-self.limt)*self.j+p,0] ==0:
+                    if self.v[j,0] * self.xi[(t-self.limt)*self.j+p,0] ==0:
                         continue
-                    obj += self.prob[t*self.T*self.j+j+1,0] * self.v[j,0] * self.x[t,j,p] * self.xi[(t-self.limt)*self.j+p,0]
+                    obj += self.v[j,0] * self.x[t,j,p] * self.xi[(t-self.limt)*self.j+p,0]
                     
         self.m.setObjective(obj,GRB.MAXIMIZE)
     
@@ -173,15 +115,27 @@ class decisionRule:
         for p in range(0,self.i):
             l = LinExpr()
             for i in range(0,2*(self.t*self.j+1)):
-                l += self.h[i,0] * self.l[p,i]
+                if self.h[i,0] != 0:
+                    l += self.h[i,0] * self.l[p,i]
             self.m.addConstr(l,GRB.LESS_EQUAL,0,'h^T Lambda <=0')
         #Gamma
+            '''
         for t in range(0,self.t):
-            for p in range(0,self.i):
+            for p in range(0,self.j):
                 g = LinExpr()
                 for i in range(0,2*(self.t*self.j+1)):
-                    g += self.h[i,0] * self.g[t,p,i]
+                    if self.h[i,0] != 0:
+                        g += self.h[i,0] * self.g[t,p,i]
                 self.m.addConstr(g,GRB.GREATER_EQUAL,0,'h^T Gamma >=0')
+                '''
+        #Omega
+        for t in range(0,self.t):
+            for p in range(0,self.j):
+                o = LinExpr()
+                for i in range(0,2*(self.t*self.j+1)):
+                    if self.h[i,0] != 0:
+                        o += self.h[i,0] * self.o[t,p,i]
+                self.m.addConstr(o,GRB.LESS_EQUAL,0,'h^T Omega <= 0')
         #Lambda for w^T Lambda = Z1
         for p in range(0,self.i):
             lhs = {}
@@ -196,28 +150,29 @@ class decisionRule:
             #C i*1 (c1,c2,c3,...,ci)^T
             rhs[0] += -self.c[p,0]
             #from 0 to limt
-            for t in range(0,self.limt):
-                for ii in range(0,self.j):
-                    if self.A[p,ii] ==0 :
-                        continue
+            for ii in range(0,self.j):
+                if self.A[p,ii] ==0 :
+                    continue
+                for t in range(0,self.limt):
                     for j in range(0,t*self.j+1):
-                        rhs[j] += self.prob[t*self.T*self.j+ii+1,0] * self.A[p,ii] * self.x[t,ii,j]
-                        #rhs[j] += self.A[p,ii] * self.x[t,ii,j]
+                        rhs[j] += self.A[p,ii] * self.x[t,ii,j]
             #from limt to final time
-            for t in range(self.limt,self.t):
-                for ii in range(0,self.j):
-                    if self.A[p,ii] ==0:
-                        continue
-                    rhs[0] += self.prob[t*self.T*self.j+ii+1,0] * self.A[p,ii] * self.x[t,ii,0]
+            for ii in range(0,self.j):
+                if self.A[p,ii] ==0:
+                    continue
+                for t in range(self.limt,self.t):
+                    rhs[0] += self.A[p,ii] * self.x[t,ii,0]
                     #rhs[0] += self.A[p,ii] * self.x[t,ii,0]
                     for j in range((t-self.limt)*self.j+1,t*self.j+1):
-                        rhs[j] += self.prob[t*self.T*self.j+ii+1,0] * self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
+                        rhs[j] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
                         #rhs[j] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
             for j in range(0,self.t*self.j+1):
                 self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j],'Z1 %d %d' %(p,j))
         #Gamma for w^T Gamma = Z2
+        #t before limt
+                '''
         for t in range(0,self.limt):
-            for p in range(0,self.i):
+            for p in range(0,self.j):
                 lhs = {}
                 rhs = {}
                 for i in range(0,self.t*self.j+1):
@@ -227,13 +182,11 @@ class decisionRule:
                     lhs[i] += self.g[t,p,2*i]-self.g[t,p,2*i+1]
                 for j in range(0,t*self.j+1):
                     rhs[j] += self.x[t,p,j]
-                for j in range(t*self.j+1,self.t*self.j+1):
-                    rhs[j] += 0
                 for j in range(0,self.t*self.j+1):
                     self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z2 time %d, %d %d' %(t,p,j))
         #after first limt time
         for t in range(self.limt,self.t):
-            for p in range(0,self.i):
+            for p in range(0,self.j):
                 lhs = {}
                 rhs = {}
                 for i in range(0,self.t*self.j+1):
@@ -246,7 +199,44 @@ class decisionRule:
                     rhs[j] += self.x[t,p,j-(t-self.limt)*self.j]
                 for j in range(0,self.t*self.j+1):
                     self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z2 time %d, %d %d' %(t,p,j))
-                
+                    '''
+        #Omega for w^T Omega = Z3
+        #before limt
+        for t in range(0,self.limt):
+            for p in range(0,self.j):
+                lhs = {}
+                rhs = {}
+                for i in range(0,self.t*self.j+1):
+                    lhs[i] = LinExpr()
+                    rhs[i] = LinExpr()
+                for i in range(0,self.t*self.j+1):
+                    lhs[i] += self.o[t,p,2*i] - self.o[t,p,2*i+1]
+                for j in range(0,t*self.j+1):
+                    rhs[j] += self.x[t,p,j]
+                #for j in range(t*self.j+1,(t+1)*self.j+1):
+                #    rhs[j] += -1
+                rhs[t*self.j+p+1] += -1
+                for j in range(0,self.t*self.j+1):
+                    self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z3 time %d,%d %d' %(t,p,j))
+        #after limt
+        for t in range(self.limt,self.t):
+            for p in range(0,self.j):
+                lhs = {}
+                rhs = {}
+                for i in range(0,self.t*self.j+1):
+                    lhs[i] = LinExpr()
+                    rhs[i] = LinExpr()
+                for i in range(0,self.t*self.j+1):
+                    lhs[i] += self.o[t,p,2*i] - self.o[t,p,2*i+1]
+                rhs[0] += self.x[t,p,0]
+                for j in range(1,self.limt*self.j+1):
+                    rhs[j+(t-self.limt)*self.j] += self.x[t,p,j]
+                #for j in range(t*self.j+1,(t+1)*self.j+1):
+                    #rhs[j] += -1
+                rhs[t*self.j+p+1] += -1
+                for j in range(0,self.t*self.j+1):
+                    self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z3 time %d,%d %d' %(t,p,j))
+                    
     def solve(self):
         self.m.optimize()
     

@@ -11,6 +11,7 @@ import decisionRule
 import rALP
 import time
 import simulation
+import CustomizeDemand
 #from guppy import hpy
 
 reader = Input.Input()
@@ -19,6 +20,9 @@ reader.product()
 reader.leg()
 reader.construct()
 
+demander = CustomizeDemand.CustomizeDemand()
+demander.resolveDemandFirstCase()
+#demander.reducationALP(reader)
 #h=hpy()
 #print h.heap()
 
@@ -27,18 +31,17 @@ first = 1
 if first:
 
     
-    decisionSolver = decisionRule.decisionRule(reader)
-    decisionSolver.construct()
+    decisionSolver = decisionRule.decisionRule()
     #decisionSolver.echoInput()
     #decisionSolver.echoVal()
+    decisionSolver.inputDemand(demander)
     decisionSolver.addVar()
     decisionSolver.addOpt()
     decisionSolver.addConstr()
     decisionSolver.solve()
     #decisionSolver.echoOpt()
     
-    simulator = simulation.simulation(decisionSolver)
-    simulator.construct()
+    simulator = simulation.simulation(decisionSolver,demander)
     simulator.run(1000)
 
 else:
