@@ -20,11 +20,7 @@ reader.product()
 reader.leg()
 reader.construct()
 
-demander = CustomizeDemand.CustomizeDemand()
-demander.resolveDemandFirstCase()
-#demander.reducationALP(reader)
-#h=hpy()
-#print h.heap()
+demander = CustomizeDemand.CustomizeDemand(1)
 
 first = 1
 

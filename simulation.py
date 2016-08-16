@@ -29,15 +29,15 @@ class simulation:
             for j in range(0,self.j):
                 for p in range(0,1+t*self.j):
                     self.X[t][j,p] = self.x[t,j,p].X
-                   #if self.X[t][j,p] !=0:
-                   #     print self.X[t][j,p],t,j,p
+                    if self.X[t][j,p] !=0:
+                        print self.X[t][j,p],t,j,p
         for t in range(self.limt,self.t):
             self.X[t] = np.zeros((self.j,1+self.limt*self.j),dtype=np.float)
             for j in range(0,self.j):
                 for p in range(0,1+self.limt*self.j):
                     self.X[t][j,p] = self.x[t,j,p].X
-                    #if self.X[t][j,p] !=0:
-                    #    print self.X[t][j,p],t,j,p
+                    if self.X[t][j,p] !=0:
+                        print self.X[t][j,p],t,j,p
                         
     def aSim(self):
 
@@ -50,30 +50,36 @@ class simulation:
         
         for t in range(0,self.limt):
             product = np.dot(self.X[t],history)
+            #print product
             tmpDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
                     print "Strange!"
-                sell = max(0,min(tmpDemand[j],np.ceil(product[j])))
-                benefit += sell * self.v[j]
-                #benefit += int(product[j]) * self.v[j]
+                sell = max(0,min(tmpDemand[j],np.round(product[j])))
                 if sell != 0:
                     for k in self.refJ[j]:
+                        sell = min(sell,c[k])
+                    benefit += sell * self.v[j]
+                    for k in self.refJ[j]:
                         c[k] -= sell
+                            
+                #benefit += int(product[j]) * self.v[j]
             demand += tmpDemand
             if self.limt != 0:
                 history = np.array(demand)
         
         for t in range(self.limt,self.t):
             product = np.dot(self.X[t],history)
+            #print product
             tmpDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
                     print "Strange!"
-                sell = max(0,min(tmpDemand[j],np.ceil(product[j])))
-                benefit += sell * self.v[j]
-                #benefit += int(product[j]) * self.v[j]
+                sell = max(0,min(tmpDemand[j],np.round(product[j])))
                 if sell != 0:
+                    for k in self.refJ[j]:
+                        sell = min(sell,c[k])
+                    benefit += sell * self.v[j]
                     for k in self.refJ[j]:
                         c[k] -= sell
             demand = [1] + demand[(self.j+1):] + tmpDemand

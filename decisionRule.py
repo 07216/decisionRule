@@ -239,6 +239,7 @@ class decisionRule:
                     
     def solve(self):
         self.m.optimize()
+        return 0
     
     def echoOpt(self):
         

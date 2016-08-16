@@ -11,15 +11,20 @@ from scipy.stats import gamma as Gamma
 from scipy.stats import poisson
 
 class CustomizeDemand:
-    def __init__(self):
-        self.sim = self.produceDemandForFirstCaseInResolve
+    def __init__(self,choose):
+        if  choose == 1:
+            self.resolveDemandFirstCase()
+            self.sim = self.produceDemandForFirstCaseInResolve
+        elif choose == 2:
+            self.resolveDemandSecondCase()
+            self.sim = self.produceDemandForSecondCaseInResolve
         #self.sim = self.produceDemandForrALP
     
     def resolveDemandFirstCase(self):   
         self.i = 10
         self.j = 60
-        self.t = 16
-        self.limt = min(0,self.t)#observed history
+        self.t = 10
+        self.limt = min(5,self.t)#observed history
         
         #Fare
         self.v = np.zeros((self.j,1))
@@ -70,7 +75,7 @@ class CustomizeDemand:
         self.h = np.zeros((2*(self.t*self.j+1),1))
         self.h[0] = 1
         self.h[1] = -1
-        minp = 1e-2
+        minp = 1e-1
         for t in range(0,self.t):
             for j in range(0,10):
                 self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
@@ -98,6 +103,121 @@ class CustomizeDemand:
                 self.realDemand += [np.random.gamma(100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
         return self.realDemand
                 
+    def resolveDemandSecondCase(self):
+        self.i = 10
+        self.j = 60
+        self.t = 12
+        self.limt = min(0,self.t)#observed history
+        
+        #Fare
+        self.v = np.zeros((self.j,1))
+        for j in range(0,10):
+            self.v[2*j] = 300
+            self.v[2*j+1] = 80
+        for j in range(10,22):
+            self.v[2*j] = 500
+            self.v[2*j+1] = 100
+        for j in range(22,30):
+            self.v[2*j] = 700
+            self.v[2*j+1] = 200
+            
+        #Capacity
+        self.c = np.zeros((self.i,1))
+        for i in range(0,10):
+            self.c[i] = 400
+        self.c[4] = self.c[5] = 1000
+        
+        #matrix A I * J
+        self.A = np.zeros((self.i,self.j),dtype=np.int8)
+        self.refJ = {}
+        for j in range(0,10):
+            self.A[j,2*j] = 1
+            self.A[j,2*j+1] = 1
+            self.refJ[2*j] = [j]
+            self.refJ[2*j+1] = [j]
+        self.pushTwoLeg(0,1,0,3,1,2,0)
+        self.pushTwoLeg(0,5,0,4,5,1,1)
+        self.pushTwoLeg(1,5,2,4,5,3,2)
+        self.pushTwoLeg(2,4,6,5,4,7,3)
+        self.pushTwoLeg(2,3,6,8,9,7,4)
+        self.pushTwoLeg(3,4,9,5,4,8,5)
+        self.pushThreeLeg(0,2,0,4,7,6,5,1,6)
+        self.pushThreeLeg(0,3,0,4,8,9,5,1,7)
+        self.pushThreeLeg(1,2,2,4,7,6,5,3,8)
+        self.pushThreeLeg(1,3,2,4,8,9,5,3,9)
+        
+        #Expectation of arrival process
+        self.xi = np.zeros((2*(self.t*self.j)+1,1),dtype=np.float)
+        self.xi[0] = 1
+        for t in range(0,self.t):
+            for j in range(0,10):
+                self.xi[1+t*self.j+2*j] = 60 * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.xi[1+t*self.j+2*j+1] = 60 * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+            for j in range(10,22):
+                self.xi[1+t*self.j+2*j] = 150 * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.xi[1+t*self.j+2*j+1] = 150 * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+            for j in range(22,30):
+                self.xi[1+t*self.j+2*j] = 100 * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.xi[1+t*self.j+2*j+1] = 100 * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+        
+        #Up Bound And Low Bound For Demand
+        self.h = np.zeros((2*(self.t*self.j+1),1))
+        self.h[0] = 1
+        self.h[1] = -1
+        minp = 1e-2
+        for t in range(0,self.t):
+            for j in range(0,10):
+                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(minp,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minp,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(minp,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+            for j in range(10,22):      
+                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(minp,150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minp,150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(minp,150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+            for j in range(22,30):      
+                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(minp,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minp,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(minp,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                        
+        #print self.xi
+        #print self.h
+    
+    def pushTwoLeg(self,s,t,a,b,c,d,id):
+        self.A[a,20+4*id] = self.A[b,20+4*id] = 1
+        self.A[a,20+4*id+1] = self.A[b,20+4*id+1] = 1
+        self.A[c,20+4*id+2] = self.A[d,20+4*id+2] = 1
+        self.A[c,20+4*id+3] = self.A[d,20+4*id+3] = 1
+        self.refJ[20+4*id] = [a,b]
+        self.refJ[20+4*id+1] = [a,b]
+        self.refJ[20+4*id+2] = [c,d]
+        self.refJ[20+4*id+3] = [c,d]
+    
+    def pushThreeLeg(self,s,t,a,b,c,d,e,f,id):
+        self.A[a,20+4*id] = self.A[b,20+4*id] = self.A[c,20+4*id] = 1
+        self.A[a,20+4*id+1] = self.A[b,20+4*id+1] = self.A[c,20+4*id+1] = 1
+        self.A[d,20+4*id+2] = self.A[e,20+4*id+2] = self.A[f,20+4*id+2] = 1
+        self.A[d,20+4*id+3] = self.A[e,20+4*id+3] = self.A[f,20+4*id+3] = 1
+        self.refJ[20+4*id] = [a,b,c]
+        self.refJ[20+4*id+1] = [a,b,c]
+        self.refJ[20+4*id+2] = [d,e,f]
+        self.refJ[20+4*id+3] = [d,e,f]
+
+    def produceDemandForSecondCaseInResolve(self):        
+        self.realDemand = []
+        for t in range(0,self.t):
+            for j in range(0,10):
+                self.realDemand += [np.random.gamma(40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
+                self.realDemand += [np.random.gamma(40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
+            for j in range(10,22):
+                self.realDemand += [np.random.gamma(150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
+                self.realDemand += [np.random.gamma(150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
+            for j in range(22,30):
+                self.realDemand += [np.random.gamma(100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
+                self.realDemand += [np.random.gamma(100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
+        return self.realDemand
 
     def reducationALP(self,relrALP):
 

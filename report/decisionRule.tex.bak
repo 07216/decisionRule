@@ -1,0 +1,10 @@
+\documentclass{article}
+\title{Report}
+\author{Zhan Lin}
+\date{}
+\begin{document}
+\section{Original Problem}
+\begin{equation*}
+\min \mathbb{E}
+\end{equation*}
+\end{document}
