@@ -48,7 +48,7 @@ class gene:
         for item in self.realDemand.values():
             s += self.evalWithGivenDemand(x,item)
             i += 1
-        return s/i
+        return np.log(s/i)
         
     def evolveScore(self,x):
         xx = self.trans(x)
@@ -65,7 +65,7 @@ class gene:
     def evolve(self):
         genome = G1DList.G1DList(self.t*self.j)
         genome.evaluator.set(self.evolveScore)
-        genome.setParams(rangemin=0,rangemax=2)
+        genome.setParams(rangemin=0,rangemax=1)
         ga = GSimpleGA.GSimpleGA(genome)
         ga.evolve(freq_stats=10)        
         

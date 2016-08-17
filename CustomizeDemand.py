@@ -13,7 +13,7 @@ import Input
 
 class CustomizeDemand:
     def __init__(self,choose):
-        self.t = 5
+        self.t = 10
         self.limt = min(0,self.t)
         self.T = 5
         
@@ -82,18 +82,19 @@ class CustomizeDemand:
         self.h = np.zeros((2*(self.t*self.j+1),1))
         self.h[0] = 1
         self.h[1] = -1
-        minp = 2e-1
+        minsup = 0.1
+        mininf = 0.65
         for t in range(0,self.t):
             for j in range(0,10):
-                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(minp,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minp,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(minp,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minsup,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(mininf,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minsup,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(mininf,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
             for j in range(10,30):      
-                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(minp,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minp,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(minp,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minsup,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(mininf,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minsup,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(mininf,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                         
         
         #print self.xi
@@ -113,7 +114,6 @@ class CustomizeDemand:
     def resolveDemandSecondCase(self):
         self.i = 10
         self.j = 60
-        self.limt = min(0,self.t)#observed history
         
         #Fare
         self.v = np.zeros((self.j,1))
@@ -170,23 +170,24 @@ class CustomizeDemand:
         self.h = np.zeros((2*(self.t*self.j+1),1))
         self.h[0] = 1
         self.h[1] = -1
-        minp = 1e-2
+        minsup = 1e-1
+        mininf = 7e-1
         for t in range(0,self.t):
             for j in range(0,10):
-                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(minp,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minp,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(minp,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minsup,60) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(mininf,60) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minsup,60) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(mininf,60) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
             for j in range(10,22):      
-                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(minp,150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minp,150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(minp,150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minsup,150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(mininf,150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minsup,150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(mininf,150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
             for j in range(22,30):      
-                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(minp,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minp,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(minp,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minsup,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(mininf,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minsup,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(mininf,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                         
         #print self.xi
         #print self.h
@@ -215,8 +216,8 @@ class CustomizeDemand:
         self.realDemand = []
         for t in range(0,self.t):
             for j in range(0,10):
-                self.realDemand += [np.random.gamma(40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
-                self.realDemand += [np.random.gamma(40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
+                self.realDemand += [np.random.gamma(60) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
+                self.realDemand += [np.random.gamma(60) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
             for j in range(10,22):
                 self.realDemand += [np.random.gamma(150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
                 self.realDemand += [np.random.gamma(150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]

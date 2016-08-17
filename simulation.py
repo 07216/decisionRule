@@ -52,6 +52,7 @@ class simulation:
         history = np.array(demand)
         benefit = 0.0
         rplc = self.atLeastOne
+        #rplc = np.ceil
         
         for t in range(0,self.limt):
             product = np.dot(self.X[t],history)

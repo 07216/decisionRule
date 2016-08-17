@@ -36,7 +36,7 @@ if first == 1:#Decision Rule Approch + Gene Rounding
     #decisionSolver.echoOpt()    
     
     simulator = simulation.simulation(decisionSolver,demander)
-    
+    '''
     realDemand = {}
     for i in range(0,3):
         realDemand[i] = demander.sim()
@@ -45,9 +45,10 @@ if first == 1:#Decision Rule Approch + Gene Rounding
     opt.initX()
     opt.setSTD(realDemand)
     opt.evolve()
-    #simulator.run(1000)
-    print opt.evalPlus(opt.X)
-    #print simulator.bookLimRun(1000,opt.X)
+    '''
+    simulator.initX()
+    print simulator.run(100)
+    #print simulator.bookLimRun(100,opt.X)
 
 elif first == 0:#reduction of Approximate Linear Programming
     
@@ -66,7 +67,7 @@ elif first == 2:#Gene Algorithm
     simulator = simulation.simulation(decisionSolver,demander)
 
     realDemand = {}
-    for i in range(0,3):
+    for i in range(0,100):
         realDemand[i] = demander.sim()
 
     opt = gene.gene(decisionSolver,simulator)

@@ -9,7 +9,7 @@
 \begin{document}
 \maketitle
 \section{Original Problem}
-Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Let $\xi^t$ be the observed history demands and $\mathbf{x_t}(\xi^t)$ be the booking limits in period t,while $p_t(\xi) = \left(\xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T$. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
+Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Let $\xi_t$ be the observed history demands and $\mathbf{x_t}(\xi^t)$ be the booking limits in period t,while $p_t(\xi) = \left(\xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T$. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
 
 \begin{equation}
 \begin{array}{ll}
@@ -45,7 +45,7 @@ where $$W=\left(\begin{array}{lllll}
 \end{array}
 \right)
 $$
-and $$h=\left(1,-1,q_{1,1,sup},-q_{1,1,inf},q_{1,2,sup},-q_{1,2,inf},\ldots,q_{t,n,sup},-q_{t,n,inf}\right)^T$$ in which $q_{t,j,p}$ is the $p$ quantile of $\xi_{t,j}$.
+and $$h=\left(1,-1,q_{1,1,0.9},-q_{1,1,0.1},q_{1,2,0.9},-q_{1,2,0.1},\ldots,q_{t,n,0.9},-q_{t,n,0.1}\right)^T$$ in which $q_{t,j,p}$ is the $p$ quantile of $\xi_{t,j}$.
 
 There are $n m t \tau + 2 n m t + n^2 t^2$ variables and $m+2nt$ constraints in total.
 
@@ -83,16 +83,13 @@ s.t. & \sum^T_{t=1} \tilde{A}^T Y_t P_t \xi \geq \mathbf{v}^T\\
 \end{equation}
 
 \section{Numerical Results}
-Rounding can matter a lot to benefits. Therefore, I tried genetic algorithm to get a not bad policy. However, it sometimes offer a
-worse policy than simply ceil. Also, when I adjust parameters, $t$ and quantile seem play an important role in optimizing. It suggests that if we optimize the problem with changes of $t$ and quantile, higher benefits should be possible.
-What's more, please notice that all results obtained now are under constant policies.
+Rounding can matter a lot to benefits. Therefore, I choose genetic algorithm to get a not bad policy.
+Please notice that all results obtained now are under constant policies.
 
-\subsection{First Case in Re-solving}
-The highest benefit achieved is 418538 with $t=10$, $sup = 0.9$ and $inf = 0.65$, better than values obtained without re-solving in the paper,that is, 401980(DLP-alloc), 415410(SLP-alloc), 347690(DLP-bid) and 347990(SLP-bid).
-\subsection{Second Case in Re-solving}
-The highest benefit achieved is 601788 with $t=10$, $sup = 0.9$ and $inf = 0.7$, better than values obtained without re-solving in the paper,that is, 583630(DLP-alloc), 595620(SLP-alloc), 518470(DLP-bid) and 520210(SLP-bid). 
-\subsection{Data from Approximate Linear Programming}
-As far as I am concerned,their data scale is limited and not suitable for decision rule approach. Maybe we shouldn't make use of it?
+\subsection{First Case in Re-solve}
+The best benefit that have ever been achieved is 393056, a littl
+\subsection{Second Case in Re-solve}
+
 \subsection{Computational Ability}
 Amazon EC2 provides cheap cloud computing resources, which should be enough to satisfy our needs.
 

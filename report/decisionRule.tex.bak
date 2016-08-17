@@ -3,35 +3,51 @@
 \title{Linear Decision Rule Approach}
 \author{Zhan Lin}
 
-\renewcommand{\arraystretch}{1.5}
+%\renewcommand{\arraystretch}{1.5}
+\linespread{1.6}
 \date{}
 \begin{document}
 \maketitle
 \section{Original Problem}
-Consider a network system consisting of m resources,with capacity levels$\mathbf{c}=(c_1,\ldots,c_m)^T$
+Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Let $\xi_t$ be the observed history demands and $\mathbf{x_t}(\xi^t)$ be the booking limits in period t,while $p_t(\xi) = \left(\xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T$. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
 
 \begin{equation}
 \begin{array}{ll}
 \max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T \mathbf{x_t} \left(\xi^t\right)\right)\\
 s.t. & \sum^T_{t=1} A \mathbf{x_t} \left(\xi^t\right) \leq \mathbf{c}\\
-& x_t(\xi^t) \leq p_t(\xi)\\
+& \mathbf{x_t}(\xi^t) \leq \mathbf{p_t}(\xi)\\
 &\forall \xi \in \Xi,t=1,\ldots,T
 \end{array}
 \label{origin}
 \end{equation}
 \section{Linear Decision Rule Approach}
 \subsection{Primal Problem}
+Approach original problem with $\mathbf{x_t}(\xi^t) = X_t P_t \xi$ , $\Xi = \left\{ \xi : W \xi \leq h\right\}$, and $\mathbf{p_t}(\xi) = p_t \xi$ where $X_t$, $P_t$ , $W$ and $p_t$ are all matrix. Then we obtain the primal problem
+
+
 \begin{equation}
 \begin{array}{ll}
 \max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T X_t P_t \xi\right)\\
 s.t. & \sum^T_{t=1} A X_t P_t \xi \leq \mathbf{c}\\
-& X_t P_t \xi \leq p_t^T\xi\\
+& X_t P_t \xi \leq p_t\xi\\
 &\forall \xi \in \Xi = \left\{ \xi : W \xi \leq h\right\},t=1,\ldots,T
 \end{array}
 \label{primal}
 \end{equation}
+where $$W=\left(\begin{array}{lllll}
+1 & & &\\
+-1 & & &\\
+& 1 & &\\
+& -1 & &\\
+& & \vdots &\\
+& & & 1\\
+& & & -1
+\end{array}
+\right)
+$$
+and $$h=\left(1,-1,q_{1,1,0.9},-q_{1,1,0.1},q_{1,2,0.9},-q_{1,2,0.1},\ldots,q_{t,n,0.9},-q_{t,n,0.1}\right)^T$$ in which $q_{t,j,p}$ is the $p$ quantile of $\xi_{t,j}$.
 
-time complexity
+There are $n m t \tau + 2 n m t + n^2 t^2$ variables and $m+2nt$ constraints in total.
 
 \subsection{Duality}
 
@@ -55,12 +71,11 @@ s.t. & \sum^T_{t=1} \tilde{A}^T \mathbf{y_t} \left(\xi^t\right) \geq \mathbf{v}^
 &\forall \xi \in \Xi,t=1,\ldots,T
 \end{array}
 \end{equation}
-
-Also,we can use linear decision rule approach.
+We can apply same approach and obtain
 
 \begin{equation}
 \begin{array}{ll}
-\min &\mathbb{E}_{\xi}\left(\sum^T_{t=1}  \left(\mathbf{c}^T,p` \right)\mathbf{y_t} \left(\xi^t\right)\right)\\
+\min &\mathbb{E}_{\xi}\left(\sum^T_{t=1}  \left(\mathbf{c}^T,(p_t\xi)^T \right)\mathbf{y_t} \left(\xi^t\right)\right)\\
 s.t. & \sum^T_{t=1} \tilde{A}^T Y_t P_t \xi \geq \mathbf{v}^T\\
 & Y_t P_t \xi  \geq 0\\
 &\forall \xi \in \Xi\left\{ \xi : W \xi \leq h\right\},t=1,\ldots,T
@@ -68,9 +83,15 @@ s.t. & \sum^T_{t=1} \tilde{A}^T Y_t P_t \xi \geq \mathbf{v}^T\\
 \end{equation}
 
 \section{Numerical Results}
+Rounding can matter a lot to final benefits. Therefore, I choose genetic algorithm to get a not bad final policy.
+Please notice that all results obtained now are under constant policies.
+
 \subsection{First Case in Re-solve}
+Best benefits is 
 \subsection{Second Case in Re-solve}
-\subsection{Some Tricks}
+
+\subsection{Computational Ability}
+Amazon EC2 provide cheap cloud computing resources, which should be enough to satisfy our needs.
 
 %构造c的时候可以与实际情况不同
 \end{document}
