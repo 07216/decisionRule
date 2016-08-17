@@ -9,22 +9,29 @@ import numpy as np
 from scipy.special import gamma
 from scipy.stats import gamma as Gamma
 from scipy.stats import poisson
+import Input
 
 class CustomizeDemand:
     def __init__(self,choose):
-        if  choose == 1:
+        self.t = 5
+        self.limt = min(0,self.t)
+        self.T = 5
+        
+        if choose ==0:
+            self.reader = self.reductionALPReadIn()
+            self.reductionALP(self.reader)
+            self.sim = self.produceDemandForrALP
+        elif  choose == 1:
             self.resolveDemandFirstCase()
             self.sim = self.produceDemandForFirstCaseInResolve
         elif choose == 2:
             self.resolveDemandSecondCase()
             self.sim = self.produceDemandForSecondCaseInResolve
-        #self.sim = self.produceDemandForrALP
     
     def resolveDemandFirstCase(self):   
         self.i = 10
         self.j = 60
-        self.t = 10
-        self.limt = min(5,self.t)#observed history
+        self.limt = min(0,self.t)#observed history
         
         #Fare
         self.v = np.zeros((self.j,1))
@@ -75,7 +82,7 @@ class CustomizeDemand:
         self.h = np.zeros((2*(self.t*self.j+1),1))
         self.h[0] = 1
         self.h[1] = -1
-        minp = 1e-1
+        minp = 2e-1
         for t in range(0,self.t):
             for j in range(0,10):
                 self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minp,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
@@ -106,7 +113,6 @@ class CustomizeDemand:
     def resolveDemandSecondCase(self):
         self.i = 10
         self.j = 60
-        self.t = 12
         self.limt = min(0,self.t)#observed history
         
         #Fare
@@ -219,17 +225,18 @@ class CustomizeDemand:
                 self.realDemand += [np.random.gamma(100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
         return self.realDemand
 
-    def reducationALP(self,relrALP):
+    def reductionALPReadIn(self):
+        reader = Input.Input()
+        reader.readIn('data/rm_200_4_1.0_4.0.txt')
+        reader.product()
+        reader.leg()
+        reader.construct()
+        return reader
+        
+    def reductionALP(self,relrALP):
 
         self.i = relrALP.f
         self.j = relrALP.i
-        self.t = relrALP.n
-
-        
-        self.t = 20#customized periods
-        self.T = 10#how a periods long
-        self.limt = 2#observed history
-        
         
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
@@ -246,7 +253,7 @@ class CustomizeDemand:
         self.rALP = relrALP
         #look resources I required by J
         self.refJ = relrALP.dicAforJ
-                #construct A
+        #construct A
         for item in self.rALP.listA:
             #Hint Item[1] is from 1 to ...
             #print item

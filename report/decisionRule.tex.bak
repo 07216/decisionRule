@@ -1,10 +1,76 @@
 \documentclass{article}
-\title{Report}
+\usepackage{amsmath,amssymb}
+\title{Linear Decision Rule Approach}
 \author{Zhan Lin}
+
+\renewcommand{\arraystretch}{1.5}
 \date{}
 \begin{document}
+\maketitle
 \section{Original Problem}
-\begin{equation*}
-\min \mathbb{E}
-\end{equation*}
+Consider a network system consisting of m resources,with capacity levels$\mathbf{c}=(c_1,\ldots,c_m)^T$
+
+\begin{equation}
+\begin{array}{ll}
+\max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T \mathbf{x_t} \left(\xi^t\right)\right)\\
+s.t. & \sum^T_{t=1} A \mathbf{x_t} \left(\xi^t\right) \leq \mathbf{c}\\
+& x_t(\xi^t) \leq p_t(\xi)\\
+&\forall \xi \in \Xi,t=1,\ldots,T
+\end{array}
+\label{origin}
+\end{equation}
+\section{Linear Decision Rule Approach}
+\subsection{Primal Problem}
+\begin{equation}
+\begin{array}{ll}
+\max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T X_t P_t \xi\right)\\
+s.t. & \sum^T_{t=1} A X_t P_t \xi \leq \mathbf{c}\\
+& X_t P_t \xi \leq p_t^T\xi\\
+&\forall \xi \in \Xi = \left\{ \xi : W \xi \leq h\right\},t=1,\ldots,T
+\end{array}
+\label{primal}
+\end{equation}
+
+time complexity
+
+\subsection{Duality}
+
+Firstly we transform equation(\ref{origin}) into a tighter formulation.
+\begin{equation}
+\begin{array}{ll}
+\max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T \mathbf{x_t} \left(\xi^t\right)\right)\\
+s.t. & \sum^T_{t=1} \tilde{A} \mathbf{x_t} \left(\xi^t\right) \leq \mathbf{ \tilde{c}}_t\left(\xi\right)\\
+& \mathbf{x_t} \left(\xi^t\right) \geq 0\\
+&\forall \xi \in \Xi,t=1,\ldots,T
+\end{array}
+\label{duality:origin}
+\end{equation}
+Then it has a duality.
+
+\begin{equation}
+\begin{array}{ll}
+\min &\mathbb{E}_{\xi}\left(\sum^T_{t=1}  \mathbf{ \tilde{c}}_t\left(\xi\right)^T \mathbf{y_t} \left(\xi^t\right)\right)\\
+s.t. & \sum^T_{t=1} \tilde{A}^T \mathbf{y_t} \left(\xi^t\right) \geq \mathbf{v}^T\\
+& \mathbf{y_t} \left(\xi^t\right) \geq 0\\
+&\forall \xi \in \Xi,t=1,\ldots,T
+\end{array}
+\end{equation}
+
+Also,we can use linear decision rule approach.
+
+\begin{equation}
+\begin{array}{ll}
+\min &\mathbb{E}_{\xi}\left(\sum^T_{t=1}  \left(\mathbf{c}^T,p` \right)\mathbf{y_t} \left(\xi^t\right)\right)\\
+s.t. & \sum^T_{t=1} \tilde{A}^T Y_t P_t \xi \geq \mathbf{v}^T\\
+& Y_t P_t \xi  \geq 0\\
+&\forall \xi \in \Xi\left\{ \xi : W \xi \leq h\right\},t=1,\ldots,T
+\end{array}
+\end{equation}
+
+\section{Numerical Results}
+\subsection{First Case in Re-solve}
+\subsection{Second Case in Re-solve}
+\subsection{Some Tricks}
+
+%构造c的时候可以与实际情况不同
 \end{document}

@@ -12,20 +12,18 @@ import rALP
 import time
 import simulation
 import CustomizeDemand
+import gene
 #from guppy import hpy
 
-reader = Input.Input()
-reader.readIn('data/rm_200_4_1.0_4.0.txt')
-reader.product()
-reader.leg()
-reader.construct()
+firstCaseInReSolve=1
+secondCaseInReSolve=2
+reductionALP=0
 
 demander = CustomizeDemand.CustomizeDemand(1)
 
 first = 1
 
-if first:
-
+if first == 1:#Decision Rule Approch + Gene Rounding
     
     decisionSolver = decisionRule.decisionRule()
     #decisionSolver.echoInput()
@@ -35,16 +33,45 @@ if first:
     decisionSolver.addOpt()
     decisionSolver.addConstr()
     decisionSolver.solve()
-    #decisionSolver.echoOpt()
+    #decisionSolver.echoOpt()    
     
     simulator = simulation.simulation(decisionSolver,demander)
-    simulator.run(1000)
-
-else:
     
-    reduction = rALP.rALP(reader)
+    realDemand = {}
+    for i in range(0,3):
+        realDemand[i] = demander.sim()
+    
+    opt = gene.gene(decisionSolver,simulator)
+    opt.initX()
+    opt.setSTD(realDemand)
+    opt.evolve()
+    #simulator.run(1000)
+    print opt.evalPlus(opt.X)
+    #print simulator.bookLimRun(1000,opt.X)
+
+elif first == 0:#reduction of Approximate Linear Programming
+    
+    reduction = rALP.rALP(demander.reader)
     reduction.construct()
     reduction.addVar()
     reduction.addOpt()
     reduction.addConstr()
     reduction.solve()
+
+elif first == 2:#Gene Algorithm
+    
+    decisionSolver = decisionRule.decisionRule()
+    decisionSolver.inputDemand(demander)    
+    decisionSolver.x = {}
+    simulator = simulation.simulation(decisionSolver,demander)
+
+    realDemand = {}
+    for i in range(0,3):
+        realDemand[i] = demander.sim()
+
+    opt = gene.gene(decisionSolver,simulator)
+    opt.zeroX()
+    opt.setSTD(realDemand)
+    opt.evolve()
+    #simulator.run(1000)
+    print simulator.bookLimRun(100,opt.X)
