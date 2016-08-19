@@ -15,7 +15,7 @@ class CustomizeDemand:
     def __init__(self,choose):
         self.t = 10
         self.limt = min(0,self.t)
-        self.T = 5
+        self.T = 100
         
         if choose ==0:
             self.reader = self.reductionALPReadIn()
@@ -31,7 +31,6 @@ class CustomizeDemand:
     def resolveDemandFirstCase(self):   
         self.i = 10
         self.j = 60
-        self.limt = min(0,self.t)#observed history
         
         #Fare
         self.v = np.zeros((self.j,1))
@@ -82,8 +81,8 @@ class CustomizeDemand:
         self.h = np.zeros((2*(self.t*self.j+1),1))
         self.h[0] = 1
         self.h[1] = -1
-        minsup = 0.1
-        mininf = 0.65
+        minsup = 0.2
+        mininf = 0.6
         for t in range(0,self.t):
             for j in range(0,10):
                 self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minsup,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
@@ -275,7 +274,8 @@ class CustomizeDemand:
                 self.xi[1+t*self.j+j] = 0
                 for T in range(0,self.T):
                     self.xi[1+t*self.j+j] += self.prob[1+(t*self.T+T)*self.j+j]        
-        minp = 5e-2
+        minsup = 1e-1
+        mininf = 7e-1
         #construct h
         self.h[0] = 1
         self.h[1] = -1
@@ -285,8 +285,8 @@ class CustomizeDemand:
                     self.h[2*(1+t*self.j+j)] = 0
                     self.h[2*(1+t*self.j+j)+1] = 0
                 else:
-                    self.h[2*(1+t*self.j+j)] = poisson.ppf(1-minp,self.xi[t*self.j+j+1])
-                    self.h[2*(1+t*self.j+j)+1] = -poisson.ppf(minp,self.xi[t*self.j+j+1])
+                    self.h[2*(1+t*self.j+j)] = poisson.ppf(1-minsup,self.xi[t*self.j+j+1])
+                    self.h[2*(1+t*self.j+j)+1] = -poisson.ppf(mininf,self.xi[t*self.j+j+1])
         #construct v
         for j in range(0,self.j):
             self.v[j] = self.rALP.pval[j]

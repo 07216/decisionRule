@@ -235,8 +235,7 @@ class decisionRule:
                     #rhs[j] += -1
                 rhs[t*self.j+p+1] += -1
                 for j in range(0,self.t*self.j+1):
-                    self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z3 time %d,%d %d' %(t,p,j))
-                    
+                    self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z3 time %d,%d %d' %(t,p,j))    
     def solve(self):
         self.m.optimize()
         return 0

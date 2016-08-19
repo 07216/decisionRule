@@ -30,15 +30,15 @@ class simulation:
             for j in range(0,self.j):
                 for p in range(0,1+t*self.j):
                     self.X[t][j,p] = self.x[t,j,p].X
-                    #if self.X[t][j,p] !=0:
-                        #print self.X[t][j,p],t,j,p
+                    if p!=0 and self.X[t][j,p] !=0:
+                        print self.X[t][j,p],t,j,p
         for t in range(self.limt,self.t):
             self.X[t] = np.zeros((self.j,1+self.limt*self.j),dtype=np.float)
             for j in range(0,self.j):
                 for p in range(0,1+self.limt*self.j):
                     self.X[t][j,p] = self.x[t,j,p].X
-                    #if self.X[t][j,p] !=0:
-                        #print self.X[t][j,p],t,j,p
+                    if p!=0 and self.X[t][j,p] !=0:
+                        print self.X[t][j,p],t,j,p
                     
     def atLeastOne(self,x):
         return int(x)+1
