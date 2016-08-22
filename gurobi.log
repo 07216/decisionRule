@@ -23060,3 +23060,6 @@ Iteration    Objective       Primal Inf.    Dual Inf.      Time
 Solved with dual simplex
 Solved in 443 iterations and 3.00 seconds
 Optimal objective  6.267093598e+05
+
+Gurobi 6.5.2 (win64) logging started 08/22/16 14:17:58
+
