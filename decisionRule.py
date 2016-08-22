@@ -31,6 +31,9 @@ class decisionRule:
         self.refJ = recorder.refJ
         self.t = recorder.t
         self.limt  = recorder.limt
+        self.d = recorder.d
+        self.q = recorder.q
+        self.qq = recorder.qq
            
     def echoInput(self):
         print "i:%d"%self.i
@@ -57,17 +60,22 @@ class decisionRule:
         #first limt time
         for t in range(0,self.limt):
             for j in range(0,self.j):
-                for p in range(0,t*self.j+1):
+                for p in range(0,t*self.j*self.d+1):
                     self.x[t,j,p] = self.m.addVar(name = 'X %d %d %d' % (t,j,p))
         #after first limt time
         for t in range(self.limt,self.t):
             for j in range(0,self.j):
-                for p in range(0,self.limt*self.j+1):
+                for p in range(0,self.limt*self.j*self.d+1):
                     self.x[t,j,p] = self.m.addVar(name = 'X %d %d %d' % (t,j,p))
+        #add tilde x
+        for t in range(0,self.t):
+            for j in range(0,self.j):
+                for d in range(0,self.d):
+                    self.xx[t,j,d] = self.m.addVar(lb=0, ub=1, name = 'XX %d %d %d' % (t,j,d))
         #add Lambda
         self.l = {}
         for p in range(0,self.i):
-            for i in range(0,2*(self.t*self.j+1)):
+            for i in range(0,2*(self.t*self.j*self.d+1)):
                 self.l[p,i] = self.m.addVar(lb=0, name = 'Lambda %d %d' % (p,i))
                 '''
         #add Gamma
@@ -81,7 +89,7 @@ class decisionRule:
         self.o = {}
         for t in range(0,self.t):
             for p in range(0,self.j):
-                for i in range(0,2*(self.t*self.j+1)):
+                for i in range(0,2*(self.t*self.j*self.d+1)):
                     self.o[t,p,i] = self.m.addVar(lb=0, name = 'Omega %d %d %d' %(t,p,i))
 
         self.m.update()
@@ -93,7 +101,7 @@ class decisionRule:
         #first limt time
         for t in range(0,self.limt):
             for j in range(0,self.j):
-                for p in range(0,t*self.j+1):
+                for p in range(0,t*self.j*self.d+1):
                     if self.v[j,0] * self.xi[p,0] ==0:
                         continue
                     obj += self.v[j,0] * self.x[t,j,p] * self.xi[p,0]
@@ -103,18 +111,21 @@ class decisionRule:
             for j in range(0,self.j):
                 #first element of xi = 1
                 obj += self.v[j,0] * self.x[t,j,0]
-                for p in range(1,self.limt*self.j+1):
-                    if self.v[j,0] * self.xi[(t-self.limt)*self.j+p,0] ==0:
+                for p in range(1,self.limt*self.j*self.d+1):
+                    if self.v[j,0] * self.xi[(t-self.limt)*self.j*self.d+p,0] ==0:
                         continue
-                    obj += self.v[j,0] * self.x[t,j,p] * self.xi[(t-self.limt)*self.j+p,0]
-                    
+                    obj += self.v[j,0] * self.x[t,j,p] * self.xi[(t-self.limt)*self.j*self.d+p,0]
+        for t in range(0,self.t):
+            for j in range(0,self.j):
+                for d in range(0,self.d):
+                    obj += self.v[j,0] * self.xx[t,j,d] * self.xi[1+(t*self.j+j)*self.d+d,0]
         self.m.setObjective(obj,GRB.MAXIMIZE)
     
     def addConstr(self):
         #Lambda 
         for p in range(0,self.i):
             l = LinExpr()
-            for i in range(0,2*(self.t*self.j+1)):
+            for i in range(0,2*(self.t*self.j*self.d+1)):
                 if self.h[i,0] != 0:
                     l += self.h[i,0] * self.l[p,i]
             self.m.addConstr(l,GRB.LESS_EQUAL,0,'h^T Lambda <=0')
@@ -132,7 +143,7 @@ class decisionRule:
         for t in range(0,self.t):
             for p in range(0,self.j):
                 o = LinExpr()
-                for i in range(0,2*(self.t*self.j+1)):
+                for i in range(0,2*(self.t*self.j*self.d+1)):
                     if self.h[i,0] != 0:
                         o += self.h[i,0] * self.o[t,p,i]
                 self.m.addConstr(o,GRB.LESS_EQUAL,0,'h^T Omega <= 0')
@@ -140,10 +151,10 @@ class decisionRule:
         for p in range(0,self.i):
             lhs = {}
             rhs = {}
-            for i in range(0,self.t*self.j+1):
+            for i in range(0,self.t*self.j*self.d+1):
                 lhs[i] = LinExpr()
                 rhs[i] = LinExpr()
-            for i in range(0,self.t*self.j+1):
+            for i in range(0,self.t*self.j*self.d+1):
                 lhs[i] += self.l[p,2*i]-self.l[p,2*i+1]
             #-CQ
             #Q 1*(t*j+1) (1,0,0,...)
@@ -154,7 +165,7 @@ class decisionRule:
                 if self.A[p,ii] ==0 :
                     continue
                 for t in range(0,self.limt):
-                    for j in range(0,t*self.j+1):
+                    for j in range(0,t*self.j*self.d+1):
                         rhs[j] += self.A[p,ii] * self.x[t,ii,j]
             #from limt to final time
             for ii in range(0,self.j):
@@ -163,10 +174,18 @@ class decisionRule:
                 for t in range(self.limt,self.t):
                     rhs[0] += self.A[p,ii] * self.x[t,ii,0]
                     #rhs[0] += self.A[p,ii] * self.x[t,ii,0]
-                    for j in range((t-self.limt)*self.j+1,t*self.j+1):
-                        rhs[j] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
+                    for j in range((t-self.limt)*self.j*self.d+1,t*self.j*self.d+1):
+                        rhs[j] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j*self.d]
                         #rhs[j] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
-            for j in range(0,self.t*self.j+1):
+            #xx
+            for ii in range(0,self.j):
+                if self.A[p,ii] ==0:
+                    continue
+                for t in range(0,self.t):
+                    for d in range(0,self.d):
+                        rhs[1+(t*self.j+ii)*self.d+d] += self.A[p,ii] * self.xx[t,ii,d]
+                            
+            for j in range(0,self.t*self.j*self.d+1):
                 self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j],'Z1 %d %d' %(p,j))
         #Gamma for w^T Gamma = Z2
         #t before limt
@@ -206,35 +225,43 @@ class decisionRule:
             for p in range(0,self.j):
                 lhs = {}
                 rhs = {}
-                for i in range(0,self.t*self.j+1):
+                for i in range(0,self.t*self.j*self.d+1):
                     lhs[i] = LinExpr()
                     rhs[i] = LinExpr()
-                for i in range(0,self.t*self.j+1):
+                for i in range(0,self.t*self.j*self.d+1):
                     lhs[i] += self.o[t,p,2*i] - self.o[t,p,2*i+1]
-                for j in range(0,t*self.j+1):
+                for j in range(0,t*self.j*self.d+1):
                     rhs[j] += self.x[t,p,j]
                 #for j in range(t*self.j+1,(t+1)*self.j+1):
                 #    rhs[j] += -1
-                rhs[t*self.j+p+1] += -1
-                for j in range(0,self.t*self.j+1):
+                for q in range(self.q,self.qq):
+                    rhs[t*self.j*self.d+p*self.j+q+1] += -1
+                #xx
+                for d in range(0,self.d):
+                    rhs[1+(t*self.j+p)*self.d+d] += self.xx[t,p,d]
+                for j in range(0,self.t*self.j*self.d+1):
                     self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z3 time %d,%d %d' %(t,p,j))
         #after limt
         for t in range(self.limt,self.t):
             for p in range(0,self.j):
                 lhs = {}
                 rhs = {}
-                for i in range(0,self.t*self.j+1):
+                for i in range(0,self.t*self.j*self.d+1):
                     lhs[i] = LinExpr()
                     rhs[i] = LinExpr()
-                for i in range(0,self.t*self.j+1):
+                for i in range(0,self.t*self.j*self.d+1):
                     lhs[i] += self.o[t,p,2*i] - self.o[t,p,2*i+1]
                 rhs[0] += self.x[t,p,0]
-                for j in range(1,self.limt*self.j+1):
-                    rhs[j+(t-self.limt)*self.j] += self.x[t,p,j]
+                for j in range(1,self.limt*self.j*self.d+1):
+                    rhs[j+(t-self.limt)*self.j*self.d] += self.x[t,p,j]
                 #for j in range(t*self.j+1,(t+1)*self.j+1):
                     #rhs[j] += -1
-                rhs[t*self.j+p+1] += -1
-                for j in range(0,self.t*self.j+1):
+                for q in range(self.q,self.qq):
+                    rhs[t*self.j*self.d+p*self.j+q+1] += -1
+                #xx
+                for d in range(0,self.d):
+                    rhs[1+(t*self.j+p)*self.d+d] += self.xx[t,p,d]
+                for j in range(0,self.t*self.j*self.d+1):
                     self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z3 time %d,%d %d' %(t,p,j))    
     def solve(self):
         self.m.optimize()

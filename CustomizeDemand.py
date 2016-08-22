@@ -9,6 +9,7 @@ import numpy as np
 from scipy.special import gamma
 from scipy.stats import gamma as Gamma
 from scipy.stats import poisson
+from scipy.integrate import quad
 import Input
 
 class CustomizeDemand:
@@ -16,6 +17,9 @@ class CustomizeDemand:
         self.t = 10
         self.limt = min(0,self.t)
         self.T = 100
+        self.d = 5
+        self.q = 3
+        self.qq = self.d
         
         if choose ==0:
             self.reader = self.reductionALPReadIn()
@@ -65,36 +69,51 @@ class CustomizeDemand:
                 self.A[b*2+1,2*j+1] = 1
                 self.refJ[2*j] = [a*2,b*2+1]
                 self.refJ[2*j+1] = [a*2,b*2+1]
-            
-        #Expectation of arrival process
-        self.xi = np.zeros((2*(self.t*self.j)+1,1),dtype=np.float)
-        self.xi[0] = 1
-        for t in range(0,self.t):
-            for j in range(0,10):
-                self.xi[1+t*self.j+2*j] = 40 * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.xi[1+t*self.j+2*j+1] = 40 * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-            for j in range(10,30):
-                self.xi[1+t*self.j+2*j] = 100 * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.xi[1+t*self.j+2*j+1] = 100 * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
         
         #Up Bound And Low Bound For Demand
-        self.h = np.zeros((2*(self.t*self.j+1),1))
+        self.h = np.zeros((2*(self.t*self.j*self.d+1),1))
         self.h[0] = 1
         self.h[1] = -1
         minsup = 0.2
         mininf = 0.6
         for t in range(0,self.t):
             for j in range(0,10):
-                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minsup,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(mininf,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minsup,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(mininf,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-            for j in range(10,30):      
-                self.h[2*(t*self.j+1)+4*j] = Gamma.ppf(1-minsup,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+1] = -Gamma.ppf(mininf,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+2] = Gamma.ppf(1-minsup,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                self.h[2*(t*self.j+1)+4*j+3] = -Gamma.ppf(mininf,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                        
+                if j%2 ==0:
+                    b = Gamma.ppf(1-minsup,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    a = Gamma.ppf(mininf,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                else:
+                    b = Gamma.ppf(1-minsup,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                    a = Gamma.ppf(mininf,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                for d in range(0,self.d):
+                        self.h[2*(1+(t*self.j+2*j)*self.d+d)] = float(b-a)/self.d*(d+1)+a
+                        self.h[2*(1+(t*self.j+2*j)*self.d+d)+1] = -float(b-a)/self.d*d+a                        
+                if j%2 ==0:
+                    b = Gamma.ppf(1-minsup,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    a = Gamma.ppf(mininf,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                else:
+                    b = Gamma.ppf(1-minsup,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                    a = Gamma.ppf(mininf,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                for d in range(0,self.d):
+                    self.h[2*(1+(t*self.j+2*j)*self.d+d)] = float(b-a)/self.d*(d+1)+a
+                    self.h[2*(1+(t*self.j+2*j)*self.d+d)+1] = -float(b-a)/self.d*d+a
+        #Expectation of arrival process
+        self.xi = np.zeros((2*(self.t*self.j*self.d)+1,1),dtype=np.float)
+        self.xi[0] = 1
+        for t in range(0,self.t):
+            s = Gamma.ppf(mininf,40)
+            t = Gamma.ppf(1-minsup,40)
+            k = float(t-s)/self.d
+            for j in range(0,10):
+                for d in range(0,self.d):
+                    self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:x*Gamma.pdf(x),s+k*d,s+k*(d+1)) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:x*Gamma.pdf(x),s+k*d,s+k*(d+1)) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)                    
+            s = Gamma.ppf(mininf,100)
+            t = Gamma.ppf(1-minsup,100)
+            k = float(t-s)/self.d
+            for j in range(10,30):
+                for d in range(0,self.d):
+                    self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:x*Gamma.pdf(x),s+k*d,s+k*(d+1)) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:x*Gamma.pdf(x),s+k*d,s+k*(d+1)) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
         
         #print self.xi
         #print self.h

@@ -21,7 +21,11 @@ class simulation:
         self.t = recorder.t
         self.limt  = recorder.limt
         self.sim = recorder.sim
+        self.d = recorder.d
+        self.q = recorder.q
+        self.qq = recorder.qq
         self.x = decisionSolver.x
+        self.xx = decisionSolver.xx
         
     def initX(self):
         self.X = {}
@@ -39,14 +43,28 @@ class simulation:
                     self.X[t][j,p] = self.x[t,j,p].X
                     if p!=0 and self.X[t][j,p] !=0:
                         print self.X[t][j,p],t,j,p
+        self.XX = {}
+        for t in range(0,self.t):
+            for j in range(0,self.j):
+                for d in range(0,self.d):
+                    self.XX[t,j,d] = self.xx[t,j,d].X
+                    if self.XX[t,j,d]!=0:
+                        print "XX:",self.XX[t,j,d],t,j,d
                     
     def atLeastOne(self,x):
         return int(x)+1
     
+    def nonLinearDemand(self,realDemand):
+        result = [0] * (self.t*self.j*self.d)
+        for t in range(0,self.t):
+            for j in range(0,self.j):
+                for d in range(0,self.d):
+                    if realDemand[t*self.j+j] <= self.h[2*(1+(t*self.j+j)*self.d+d)]:
+                        result[(t*self.t+j)*self.d+d] = 1
+                        break
     def aSim(self):
 
         realDemand = self.sim()   
-        
         c = np.copy(self.c)
         demand = [1]
         history = np.array(demand)
@@ -57,7 +75,7 @@ class simulation:
         for t in range(0,self.limt):
             product = np.dot(self.X[t],history)
             #print product
-            tmpDemand = realDemand[t*self.j:(t+1)*self.j]
+            tmpDemand = self.nonLinearDemand(realDemand[t*self.j:(t+1)*self.j])
             for j in range(0,self.j):
                 if product[j]<0:
                     print "Strange!"
@@ -77,7 +95,7 @@ class simulation:
         for t in range(self.limt,self.t):
             product = np.dot(self.X[t],history)
             #print product
-            tmpDemand = realDemand[t*self.j:(t+1)*self.j]
+            tmpDemand = self.nonLinearDemand(realDemand[t*self.j:(t+1)*self.j])
             for j in range(0,self.j):
                 if product[j]<0:
                     print "Strange!"
