@@ -48,7 +48,7 @@ if first == 1:#Decision Rule Approch + Gene Rounding
     opt.evolve()
     '''
     simulator.initX()
-#    print simulator.run(1000)
+    print simulator.run(100)
     #print simulator.bookLimRun(100,opt.X)
 
 elif first == 0:#reduction of Approximate Linear Programming

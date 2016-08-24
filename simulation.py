@@ -17,6 +17,7 @@ class simulation:
         self.v = recorder.v
         self.c = recorder.c
         self.h = recorder.h
+        self.seg = recorder.seg
         self.refJ = recorder.refJ
         self.t = recorder.t
         self.limt  = recorder.limt
@@ -34,22 +35,22 @@ class simulation:
             for j in range(0,self.j):
                 for p in range(0,1+t*self.j*self.d):
                     self.X[t][j,p] = self.x[t,j,p].X
-                    if p!=0 and self.X[t][j,p] !=0:
-                        print self.X[t][j,p],t,j,p
+                    '''if p!=0 and self.X[t][j,p] !=0:
+                        print self.X[t][j,p],t,j,p'''
         for t in range(self.limt,self.t):
             self.X[t] = np.zeros((self.j,1+self.limt*self.j*self.d),dtype=np.float)
             for j in range(0,self.j):
                 for p in range(0,1+self.limt*self.j*self.d):
                     self.X[t][j,p] = self.x[t,j,p].X
-                    if p!=0 and self.X[t][j,p] !=0:
-                        print self.X[t][j,p],t,j,p
+                    '''if p!=0 and self.X[t][j,p] !=0:
+                        print self.X[t][j,p],t,j,p'''
         self.XX = {}
         for t in range(0,self.t):
             for j in range(0,self.j):
                 for d in range(0,self.d):
                     self.XX[t,j,d] = self.xx[t,j,d].X
-                    if self.XX[t,j,d]!=0:
-                        print "XX:",self.XX[t,j,d],t,j,d
+                    '''if self.XX[t,j,d]!=0:
+                        print "XX:",self.XX[t,j,d],t,j,d'''
                     
     def atLeastOne(self,x):
         return int(x)+1
@@ -58,28 +59,42 @@ class simulation:
         result = [0] * (self.t*self.j*self.d)
         for t in range(0,self.t):
             for j in range(0,self.j):
-                for d in range(0,self.d):
-                    if realDemand[t*self.j+j] <= self.h[2*(1+(t*self.j+j)*self.d+d)]:
-                        result[(t*self.t+j)*self.d+d] = 1
+                for d in range(1,self.d+1):
+                    if d == self.d:
+                        result[(t*self.t+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
                         break
+                    if realDemand[t*self.j+j] <= self.seg[t,j][d]:
+                        if d == 1:
+                            result[(t*self.t+j)*self.d+d-1] = realDemand[t*self.j+j]
+                        else:
+                            result[(t*self.t+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
+                        break
+                    else:
+                        if d == 1:
+                            result[(t*self.t+j)*self.d+d-1] = self.seg[t,j][d]
+                        else:
+                            result[(t*self.t+j)*self.d+d-1] = self.seg[t,j][d+1] - self.seg[t,j][d-1]
+        return result
+        
     def aSim(self):
 
         realDemand = self.sim()   
+        realNonLinearDemand = self.nonLinearDemand(realDemand)
         c = np.copy(self.c)
         demand = [1]
         history = np.array(demand)
         benefit = 0.0
         rplc = self.atLeastOne
         #rplc = np.ceil
-        
         for t in range(0,self.limt):
             product = np.dot(self.X[t],history)
             #print product
-            tmpDemand = self.nonLinearDemand(realDemand[t*self.j:(t+1)*self.j])
+            tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
+            productDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
                     print "Strange!"
-                sell = max(0,min(tmpDemand[j],rplc(product[j])))
+                sell = max(0,min(productDemand[j],rplc(product[j])))
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
@@ -95,18 +110,19 @@ class simulation:
         for t in range(self.limt,self.t):
             product = np.dot(self.X[t],history)
             #print product
-            tmpDemand = self.nonLinearDemand(realDemand[t*self.j:(t+1)*self.j])
+            tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
+            productDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
                     print "Strange!"
-                sell = max(0,min(tmpDemand[j],rplc(product[j])))
+                sell = max(0,min(productDemand[j],rplc(product[j])))
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
                     benefit += sell * self.v[j]
                     for k in self.refJ[j]:
                         c[k] -= sell
-            demand = [1] + demand[(self.j+1):] + tmpDemand
+            demand = [1] + demand[(self.j*self.d+1):] + tmpDemand
             if self.limt != 0:
                 history = np.array(demand)
         

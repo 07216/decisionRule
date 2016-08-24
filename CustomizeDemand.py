@@ -74,8 +74,8 @@ class CustomizeDemand:
         
         #Segmentation 
         self.seg = {}
-        minsup = 0.1
-        mininf = 0.1
+        minsup = 0.2
+        mininf = 0.6
         for t in range(0,self.t):
             for j in range(0,20):
                 if j%2 ==0:
@@ -85,7 +85,8 @@ class CustomizeDemand:
                     b = Gamma.ppf(1-minsup,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                     a = Gamma.ppf(mininf,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                 if a==b:
-                    b = b + 1e-1
+                    b = b + 2e-1
+                    a = a + 1e-1
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -100,7 +101,8 @@ class CustomizeDemand:
                     b = Gamma.ppf(1-minsup,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                     a = Gamma.ppf(mininf,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                 if a==b:
-                    b = b + 1e-1                
+                    b = b + 2e-1
+                    a = a + 1e-1               
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
