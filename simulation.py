@@ -49,8 +49,8 @@ class simulation:
             for j in range(0,self.j):
                 for d in range(0,self.d):
                     self.XX[t,j,d] = self.xx[t,j,d].X
-                    '''if self.XX[t,j,d]!=0:
-                        print "XX:",self.XX[t,j,d],t,j,d'''
+                    if self.XX[t,j,d]!=0:
+                        print "XX:",self.XX[t,j,d],t,j,d
                     
     def atLeastOne(self,x):
         return int(x)+1
@@ -79,7 +79,10 @@ class simulation:
                         else:
                             result[(t*self.t+j)*self.d+d-1] = self.seg[t,j][d+1] - self.seg[t,j][d-1]
         return result
-        
+
+    def identity(self,x):
+        return x
+    
     def aSim(self):
 
         realDemand = self.sim()   
@@ -88,8 +91,10 @@ class simulation:
         demand = [1]
         history = np.array(demand)
         benefit = 0.0
+        #rplc = self.identity
         rplc = self.atLeastOne
         #rplc = np.ceil
+        #rplc = np.round
         for t in range(0,self.limt):
             product = np.dot(self.X[t],history)
             #print product

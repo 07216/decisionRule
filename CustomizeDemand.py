@@ -15,9 +15,9 @@ import Input
 class CustomizeDemand:
     def __init__(self,choose):
         self.t = 5
-        self.limt = min(3,self.t)
+        self.limt = min(5,self.t)
         self.T = 100
-        self.d = 2
+        self.d = 5
         self.q = 3
         self.qq = self.d
         
@@ -75,7 +75,7 @@ class CustomizeDemand:
         #Segmentation 
         self.seg = {}
         minsup = 0.2
-        mininf = 0.6
+        mininf = 0.5
         for t in range(0,self.t):
             for j in range(0,20):
                 if j%2 ==0:

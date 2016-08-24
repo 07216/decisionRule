@@ -73,7 +73,7 @@ class decisionRule:
         for t in range(0,self.t):
             for j in range(0,self.j):
                 for d in range(0,self.d):
-                    self.xx[t,j,d] = self.m.addVar(lb=0,ub=0, name = 'XX %d %d %d' % (t,j,d))
+                    self.xx[t,j,d] = self.m.addVar(lb=-GRB.INFINITY, name = 'XX %d %d %d' % (t,j,d))
         #add Lambda
         self.l = {}
         for p in range(0,self.i):
