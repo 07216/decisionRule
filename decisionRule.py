@@ -126,10 +126,20 @@ class decisionRule:
     
     def addConstr(self):
         #Lambda h <= 0 
+        lhs = {}
         for i in range(0,self.i):
-            lhs = LinExpr()
-            lhs += self.l[i,0] - self.l[i,1]
-            self.m.addConstr(lhs,GRB.LESS_EQUAL,0)
+            lhs[i] = LinExpr()
+            lhs[i] += self.l[i,0] - self.l[i,1]
+        #For Constant demand xi
+        for pt in range(0,self.t):
+            for pj in range(0,self.j):
+                if self.seg[pt,pj][1] == self.seg[pt,pj][0]:
+                    base = (pt*self.j+pj)*(self.d+1)+2
+                    for i in range(0,self.i):
+                        lhs[i] += self.l[i,base] * - float(self.seg[pt,pj][0])/self.d
+                        lhs[i] += self.l[i,base+self.d] * float(self.seg[pt,pj][0])/self.d
+        for i in range(0,self.i):
+            self.m.addConstr(lhs[i],GRB.LESS_EQUAL,0)
         #Lambda for Lambda*W = Z1
         #Frist Column
         lhs = {}
@@ -141,6 +151,8 @@ class decisionRule:
             lhs[i] += self.l[i,0] - self.l[i,1]
         for pt in range(0,self.t):
             for pj in range(0,self.j):
+                if self.seg[pt,pj][1] == self.seg[pt,pj][0]:
+                    continue
                 base = (pt*self.j+pj)*(self.d+1)+2
                 for i in range(0,self.i):
                     lhs[i] += self.l[i,base] * float(self.seg[pt,pj][1]) / (self.seg[pt,pj][1] - self.seg[pt,pj][0])
@@ -163,9 +175,14 @@ class decisionRule:
                     for i in range(0,self.i):
                         lhs[i] = LinExpr()
                         rhs[i] = LinExpr()
-                    for i in range(0,self.i):
-                        lhs[i] += self.l[i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                        lhs[i] += self.l[i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                    if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
+                        for i in range(0,self.i):
+                            lhs[i] += self.l[i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                            lhs[i] += self.l[i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                    else:
+                        for i in range(0,self.i):
+                            lhs[i] += self.l[i,base] * -1.0 
+                            lhs[i] += self.l[i,base+1] * 1.0                        
                     #Ax xi
                     col = 1+(pt*self.j+pj)*self.d+pd
                     for t in range(pt+1,self.limt):
@@ -183,10 +200,20 @@ class decisionRule:
                         self.m.addConstr(rhs[i],GRB.EQUAL,lhs[i],'Z1 %d %d %d %d' %(pt,pj,pd,i))
         #Gamma h >=0
         for t in range(0,self.t):
-            for j in range(0,self.j):
-                lhs = LinExpr()
-                lhs += self.g[t,j,0] - self.g[t,j,1]
-                self.m.addConstr(lhs,GRB.GREATER_EQUAL,0)
+            lhs = {}
+            for i in range(0,self.j):
+                lhs[i] = LinExpr()
+                lhs[i] += self.g[t,i,0] - self.g[t,i,1]
+            #For Constant demand xi
+            for pt in range(0,self.t):
+                for pj in range(0,self.j):
+                    if self.seg[pt,pj][1] == self.seg[pt,pj][0]:
+                        base = (pt*self.j+pj)*(self.d+1)+2
+                        for i in range(0,self.j):
+                            lhs[i] += self.g[t,i,base] * - float(self.seg[pt,pj][0])/self.d
+                            lhs[i] += self.g[t,i,base+self.d] * float(self.seg[pt,pj][0])/self.d
+            for i in range(0,self.j):
+                self.m.addConstr(lhs[i],GRB.GREATER_EQUAL,0)
         for t in range(0,self.t):
             lhs = {}
             rhs = {}
@@ -197,6 +224,8 @@ class decisionRule:
                 lhs[j] += self.g[t,j,0] - self.g[t,j,1]
             for pt in range(0,self.t):
                 for pj in range(0,self.j):
+                    if self.seg[pt,pj][1] == self.seg[pt,pj][0]:
+                        continue
                     base = (pt*self.j+pj)*(self.d+1)+2
                     for i in range(0,self.j):
                         lhs[i] += self.g[t,i,base] * float(self.seg[pt,pj][1]) / (self.seg[pt,pj][1] - self.seg[pt,pj][0])
@@ -215,9 +244,14 @@ class decisionRule:
                         for i in range(0,self.j):
                             lhs[i] = LinExpr()
                             rhs[i] = LinExpr()
-                        for i in range(0,self.j):
-                            lhs[i] += self.g[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                            lhs[i] += self.g[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                        if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
+                            for i in range(0,self.j):
+                                lhs[i] += self.g[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                                lhs[i] += self.g[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                        else:
+                            for i in range(0,self.j):
+                                lhs[i] += self.g[t,i,base] * -1.0 
+                                lhs[i] += self.g[t,i,base+1] * 1.0                        
                         #Ax xi
                         col = 1+(pt*self.j+pj)*self.d+pd
                         if t < self.limt:
@@ -235,10 +269,20 @@ class decisionRule:
                             self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
         #Omega h <=0
         for t in range(0,self.t):
-            for j in range(0,self.j):
-                lhs = LinExpr()
-                lhs += self.o[t,j,0] - self.o[t,j,1]
-                self.m.addConstr(lhs,GRB.LESS_EQUAL,0)
+            lhs = {}
+            for i in range(0,self.j):
+                lhs[i] = LinExpr()
+                lhs[i] += self.o[t,i,0] - self.o[t,i,1]
+            #For Constant demand xi
+            for pt in range(0,self.t):
+                for pj in range(0,self.j):
+                    if self.seg[pt,pj][1] == self.seg[pt,pj][0]:
+                        base = (pt*self.j+pj)*(self.d+1)+2
+                        for i in range(0,self.j):
+                            lhs[i] += self.o[t,i,base] * - float(self.seg[pt,pj][0])/self.d
+                            lhs[i] += self.o[t,i,base+self.d] * float(self.seg[pt,pj][0])/self.d
+            for i in range(0,self.j):
+                self.m.addConstr(lhs[i],GRB.LESS_EQUAL,0)
         #Omega for Omega W= Z2
         #before limt
         for t in range(0,self.t):
@@ -251,6 +295,8 @@ class decisionRule:
                 lhs[j] += self.o[t,j,0] - self.o[t,j,1]
             for pt in range(0,self.t):
                 for pj in range(0,self.j):
+                    if self.seg[pt,pj][1] == self.seg[pt,pj][0]:
+                        continue
                     base = (pt*self.j+pj)*(self.d+1)+2
                     for i in range(0,self.j):
                         lhs[i] += self.o[t,i,base] * float(self.seg[pt,pj][1]) / (self.seg[pt,pj][1] - self.seg[pt,pj][0])
@@ -269,9 +315,14 @@ class decisionRule:
                         for i in range(0,self.j):
                             lhs[i] = LinExpr()
                             rhs[i] = LinExpr()
-                        for i in range(0,self.j):
-                            lhs[i] += self.o[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                            lhs[i] += self.o[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                        if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
+                            for i in range(0,self.j):
+                                lhs[i] += self.o[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                                lhs[i] += self.o[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                        else:
+                            for i in range(0,self.j):
+                                lhs[i] += self.o[t,i,base] * -1.0 
+                                lhs[i] += self.o[t,i,base+1] * 1.0                        
                         #Ax xi
                         col = 1+(pt*self.j+pj)*self.d+pd
                         if t < self.limt:

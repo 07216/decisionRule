@@ -17,7 +17,7 @@ class CustomizeDemand:
         self.t = 5
         self.limt = min(3,self.t)
         self.T = 100
-        self.d = 5
+        self.d = 2
         self.q = 3
         self.qq = self.d
         
@@ -84,9 +84,6 @@ class CustomizeDemand:
                 else:
                     b = Gamma.ppf(1-minsup,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                     a = Gamma.ppf(mininf,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                if a==b:
-                    b = b + 2e-1
-                    a = a + 1e-1
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -100,9 +97,6 @@ class CustomizeDemand:
                 else:
                     b = Gamma.ppf(1-minsup,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                     a = Gamma.ppf(mininf,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                if a==b:
-                    b = b + 2e-1
-                    a = a + 1e-1               
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]

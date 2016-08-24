@@ -59,6 +59,10 @@ class simulation:
         result = [0] * (self.t*self.j*self.d)
         for t in range(0,self.t):
             for j in range(0,self.j):
+                if self.seg[t,j][0] == self.seg[t,j][1]:
+                    for d in range(0,self.d):
+                        result[(t*self.t+j)*self.d+d] = float(realDemand[t*self.j+j])/self.d
+                    continue
                 for d in range(1,self.d+1):
                     if d == self.d:
                         result[(t*self.t+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
