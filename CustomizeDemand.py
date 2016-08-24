@@ -15,9 +15,9 @@ import Input
 class CustomizeDemand:
     def __init__(self,choose):
         self.t = 5
-        self.limt = min(0,self.t)
+        self.limt = min(3,self.t)
         self.T = 100
-        self.d = 2
+        self.d = 5
         self.q = 3
         self.qq = self.d
         
@@ -122,6 +122,11 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
+                    if d == 0:
+                        low = 0
+                        ss = 0
+                    if d == self.d:
+                        ee = Gamma.ppf(0.001,40)
                     ct = 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
                     self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,40),ss,ee)[0] 
                     self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,40))
@@ -130,6 +135,11 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
+                    if d == 0:
+                        low = 0
+                        ss = 0
+                    if d == self.d:
+                        ee = Gamma.ppf(0.001,40)
                     ct = 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)                    
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,40),ss,ee)[0] 
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,40)) 
@@ -143,6 +153,11 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
+                    if d == 0:
+                        low = 0
+                        ss = 0
+                    if d == self.d:
+                        ee = Gamma.ppf(0.001,100)
                     ct = 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
                     self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,100),ss,ee)[0] 
                     self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,100))
@@ -151,6 +166,11 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
+                    if d == 0:
+                        low = 0
+                        ss = 0
+                    if d == self.d:
+                        ee = Gamma.ppf(0.001,100)
                     ct = 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)                    
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,100),ss,ee)[0] 
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,100)) 

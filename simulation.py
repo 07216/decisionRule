@@ -93,7 +93,7 @@ class simulation:
             productDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
-                    print "Strange!"
+                    print "Strange!",product[j]
                 sell = max(0,min(productDemand[j],rplc(product[j])))
                 if sell != 0:
                     for k in self.refJ[j]:
@@ -114,7 +114,7 @@ class simulation:
             productDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
-                    print "Strange!"
+                    print "Strange!",product[j]
                 sell = max(0,min(productDemand[j],rplc(product[j])))
                 if sell != 0:
                     for k in self.refJ[j]:
