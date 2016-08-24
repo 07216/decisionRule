@@ -23063,3 +23063,838 @@ Optimal objective  6.267093598e+05
 
 Gurobi 6.5.2 (win64) logging started 08/22/16 14:17:58
 
+
+Gurobi 6.5.2 (win64) logging started 08/23/16 15:06:36
+
+Optimize a model with 68780 rows, 103520 columns and 196000 nonzeros
+Coefficient statistics:
+  Matrix range    [7e-01, 2e+02]
+  Objective range [4e-01, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 363 rows and 103520 columns
+Presolve time: 0.10s
+
+Solved with barrier
+Solved in 0 iterations and 0.10 seconds
+Infeasible or unbounded model
+Optimize a model with 68780 rows, 103520 columns and 196000 nonzeros
+Coefficient statistics:
+  Matrix range    [7e-01, 2e+02]
+  Objective range [4e-01, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 363 rows and 103520 columns
+Presolve time: 0.08s
+
+Solved with barrier
+Solved in 0 iterations and 0.09 seconds
+Infeasible or unbounded model
+Optimize a model with 186620 rows, 280520 columns and 543040 nonzeros
+Coefficient statistics:
+  Matrix range    [8e-01, 9e+02]
+  Objective range [3e-01, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.24s
+
+Solved with barrier
+Solved in 0 iterations and 0.25 seconds
+Infeasible or unbounded model
+Optimize a model with 186620 rows, 280520 columns and 543040 nonzeros
+Coefficient statistics:
+  Matrix range    [8e-01, 9e+02]
+  Objective range [2e-04, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.21s
+
+Solved with barrier
+Solved in 0 iterations and 0.22 seconds
+Infeasible or unbounded model
+Optimize a model with 68780 rows, 103520 columns and 196000 nonzeros
+Coefficient statistics:
+  Matrix range    [7e-01, 2e+02]
+  Objective range [5e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 540 rows and 103520 columns
+Presolve time: 0.09s
+
+Solved with barrier
+Solved in 0 iterations and 0.09 seconds
+Infeasible or unbounded model
+Optimize a model with 68780 rows, 103520 columns and 196000 nonzeros
+Coefficient statistics:
+  Matrix range    [7e-01, 2e+02]
+  Objective range [5e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 540 rows and 103520 columns
+Presolve time: 0.09s
+
+Solved with barrier
+Solved in 0 iterations and 0.09 seconds
+Infeasible or unbounded model
+Optimize a model with 68780 rows, 103520 columns and 196000 nonzeros
+Coefficient statistics:
+  Matrix range    [7e-01, 2e+02]
+  Objective range [5e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 540 rows and 103520 columns
+Presolve time: 0.09s
+
+Solved with barrier
+Solved in 0 iterations and 0.10 seconds
+Infeasible or unbounded model
+Optimize a model with 68780 rows, 103520 columns and 196000 nonzeros
+Coefficient statistics:
+  Matrix range    [7e-01, 2e+02]
+  Objective range [5e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 540 rows and 103520 columns
+Presolve time: 0.11s
+
+Solved with barrier
+Solved in 0 iterations and 0.11 seconds
+Infeasible or unbounded model
+Optimize a model with 102980 rows, 137900 columns and 264880 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 3e+02]
+  Objective range [4e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 720 rows and 137900 columns
+Presolve time: 0.12s
+
+Solved with barrier
+Solved in 0 iterations and 0.13 seconds
+Infeasible or unbounded model
+Optimize a model with 102980 rows, 137900 columns and 264880 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 3e+02]
+  Objective range [8e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 720 rows and 137900 columns
+Presolve time: 0.12s
+
+Solved with barrier
+Solved in 0 iterations and 0.13 seconds
+Infeasible or unbounded model
+Optimize a model with 102980 rows, 137900 columns and 264880 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 4e+01]
+  Objective range [8e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 720 rows and 137900 columns
+Presolve time: 0.12s
+
+Solved with barrier
+Solved in 0 iterations and 0.12 seconds
+Infeasible or unbounded model
+Optimize a model with 102980 rows, 137900 columns and 264880 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 4e+01]
+  Objective range [1e-01, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 720 rows and 137900 columns
+Presolve time: 0.14s
+
+Solved with barrier
+Solved in 0 iterations and 0.14 seconds
+Infeasible or unbounded model
+Optimize a model with 102980 rows, 137900 columns and 264880 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 4e+01]
+  Objective range [1e-01, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 720 rows and 137900 columns
+Presolve time: 0.12s
+
+Solved with barrier
+Solved in 0 iterations and 0.14 seconds
+Infeasible or unbounded model
+Optimize a model with 279620 rows, 373820 columns and 729840 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [5e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 1200 rows and 373820 columns
+Presolve time: 0.37s
+
+Solved with barrier
+Solved in 0 iterations and 0.37 seconds
+Infeasible or unbounded model
+Optimize a model with 279620 rows, 417020 columns and 845040 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 44400 rows and 417020 columns
+Presolve time: 0.39s
+
+Solved with barrier
+Solved in 0 iterations and 0.39 seconds
+Infeasible or unbounded model
+Optimize a model with 279620 rows, 417020 columns and 845040 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 44400 rows and 417020 columns
+Presolve time: 0.34s
+
+Solved with barrier
+Solved in 0 iterations and 0.36 seconds
+Infeasible or unbounded model
+Optimize a model with 9020 rows, 417020 columns and 97440 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 9020 rows and 417020 columns
+Presolve time: 0.23s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.2000000e+06   0.000000e+00   0.000000e+00      0s
+
+Solved with dual simplex
+Solved in 0 iterations and 0.40 seconds
+Optimal objective  1.200000000e+06
+Optimize a model with 270600 rows, 417020 columns and 747600 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 1e+00]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 270600 rows and 417020 columns
+Presolve time: 0.40s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.5421820e+04   0.000000e+00   0.000000e+00      1s
+
+Solved with dual simplex
+Solved in 0 iterations and 0.87 seconds
+Optimal objective  1.542181958e+04
+Optimize a model with 279620 rows, 417020 columns and 845040 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 44400 rows and 417020 columns
+Presolve time: 0.32s
+
+Solved with barrier
+Solved in 0 iterations and 0.35 seconds
+Infeasible or unbounded model
+Optimize a model with 225620 rows, 417020 columns and 736860 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 44400 rows and 417020 columns
+Presolve time: 0.32s
+
+Solved with barrier
+Solved in 0 iterations and 0.34 seconds
+Infeasible or unbounded model
+Optimize a model with 9620 rows, 417020 columns and 260940 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 7680 rows and 417020 columns
+Presolve time: 0.19s
+
+Solved with barrier
+Solved in 0 iterations and 0.21 seconds
+Infeasible or unbounded model
+Optimize a model with 9320 rows, 417020 columns and 260340 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 7680 rows and 417020 columns
+Presolve time: 0.18s
+
+Solved with barrier
+Solved in 0 iterations and 0.21 seconds
+Infeasible or unbounded model
+Optimize a model with 9260 rows, 417020 columns and 227760 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 9260 rows and 417020 columns
+Presolve time: 0.26s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.2000000e+06   0.000000e+00   0.000000e+00      0s
+
+Solved with dual simplex
+Solved in 0 iterations and 0.45 seconds
+Optimal objective  1.200000000e+06
+Optimize a model with 225260 rows, 417020 columns and 703680 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 44340 rows and 416960 columns
+Presolve time: 0.27s
+
+Solved with barrier
+Solved in 0 iterations and 0.31 seconds
+Infeasible or unbounded model
+Optimize a model with 225020 rows, 417020 columns and 573360 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 44100 rows and 416720 columns
+Presolve time: 0.26s
+
+Solved with barrier
+Solved in 0 iterations and 0.30 seconds
+Infeasible or unbounded model
+Optimize a model with 63320 rows, 417020 columns and 206220 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 63010 rows and 416630 columns
+Presolve time: 0.19s
+
+Solved with barrier
+Solved in 0 iterations and 0.23 seconds
+Infeasible or unbounded model
+Optimize a model with 270600 rows, 417020 columns and 747600 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [2e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 1e+00]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 270600 rows and 417020 columns
+Presolve time: 0.41s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.5421820e+04   0.000000e+00   0.000000e+00      1s
+
+Solved with dual simplex
+Solved in 0 iterations and 0.86 seconds
+Optimal objective  1.542181958e+04
+Optimize a model with 9020 rows, 373820 columns and 25440 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [5e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+Presolve removed 9020 rows and 373820 columns
+Presolve time: 0.07s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.2000000e+06   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.13 seconds
+Optimal objective  1.200000000e+06
+Optimize a model with 279310 rows, 373820 columns and 729220 nonzeros
+Coefficient statistics:
+  Matrix range    [5e-01, 6e+02]
+  Objective range [5e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 1200 rows and 373820 columns
+Presolve time: 0.29s
+
+Solved with barrier
+Solved in 0 iterations and 0.32 seconds
+Infeasible or unbounded model
+Optimize a model with 186620 rows, 280520 columns and 543040 nonzeros
+Coefficient statistics:
+  Matrix range    [4e-01, 4e+02]
+  Objective range [9e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.22s
+
+Solved with barrier
+Solved in 0 iterations and 0.23 seconds
+Infeasible or unbounded model
+Optimize a model with 186620 rows, 280520 columns and 543040 nonzeros
+Coefficient statistics:
+  Matrix range    [4e-01, 4e+02]
+  Objective range [9e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.19s
+
+Solved with barrier
+Solved in 0 iterations and 0.22 seconds
+Infeasible or unbounded model
+Optimize a model with 186620 rows, 280520 columns and 543040 nonzeros
+Coefficient statistics:
+  Matrix range    [4e-01, 4e+02]
+  Objective range [9e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.20s
+
+Solved with barrier
+Solved in 0 iterations and 0.23 seconds
+Infeasible or unbounded model
+Optimize a model with 6620 rows, 280520 columns and 182440 nonzeros
+Coefficient statistics:
+  Matrix range    [4e-01, 4e+02]
+  Objective range [9e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.11s
+
+Solved with barrier
+Solved in 0 iterations and 0.13 seconds
+Infeasible or unbounded model
+Optimize a model with 6320 rows, 280520 columns and 19540 nonzeros
+Coefficient statistics:
+  Matrix range    [4e-01, 4e+02]
+  Objective range [9e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+Presolve removed 6320 rows and 280520 columns
+Presolve time: 0.06s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.2000000e+06   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.10 seconds
+Optimal objective  1.200000000e+06
+Optimize a model with 186320 rows, 280520 columns and 380140 nonzeros
+Coefficient statistics:
+  Matrix range    [4e-01, 4e+02]
+  Objective range [9e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 600 rows and 280220 columns
+Presolve time: 0.19s
+
+Solved with barrier
+Solved in 0 iterations and 0.22 seconds
+Infeasible or unbounded model
+Warning: variable name "X 0 0 0" has a space
+Warning: to let Gurobi read it back, use rlp format
+Warning: model has pending changes.
+File 'out.lp' does not contain these changes.
+Optimize a model with 186620 rows, 280520 columns and 543040 nonzeros
+Coefficient statistics:
+  Matrix range    [4e-01, 4e+02]
+  Objective range [9e-02, 5e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 92700 rows and 93000 columns
+Presolve time: 0.23s
+
+Solved with barrier
+Solved in 0 iterations and 0.23 seconds
+Infeasible or unbounded model
+Optimize a model with 186620 rows, 280520 columns and 543040 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.21s
+
+Solved with barrier
+Solved in 0 iterations and 0.21 seconds
+Infeasible or unbounded model
+Optimize a model with 180620 rows, 280520 columns and 530040 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.22s
+
+Solved with barrier
+Solved in 0 iterations and 0.25 seconds
+Infeasible or unbounded model
+Optimize a model with 6620 rows, 280520 columns and 182440 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.12s
+
+Solved with barrier
+Solved in 0 iterations and 0.14 seconds
+Infeasible or unbounded model
+Optimize a model with 6320 rows, 280520 columns and 19540 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+Presolve removed 6320 rows and 280520 columns
+Presolve time: 0.09s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.2000000e+06   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.16 seconds
+Optimal objective  1.200000000e+06
+Optimize a model with 620 rows, 280520 columns and 169440 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 8e+00]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve time: 0.08s
+
+Solved with barrier
+Solved in 0 iterations and 0.09 seconds
+Infeasible or unbounded model
+Optimize a model with 620 rows, 280520 columns and 169440 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 8e+00]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve time: 0.10s
+
+Solved with barrier
+Solved in 0 iterations and 0.11 seconds
+Infeasible or unbounded model
+Optimize a model with 610 rows, 280520 columns and 163520 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 8e+00]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [0e+00, 0e+00]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 300 rows and 300 columns
+Presolve time: 0.10s
+
+Solved with barrier
+Solved in 0 iterations and 0.11 seconds
+Infeasible or unbounded model
+Optimize a model with 600 rows, 280520 columns and 163500 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 8e+00]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [0e+00, 0e+00]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 300 rows and 300 columns
+Presolve time: 0.10s
+
+Solved with barrier
+Solved in 0 iterations and 0.10 seconds
+Infeasible or unbounded model
+Optimize a model with 600 rows, 280520 columns and 163500 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 8e+00]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [0e+00, 0e+00]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 300 rows and 300 columns
+Presolve time: 0.09s
+
+Solved with barrier
+Solved in 0 iterations and 0.09 seconds
+Infeasible or unbounded model
+Optimize a model with 300 rows, 280520 columns and 162900 nonzeros
+Coefficient statistics:
+  Matrix range    [1e+00, 8e+00]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [0e+00, 0e+00]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 300 rows and 300 columns
+Presolve time: 0.12s
+
+Solved with barrier
+Solved in 0 iterations and 0.12 seconds
+Infeasible or unbounded model
+Optimize a model with 0 rows, 280520 columns and 0 nonzeros
+Coefficient statistics:
+  Matrix range    [0e+00, 0e+00]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [0e+00, 0e+00]
+Presolve time: 0.02s
+
+Solved in 0 iterations and 0.02 seconds
+Unbounded model
+Optimize a model with 186620 rows, 280520 columns and 543040 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.20s
+
+Solved with barrier
+Solved in 0 iterations and 0.22 seconds
+Infeasible or unbounded model
+Optimize a model with 186310 rows, 280520 columns and 542420 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.20s
+
+Solved with barrier
+Solved in 0 iterations and 0.22 seconds
+Infeasible or unbounded model
+Optimize a model with 186320 rows, 280520 columns and 380140 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [1e+00, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 600 rows and 280220 columns
+Presolve time: 0.19s
+
+Solved with barrier
+Solved in 0 iterations and 0.22 seconds
+Infeasible or unbounded model
+Optimize a model with 6320 rows, 280520 columns and 19540 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+Presolve removed 6320 rows and 280520 columns
+Presolve time: 0.06s
+Presolve: All rows and columns removed
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+       0    1.2000000e+06   0.000000e+00   0.000000e+00      0s
+
+Solved in 0 iterations and 0.10 seconds
+Optimal objective  1.200000000e+06
+Optimize a model with 6620 rows, 280520 columns and 182440 nonzeros
+Coefficient statistics:
+  Matrix range    [2e-01, 2e+02]
+  Objective range [3e-01, 6e+02]
+  Bounds range    [0e+00, 0e+00]
+  RHS range       [4e+02, 4e+02]
+
+Concurrent LP optimizer: dual simplex and barrier
+Showing barrier log only...
+
+Presolve removed 900 rows and 280520 columns
+Presolve time: 0.18s
+
+Solved with barrier
+Solved in 0 iterations and 0.21 seconds
+Infeasible or unbounded model

@@ -30,16 +30,16 @@ class simulation:
     def initX(self):
         self.X = {}
         for t in range(0,self.limt):
-            self.X[t] = np.zeros((self.j,1+t*self.j),dtype=np.float)
+            self.X[t] = np.zeros((self.j,1+t*self.j*self.d),dtype=np.float)
             for j in range(0,self.j):
-                for p in range(0,1+t*self.j):
+                for p in range(0,1+t*self.j*self.d):
                     self.X[t][j,p] = self.x[t,j,p].X
                     if p!=0 and self.X[t][j,p] !=0:
                         print self.X[t][j,p],t,j,p
         for t in range(self.limt,self.t):
-            self.X[t] = np.zeros((self.j,1+self.limt*self.j),dtype=np.float)
+            self.X[t] = np.zeros((self.j,1+self.limt*self.j*self.d),dtype=np.float)
             for j in range(0,self.j):
-                for p in range(0,1+self.limt*self.j):
+                for p in range(0,1+self.limt*self.j*self.d):
                     self.X[t][j,p] = self.x[t,j,p].X
                     if p!=0 and self.X[t][j,p] !=0:
                         print self.X[t][j,p],t,j,p

@@ -28,6 +28,7 @@ class decisionRule:
         self.v = recorder.v
         self.c = recorder.c
         self.h = recorder.h
+        self.seg = recorder.seg
         self.refJ = recorder.refJ
         self.t = recorder.t
         self.limt  = recorder.limt
@@ -67,16 +68,17 @@ class decisionRule:
             for j in range(0,self.j):
                 for p in range(0,self.limt*self.j*self.d+1):
                     self.x[t,j,p] = self.m.addVar(name = 'X %d %d %d' % (t,j,p))
-        #add tilde x
+        #add xx
+        self.xx = {}
         for t in range(0,self.t):
             for j in range(0,self.j):
                 for d in range(0,self.d):
-                    self.xx[t,j,d] = self.m.addVar(lb=0, ub=1, name = 'XX %d %d %d' % (t,j,d))
+                    self.xx[t,j,d] = self.m.addVar(name = 'XX %d %d %d' % (t,j,d))
         #add Lambda
         self.l = {}
         for p in range(0,self.i):
-            for i in range(0,2*(self.t*self.j*self.d+1)):
-                self.l[p,i] = self.m.addVar(lb=0, name = 'Lambda %d %d' % (p,i))
+            for i in range(0,self.t*self.j*(self.d+1)+2):
+                self.l[p,i] = self.m.addVar(ub=0, name = 'Lambda %d %d' % (p,i))
                 '''
         #add Gamma
         self.g = {}
@@ -89,8 +91,8 @@ class decisionRule:
         self.o = {}
         for t in range(0,self.t):
             for p in range(0,self.j):
-                for i in range(0,2*(self.t*self.j*self.d+1)):
-                    self.o[t,p,i] = self.m.addVar(lb=0, name = 'Omega %d %d %d' %(t,p,i))
+                for i in range(0,self.t*self.j*(self.d+1)+2):
+                    self.o[t,p,i] = self.m.addVar(ub=0, name = 'Omega %d %d %d' %(t,p,i))
 
         self.m.update()
         
@@ -115,157 +117,162 @@ class decisionRule:
                     if self.v[j,0] * self.xi[(t-self.limt)*self.j*self.d+p,0] ==0:
                         continue
                     obj += self.v[j,0] * self.x[t,j,p] * self.xi[(t-self.limt)*self.j*self.d+p,0]
+                    
         for t in range(0,self.t):
             for j in range(0,self.j):
                 for d in range(0,self.d):
                     obj += self.v[j,0] * self.xx[t,j,d] * self.xi[1+(t*self.j+j)*self.d+d,0]
+                    
         self.m.setObjective(obj,GRB.MAXIMIZE)
     
     def addConstr(self):
-        #Lambda 
-        for p in range(0,self.i):
-            l = LinExpr()
-            for i in range(0,2*(self.t*self.j*self.d+1)):
-                if self.h[i,0] != 0:
-                    l += self.h[i,0] * self.l[p,i]
-            self.m.addConstr(l,GRB.LESS_EQUAL,0,'h^T Lambda <=0')
-        #Gamma
-            '''
+        #Lambda h <= 0 
+        for j in range(0,self.i):
+            self.m.addConstr(self.l[j,0] <= self.l[j,1])
+        #Lambda for Lambda*W = Z1
+        #Frist Column
+        lhs = {}
+        rhs = {}
+        for i in range(0,self.i):
+            lhs[i] = LinExpr()
+            rhs[i] = LinExpr()
+        for i in range(0,self.i):
+            lhs[i] += self.l[i,0] - self.l[i,1]
+        for pt in range(0,self.t):
+            for pj in range(0,self.j):
+                base = (pt*self.j+pj)*(self.d+1)+2
+                for i in range(0,self.i):
+                    lhs[i] += self.l[i,base] * float(self.seg[pt,pj][1]) / (self.seg[pt,pj][1] - self.seg[pt,pj][0])
+                    lhs[i] += self.l[i,base+1] * float(self.seg[pt,pj][0]) / (-self.seg[pt,pj][1] + self.seg[pt,pj][0])
         for t in range(0,self.t):
-            for p in range(0,self.j):
-                g = LinExpr()
-                for i in range(0,2*(self.t*self.j+1)):
-                    if self.h[i,0] != 0:
-                        g += self.h[i,0] * self.g[t,p,i]
-                self.m.addConstr(g,GRB.GREATER_EQUAL,0,'h^T Gamma >=0')
-                '''
-        #Omega
+            for j in range(0,self.j):
+                for i in self.refJ[j]:
+                    rhs[i] += self.x[t,j,0]
+        for i in range(0,self.i):
+            rhs[i] -= self.c[i,0]
+        for i in range(0,self.i):
+            self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
+        #Beside first column
+        for pt in range(0,self.t):
+            for pj in range(0,self.j):
+                for pd in range(0,self.d):
+                    base = 2+(pt*self.j+pj)*(self.d+1)+pd
+                    lhs = {}
+                    rhs = {}
+                    for i in range(0,self.i):
+                        lhs[i] = LinExpr()
+                        rhs[i] = LinExpr()
+                    for i in range(0,self.i):
+                        lhs[i] += self.l[i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                        lhs[i] += self.l[i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                    #Ax xi
+                    col = 1+(pt*self.j+pj)*self.d+pd
+                    for t in range(pt+1,self.limt):
+                        for j in range(0,self.j):
+                            for i in self.refJ[j]:
+                                rhs[i] += self.x[t,j,col]
+                    for t in range(max(pt+1,self.limt),min(self.t,pt+1+self.limt)):
+                        for j in range(0,self.j):
+                            for i in self.refJ[j]:
+                                rhs[i] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]
+                    #Axx xi
+                    for i in self.refJ[pj]:
+                        rhs[i] += self.xx[pt,pj,pd]
+                    for j in range(0,self.i):
+                        self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j],'Z1 %d %d %d %d' %(pt,pj,pd,j))
+        #Omega h <=0
         for t in range(0,self.t):
-            for p in range(0,self.j):
-                o = LinExpr()
-                for i in range(0,2*(self.t*self.j*self.d+1)):
-                    if self.h[i,0] != 0:
-                        o += self.h[i,0] * self.o[t,p,i]
-                self.m.addConstr(o,GRB.LESS_EQUAL,0,'h^T Omega <= 0')
-        #Lambda for w^T Lambda = Z1
-        for p in range(0,self.i):
-            lhs = {}
-            rhs = {}
-            for i in range(0,self.t*self.j*self.d+1):
-                lhs[i] = LinExpr()
-                rhs[i] = LinExpr()
-            for i in range(0,self.t*self.j*self.d+1):
-                lhs[i] += self.l[p,2*i]-self.l[p,2*i+1]
-            #-CQ
-            #Q 1*(t*j+1) (1,0,0,...)
-            #C i*1 (c1,c2,c3,...,ci)^T
-            rhs[0] += -self.c[p,0]
-            #from 0 to limt
-            for ii in range(0,self.j):
-                if self.A[p,ii] ==0 :
-                    continue
-                for t in range(0,self.limt):
-                    for j in range(0,t*self.j*self.d+1):
-                        rhs[j] += self.A[p,ii] * self.x[t,ii,j]
-            #from limt to final time
-            for ii in range(0,self.j):
-                if self.A[p,ii] ==0:
-                    continue
-                for t in range(self.limt,self.t):
-                    rhs[0] += self.A[p,ii] * self.x[t,ii,0]
-                    #rhs[0] += self.A[p,ii] * self.x[t,ii,0]
-                    for j in range((t-self.limt)*self.j*self.d+1,t*self.j*self.d+1):
-                        rhs[j] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j*self.d]
-                        #rhs[j] += self.A[p,ii] * self.x[t,ii,j-(t-self.limt)*self.j]
-            #xx
-            for ii in range(0,self.j):
-                if self.A[p,ii] ==0:
-                    continue
-                for t in range(0,self.t):
-                    for d in range(0,self.d):
-                        rhs[1+(t*self.j+ii)*self.d+d] += self.A[p,ii] * self.xx[t,ii,d]
-                            
-            for j in range(0,self.t*self.j*self.d+1):
-                self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j],'Z1 %d %d' %(p,j))
-        #Gamma for w^T Gamma = Z2
-        #t before limt
-                '''
-        for t in range(0,self.limt):
-            for p in range(0,self.j):
-                lhs = {}
-                rhs = {}
-                for i in range(0,self.t*self.j+1):
-                    lhs[i] = LinExpr()
-                    rhs[i] = LinExpr()
-                for i in range(0,self.t*self.j+1):
-                    lhs[i] += self.g[t,p,2*i]-self.g[t,p,2*i+1]
-                for j in range(0,t*self.j+1):
-                    rhs[j] += self.x[t,p,j]
-                for j in range(0,self.t*self.j+1):
-                    self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z2 time %d, %d %d' %(t,p,j))
-        #after first limt time
-        for t in range(self.limt,self.t):
-            for p in range(0,self.j):
-                lhs = {}
-                rhs = {}
-                for i in range(0,self.t*self.j+1):
-                    lhs[i] = LinExpr()
-                    rhs[i] = LinExpr()
-                for i in range(0,self.t*self.j+1):
-                    lhs[i] += self.g[t,p,2*i]-self.g[t,p,2*i+1]
-                rhs[0] += self.x[t,p,0]
-                for j in range((t-self.limt)*self.j+1,t*self.j+1):
-                    rhs[j] += self.x[t,p,j-(t-self.limt)*self.j]
-                for j in range(0,self.t*self.j+1):
-                    self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z2 time %d, %d %d' %(t,p,j))
-                    '''
-        #Omega for w^T Omega = Z3
+            for j in range(0,self.j):
+                self.m.addConstr(self.o[t,j,0] <= self.o[t,j,1])
+        #Omega for Omega W= Z2
         #before limt
         for t in range(0,self.limt):
-            for p in range(0,self.j):
-                lhs = {}
-                rhs = {}
-                for i in range(0,self.t*self.j*self.d+1):
-                    lhs[i] = LinExpr()
-                    rhs[i] = LinExpr()
-                for i in range(0,self.t*self.j*self.d+1):
-                    lhs[i] += self.o[t,p,2*i] - self.o[t,p,2*i+1]
-                for j in range(0,t*self.j*self.d+1):
-                    rhs[j] += self.x[t,p,j]
-                #for j in range(t*self.j+1,(t+1)*self.j+1):
-                #    rhs[j] += -1
-                for q in range(self.q,self.qq):
-                    rhs[t*self.j*self.d+p*self.j+q+1] += -1
-                #xx
-                for d in range(0,self.d):
-                    rhs[1+(t*self.j+p)*self.d+d] += self.xx[t,p,d]
-                for j in range(0,self.t*self.j*self.d+1):
-                    self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z3 time %d,%d %d' %(t,p,j))
-        #after limt
+            lhs = {}
+            rhs = {}
+            for i in range(0,self.j):
+                lhs[i] = LinExpr()
+                rhs[i] = LinExpr()
+            for i in range(0,self.j):
+                lhs[i] += self.o[t,i,0] - self.o[t,i,1]
+            for pt in range(0,self.t):
+                for pj in range(0,self.j):
+                    base = (pt*self.j+pj)*(self.d+1)+2
+                    for i in range(0,self.j):
+                        lhs[i] += self.o[t,i,base] * float(self.seg[pt,pj][1]) / (self.seg[pt,pj][1] - self.seg[pt,pj][0])
+                        lhs[i] += self.o[t,i,base+1] * float(self.seg[pt,pj][0]) / (-self.seg[pt,pj][1] + self.seg[pt,pj][0])
+            for j in range(0,self.j):
+                rhs[j] += self.x[t,j,0]
+            for i in range(0,self.j):
+                self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
+            #Beside first column
+            for pt in range(0,self.t):
+                for pj in range(0,self.j):
+                    for pd in range(0,self.d):
+                        base = 2+(pt*self.j+pj)*(self.d+1)+pd
+                        lhs = {}
+                        rhs = {}
+                        for i in range(0,self.j):
+                            lhs[i] = LinExpr()
+                            rhs[i] = LinExpr()
+                        for i in range(0,self.j):
+                            lhs[i] += self.o[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                            lhs[i] += self.o[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                            #Ax xi
+                        col = 1+(pt*self.j+pj)*self.d+pd
+                        if pt < t:                              
+                            for j in range(0,self.j):
+                                rhs[j] += self.x[t,j,col]
+                            #Axx xi
+                        if pt == t:
+                            rhs[pj] += self.xx[pt,pj,pd] - 1
+                        for j in range(0,self.j):
+                            self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
         for t in range(self.limt,self.t):
-            for p in range(0,self.j):
-                lhs = {}
-                rhs = {}
-                for i in range(0,self.t*self.j*self.d+1):
-                    lhs[i] = LinExpr()
-                    rhs[i] = LinExpr()
-                for i in range(0,self.t*self.j*self.d+1):
-                    lhs[i] += self.o[t,p,2*i] - self.o[t,p,2*i+1]
-                rhs[0] += self.x[t,p,0]
-                for j in range(1,self.limt*self.j*self.d+1):
-                    rhs[j+(t-self.limt)*self.j*self.d] += self.x[t,p,j]
-                #for j in range(t*self.j+1,(t+1)*self.j+1):
-                    #rhs[j] += -1
-                for q in range(self.q,self.qq):
-                    rhs[t*self.j*self.d+p*self.j+q+1] += -1
-                #xx
-                for d in range(0,self.d):
-                    rhs[1+(t*self.j+p)*self.d+d] += self.xx[t,p,d]
-                for j in range(0,self.t*self.j*self.d+1):
-                    self.m.addConstr(lhs[j],GRB.EQUAL,rhs[j],'Z3 time %d,%d %d' %(t,p,j))    
+            lhs = {}
+            rhs = {}
+            for j in range(0,self.j):
+                lhs[j] = LinExpr()
+                rhs[j] = LinExpr()
+            for j in range(0,self.j):
+                lhs[j] += self.o[t,j,0] - self.o[t,j,1]
+            for pt in range(0,self.t):
+                for pj in range(0,self.j):
+                    base = (pt*self.j+pj)*(self.d+1)+2
+                    for j in range(0,self.j):
+                        lhs[j] += self.o[t,j,base] * float(self.seg[pt,pj][1]) / (self.seg[pt,pj][1] - self.seg[pt,pj][0])
+                        lhs[j] += self.o[t,j,base+1] * float(self.seg[pt,pj][0]) / (-self.seg[pt,pj][1] + self.seg[pt,pj][0])
+            for j in range(0,self.j):
+                rhs[j] += self.x[t,j,0]
+            for j in range(0,self.j):
+                self.m.addConstr(lhs[j], GRB.EQUAL, rhs[j])
+            #Beside first column
+            for pt in range(0,self.t):
+                for pj in range(0,self.j):
+                    for pd in range(0,self.d):
+                        base = 2+(pt*self.j+pj)*(self.d+1)+pd
+                        lhs = {}
+                        rhs = {}
+                        for i in range(0,self.j):
+                            lhs[i] = LinExpr()
+                            rhs[i] = LinExpr()
+                        for i in range(0,self.j):
+                            lhs[i] += self.o[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                            lhs[i] += self.o[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                        #Ax xi
+                        col = 1+(pt*self.j+pj)*self.d+pd
+                        if pt < t and pt >= t - self.limt:                            
+                            for j in range(0,self.j):
+                                rhs[j] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]
+                        #Axx xi
+                        if pt == t:
+                            rhs[pj] += self.xx[pt,pj,pd] - 1
+                            '''
+                        for j in range(0,self.j):
+                            self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])  
+                            '''
+        
     def solve(self):
         self.m.optimize()
-        return 0
     
     def echoOpt(self):
         
@@ -290,6 +297,6 @@ class decisionRule:
         print obj
     
     def writeMPS(self):
-        self.m.write("out.mps")
+        self.m.write("out.lp")
     
 #    def echoSolution(self):

@@ -19,7 +19,7 @@ firstCaseInReSolve=1
 secondCaseInReSolve=2
 reductionALP=0
 
-demander = CustomizeDemand.CustomizeDemand(2)
+demander = CustomizeDemand.CustomizeDemand(1)
 
 first = 1
 
@@ -32,6 +32,7 @@ if first == 1:#Decision Rule Approch + Gene Rounding
     decisionSolver.addVar()
     decisionSolver.addOpt()
     decisionSolver.addConstr()
+    #decisionSolver.writeMPS()
     decisionSolver.solve()
     #decisionSolver.echoOpt()    
     
@@ -47,7 +48,7 @@ if first == 1:#Decision Rule Approch + Gene Rounding
     opt.evolve()
     '''
     simulator.initX()
-    print simulator.run(1000)
+#    print simulator.run(1000)
     #print simulator.bookLimRun(100,opt.X)
 
 elif first == 0:#reduction of Approximate Linear Programming
