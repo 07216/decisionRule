@@ -93,6 +93,7 @@ class simulation:
         benefit = 0.0
         #rplc = self.identity
         rplc = self.atLeastOne
+        lessZero = 0
         #rplc = np.ceil
         #rplc = np.round
         for t in range(0,self.limt):
@@ -102,7 +103,8 @@ class simulation:
             productDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
-                    print "Strange!",product[j]
+                    #print "Strange!",product[j]
+                    lessZero = 1
                 sell = max(0,min(productDemand[j],rplc(product[j])))
                 if sell != 0:
                     for k in self.refJ[j]:
@@ -123,7 +125,8 @@ class simulation:
             productDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
-                    print "Strange!",product[j]
+                    #print "Strange!",product[j]
+                    lessZero = 1
                 sell = max(0,min(productDemand[j],rplc(product[j])))
                 if sell != 0:
                     for k in self.refJ[j]:
@@ -138,7 +141,8 @@ class simulation:
         for i in range(0,self.i):
             if c[i] <0:
                 print "Alert!"
-                
+        if lessZero == 1:
+            print "Strange"
         return benefit    
 
     def bookLimSim(self,x):
