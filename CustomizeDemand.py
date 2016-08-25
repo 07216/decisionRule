@@ -74,8 +74,8 @@ class CustomizeDemand:
         
         #Segmentation 
         self.seg = {}
-        minsup = 0.2
-        mininf = 0.5
+        minsup = 0.01
+        mininf = 0.01
         for t in range(0,self.t):
             for j in range(0,20):
                 if j%2 ==0:

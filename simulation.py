@@ -44,6 +44,8 @@ class simulation:
                     self.X[t][j,p] = self.x[t,j,p].X
                     '''if p!=0 and self.X[t][j,p] !=0:
                         print self.X[t][j,p],t,j,p'''
+                        
+    def initXX(self,rplc,k):
         self.XX = {}
         self.bookLim = {}
         self.INF = 10000
@@ -58,7 +60,7 @@ class simulation:
                 if flag == 0:
                     self.bookLim[t,j] = self.INF
                 else:
-                    self.bookLim[t,j] = np.floor(self.seg[t,j][d])
+                    self.bookLim[t,j] = rplc(self.seg[t,j][d+k])
                     #if self.XX[t,j,d]!=0:
                         #print "XX:",self.XX[t,j,d],t,j,d
                     
