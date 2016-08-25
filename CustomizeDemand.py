@@ -14,7 +14,7 @@ import Input
 
 class CustomizeDemand:
     def __init__(self,choose):
-        self.t = 8
+        self.t = 5
         self.limt = min(0,self.t)
         self.T = 100
         self.d = 7

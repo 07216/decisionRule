@@ -28135,3 +28135,6 @@ Crossover log...
 
 Iteration    Objective       Primal Inf.    Dual Inf.      Time
      823    1.1364454e+06   0.000000e+00   0.000000e+00      2s
+
+Gurobi 6.5.2 (win64) logging started 08/25/16 15:32:10
+

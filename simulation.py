@@ -57,9 +57,10 @@ class simulation:
                     #if self.XX[t,j,d] !=0 :
                         #print self.XX[t,j,d],t,j,d
                     if self.XX[t,j,d] != 1:
-                        flag = 1
-                        break
-                self.bookLim[t,j] = rplc(self.seg[t,j][d+k])
+                        flag += 1
+                if flag == 1:
+                    self.bookLim[t,j] = rplc(self.X[t][j,0]+self.seg[t,j][d+k])
+                    flag = 2
                 #print self.bookLim[t,j]
                     #if self.XX[t,j,d]!=0:
                         #print "XX:",self.XX[t,j,d],t,j,d
@@ -111,7 +112,9 @@ class simulation:
             product = np.dot(self.X[t],history)
             #print product
             tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
-            productDemand = realDemand[t*self.j:(t+1)*self.j]
+            productDemand = realDemand[t*self.j:(t+1)*self.j]            
+            for j in range(0,self.j):
+                product[j] += np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d])
             for j in range(0,self.j):
                 if product[j]<0:
                     #print "Strange!",product[j]
