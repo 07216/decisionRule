@@ -20,7 +20,7 @@ firstCaseInReSolve=1
 secondCaseInReSolve=2
 reductionALP=0
 
-demander = CustomizeDemand.CustomizeDemand(1)
+demander = CustomizeDemand.CustomizeDemand(2)
 
 first = 1
 
@@ -49,7 +49,8 @@ if first == 1:#Decision Rule Approch
     opt.evolve()
     '''
     simulator.initX()
-    #print simulator.run(100)
+    simulator.initXX(np.floor,0)
+    print simulator.run(100)
     simulator.initXX(np.floor,0)
     print simulator.bookLimRun(1000)
     simulator.initXX(np.ceil,0)

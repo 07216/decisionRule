@@ -51,18 +51,15 @@ class simulation:
         #self.INF = 1000000
         for t in range(0,self.t):
             for j in range(0,self.j):
-                flag = 0
+                flag = -1
                 for d in range(0,self.d):
                     self.XX[t,j,d] = self.xx[t,j,d].X
-                    #if self.XX[t,j,d] !=0 :
-                        #print self.XX[t,j,d],t,j,d
                     if self.XX[t,j,d] != 1:
-                        flag = 1
-                        break
-                if flag !=0 :
-                    self.bookLim[t,j] = rplc(self.X[t][j,0])+rplc(self.seg[t,j][d+k])
+                        flag = d
+                if flag !=-1 :
+                    self.bookLim[t,j] = rplc(self.seg[t,j][flag+k])
                 else:
-                    self.bookLim[t,j] = rplc(self.X[t][j,0])+rplc(self.seg[t,j][d+k])
+                    self.bookLim[t,j] = rplc(self.seg[t,j][self.d+1])
                 #print self.bookLim[t,j]
                     #if self.XX[t,j,d]!=0:
                         #print "XX:",self.XX[t,j,d],t,j,d
@@ -121,7 +118,7 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = max(0,min(productDemand[j],rplc(product[j])+self.bookLim[t,j]))
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
@@ -143,7 +140,7 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = max(0,min(productDemand[j],rplc(product[j])+self.bookLim[t,j]))
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
