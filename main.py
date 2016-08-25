@@ -20,7 +20,7 @@ firstCaseInReSolve=1
 secondCaseInReSolve=2
 reductionALP=0
 
-demander = CustomizeDemand.CustomizeDemand(1)
+demander = CustomizeDemand.CustomizeDemand(2)
 
 first = 1
 
