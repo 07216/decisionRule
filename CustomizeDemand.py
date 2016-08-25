@@ -17,7 +17,7 @@ class CustomizeDemand:
         self.t = 10
         self.limt = min(0,self.t)
         self.T = 100
-        self.d = 10
+        self.d = 7
         self.q = 3
         self.qq = self.d
         

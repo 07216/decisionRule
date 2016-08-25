@@ -57,8 +57,12 @@ class simulation:
                     #if self.XX[t,j,d] !=0 :
                         #print self.XX[t,j,d],t,j,d
                     if self.XX[t,j,d] != 1:
+                        flag = 1
                         break
-                self.bookLim[t,j] = rplc(self.X[t][j,0])+rplc(self.seg[t,j][d+k])
+                if flag !=0 :
+                    self.bookLim[t,j] = rplc(self.X[t][j,0])+rplc(self.seg[t,j][d+k])
+                else:
+                    self.bookLim[t,j] = rplc(self.X[t][j,0])+rplc(self.seg[t,j][d+1])
                 #print self.bookLim[t,j]
                     #if self.XX[t,j,d]!=0:
                         #print "XX:",self.XX[t,j,d],t,j,d
