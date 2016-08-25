@@ -283,10 +283,10 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
-                    '''
+                    
                     if d == 0:
                         low = 0
-                        ss = 0
+                        '''
                     if d == self.d:
                         ee = Gamma.ppf(1-eps,60)
                         '''
@@ -298,10 +298,9 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
-                    '''
                     if d == 0:
                         low = 0
-                        ss = 0
+                    '''
                     if d == self.d:
                         ee = Gamma.ppf(1-eps,60)
                         '''
@@ -318,10 +317,9 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
-                    '''
                     if d == 0:
                         low = 0
-                        ss = 0
+                    '''
                     if d == self.d:
                         ee = Gamma.ppf(1-eps,150)
                         '''
@@ -333,10 +331,9 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
-                    '''
                     if d == 0:
                         low = 0
-                        ss = 0
+                    '''
                     if d == self.d:
                         ee = Gamma.ppf(1-eps,150)
                         '''
@@ -353,10 +350,9 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
-                    '''
                     if d == 0:
                         low = 0
-                        ss = 0
+                    '''
                     if d == self.d:
                         ee = Gamma.ppf(1-eps,100)
                         '''
@@ -368,10 +364,9 @@ class CustomizeDemand:
                     ee = k*(d+1)+s
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
-                    '''
                     if d == 0:
                         low = 0
-                        ss = 0
+                    '''
                     if d == self.d:
                         ee = Gamma.ppf(1-eps,100)
                         '''
