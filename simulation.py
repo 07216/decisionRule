@@ -45,12 +45,22 @@ class simulation:
                     '''if p!=0 and self.X[t][j,p] !=0:
                         print self.X[t][j,p],t,j,p'''
         self.XX = {}
+        self.bookLim = {}
+        self.INF = 10000
         for t in range(0,self.t):
             for j in range(0,self.j):
+                flag = 0
                 for d in range(0,self.d):
                     self.XX[t,j,d] = self.xx[t,j,d].X
-                    if self.XX[t,j,d]!=0:
-                        print "XX:",self.XX[t,j,d],t,j,d
+                    if self.XX[t,j,d] != 1:
+                        flag = 1
+                        break
+                if flag == 0:
+                    self.bookLim[t,j] = self.INF
+                else:
+                    self.bookLim[t,j] = np.floor(self.seg[t,j][d])
+                    #if self.XX[t,j,d]!=0:
+                        #print "XX:",self.XX[t,j,d],t,j,d
                     
     def atLeastOne(self,x):
         return int(x)+1
@@ -84,7 +94,6 @@ class simulation:
         return x
     
     def aSim(self):
-
         realDemand = self.sim()   
         realNonLinearDemand = self.nonLinearDemand(realDemand)
         c = np.copy(self.c)
@@ -145,20 +154,15 @@ class simulation:
             print "Strange"
         return benefit    
 
-    def bookLimSim(self,x):
+    def bookLimSim(self):
         realDemand = self.sim()   
         
         c = np.copy(self.c)
         benefit = 0.0
         
         for t in range(0,self.t):
-            product = x[t]
-            #print product
-            tmpDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
-                if product[j]<0:
-                    print "Strange!"
-                sell = max(0,min(tmpDemand[j],product[j]))
+                sell = max(0,min(self.bookLim[t,j],realDemand[t*self.j+j]))
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
@@ -204,9 +208,9 @@ class simulation:
         s /= n
         return s
     
-    def bookLimRun(self,n,x):
+    def bookLimRun(self,n):
         s = 0.0
         for i in range(0,n):
-            s += self.bookLimSim(x)
+            s += self.bookLimSim()
         s /= n
         return s
