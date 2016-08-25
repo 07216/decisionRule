@@ -48,7 +48,7 @@ class simulation:
     def initXX(self,rplc,k):
         self.XX = {}
         self.bookLim = {}
-        self.INF = 100000000
+        self.INF = 1000000
         for t in range(0,self.t):
             for j in range(0,self.j):
                 flag = 0
@@ -63,6 +63,7 @@ class simulation:
                     self.bookLim[t,j] = self.INF
                 else:
                     self.bookLim[t,j] = rplc(self.seg[t,j][d+k])
+                #print self.bookLim[t,j]
                     #if self.XX[t,j,d]!=0:
                         #print "XX:",self.XX[t,j,d],t,j,d
                     
