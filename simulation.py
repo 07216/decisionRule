@@ -75,23 +75,23 @@ class simulation:
             for j in range(0,self.j):
                 if self.seg[t,j][0] == self.seg[t,j][1]:
                     for d in range(0,self.d):
-                        result[(t*self.t+j)*self.d+d] = float(realDemand[t*self.j+j])/self.d
+                        result[(t*self.j+j)*self.d+d] = float(realDemand[t*self.j+j])/self.d
                     continue
                 for d in range(1,self.d+1):
                     if d == self.d:
-                        result[(t*self.t+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
+                        result[(t*self.j+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
                         break
                     if realDemand[t*self.j+j] <= self.seg[t,j][d]:
                         if d == 1:
-                            result[(t*self.t+j)*self.d+d-1] = realDemand[t*self.j+j]
+                            result[(t*self.j+j)*self.d+d-1] = realDemand[t*self.j+j]
                         else:
-                            result[(t*self.t+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
+                            result[(t*self.j+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
                         break
                     else:
                         if d == 1:
-                            result[(t*self.t+j)*self.d+d-1] = self.seg[t,j][d]
+                            result[(t*self.j+j)*self.d+d-1] = self.seg[t,j][d]
                         else:
-                            result[(t*self.t+j)*self.d+d-1] = self.seg[t,j][d+1] - self.seg[t,j][d-1]
+                            result[(t*self.j+j)*self.d+d-1] = self.seg[t,j][d+1] - self.seg[t,j][d-1]
         return result
 
     def identity(self,x):
