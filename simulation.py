@@ -54,6 +54,8 @@ class simulation:
                 flag = 0
                 for d in range(0,self.d):
                     self.XX[t,j,d] = self.xx[t,j,d].X
+                    #if self.XX[t,j,d] !=0 :
+                        #print self.XX[t,j,d],t,j,d
                     if self.XX[t,j,d] != 1:
                         flag = 1
                         break
