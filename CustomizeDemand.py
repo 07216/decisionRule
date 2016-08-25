@@ -14,10 +14,10 @@ import Input
 
 class CustomizeDemand:
     def __init__(self,choose):
-        self.t = 5
-        self.limt = min(5,self.t)
+        self.t = 8
+        self.limt = min(0,self.t)
         self.T = 100
-        self.d = 5
+        self.d = 7
         self.q = 3
         self.qq = self.d
         
@@ -225,7 +225,7 @@ class CustomizeDemand:
         self.pushThreeLeg(1,3,2,4,8,9,5,3,9)
         
         #Segmentation 
-        self.h = {}
+        self.h = []
         self.seg = {}
         minsup = 0.01
         mininf = 0.01
