@@ -224,6 +224,7 @@ class CustomizeDemand:
         self.pushThreeLeg(1,3,2,4,8,9,5,3,9)
         
         #Segmentation 
+        self.h = {}
         self.seg = {}
         minsup = 0.01
         mininf = 0.01
