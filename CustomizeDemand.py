@@ -227,8 +227,8 @@ class CustomizeDemand:
         #Segmentation 
         self.h = []
         self.seg = {}
-        minsup = 0.01
-        mininf = 0.01
+        minsup = 0.001
+        mininf = 0.001
         for t in range(0,self.t):
             for j in range(0,20):
                 if j%2 ==0:
@@ -270,7 +270,7 @@ class CustomizeDemand:
                 self.seg[t,j] = new
                 
         #Expectation of arrival process
-        eps = 1e-3
+        eps = 1e-4
         self.xi = np.zeros((self.t*self.j*self.d+1,1),dtype=np.float)
         self.xi[0] = 1
         for t in range(0,self.t):
