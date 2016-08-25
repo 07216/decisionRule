@@ -46,20 +46,21 @@ class simulation:
                         print self.X[t][j,p],t,j,p'''
                         
     def initXX(self,rplc,k):
-        self.XX = {}
+        self.XX={}
         self.bookLim = {}
         #self.INF = 1000000
         for t in range(0,self.t):
             for j in range(0,self.j):
+                self.XX[t,j] = np.zeros((self.d,1))
                 flag = -1
                 for d in range(0,self.d):
-                    self.XX[t,j,d] = self.xx[t,j,d].X
-                    if self.XX[t,j,d] != 1:
+                    self.XX[t,j][d] = self.xx[t,j,d].X
+                    if self.XX[t,j][d] != 1:
                         flag = d
                 if flag !=-1 :
                     self.bookLim[t,j] = rplc(self.seg[t,j][flag+k])
                 else:
-                    self.bookLim[t,j] = rplc(self.seg[t,j][self.d+1])
+                    self.bookLim[t,j] = rplc(self.seg[t,j][self.d])
                 #print self.bookLim[t,j]
                     #if self.XX[t,j,d]!=0:
                         #print "XX:",self.XX[t,j,d],t,j,d
@@ -113,12 +114,12 @@ class simulation:
             tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
             productDemand = realDemand[t*self.j:(t+1)*self.j]            
             for j in range(0,self.j):
-                product[j] += np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d])
+                product[j] += np.dot(self.XX[t,j],np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))
             for j in range(0,self.j):
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])+self.bookLim[t,j]))
+                sell = max(0,min(productDemand[j],rplc(product[j])))
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])

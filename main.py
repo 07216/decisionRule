@@ -27,7 +27,7 @@ first = 1
 if first == 1:#Decision Rule Approch 
     
     decisionSolver = decisionRule.decisionRule()
-    #decisionSolver.echoInput()
+    #   decisionSolver.echoInput()
     #decisionSolver.echoVal()
     decisionSolver.inputDemand(demander)
     decisionSolver.addVar()
