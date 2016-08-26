@@ -60,7 +60,7 @@ class simulation:
                             flag = d
                 #            print self.XX[t,j][d],t,j,d,self.seg[t,j][d],self.seg[t,j][max(d-1,0)]
                 if flag !=-1 :
-                    if d == 0 :
+                    if flag == 0 :
                         self.bookLim[t,j] = 0
                     else:
                         self.bookLim[t,j] = self.seg[t,j][flag]
@@ -148,9 +148,9 @@ class simulation:
             productDemand = realDemand[t*self.j:(t+1)*self.j]
             #print sum(tmpDemand)-sum(productDemand)
             for j in range(0,self.j):
-                if(abs(np.dot(np.transpose(self.XX[t,j]),np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))-min(self.bookLim[t,j],productDemand[j]))>0.01):
-                    print self.XX[t,j]
-                    print np.dot(np.transpose(self.XX[t,j]),np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))-min(self.bookLim[t,j],productDemand[j])
+                #if(abs(np.dot(np.transpose(self.XX[t,j]),np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))-min(self.bookLim[t,j],productDemand[j]))>0.01):
+                    #print self.XX[t,j]
+                    #print np.dot(np.transpose(self.XX[t,j]),np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))-min(self.bookLim[t,j],productDemand[j])
                 product[j] += np.dot(np.transpose(self.XX[t,j]),np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))
             for j in range(0,self.j):
                 if product[j]<0:
