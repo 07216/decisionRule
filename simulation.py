@@ -55,8 +55,8 @@ class simulation:
                 flag = -1
                 for d in range(0,self.d):
                     self.XX[t,j][d] = self.xx[t,j,d].X
-                    if self.XX[t,j][d]!=0:
-                        print "XX:",self.XX[t,j][d],t,j,d
+                    #if self.XX[t,j][d]!=0:
+                        #print "XX:",self.XX[t,j][d],t,j,d
                     if self.XX[t,j][d] != 1:
                         flag = d
                 if flag !=-1 :
@@ -120,7 +120,7 @@ class simulation:
                     #print "Strange!",product[j]
                     lessZero = 1
                 #sell = max(0,min(productDemand[j],rplc(product[j])))
-                sell = product[j]
+                sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
@@ -144,8 +144,8 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                #sell = max(0,min(productDemand[j],rplc(product[j])))
-                sell = product[j]
+                #sell = max(0,min(productDemand[j],product[j]))
+                sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
