@@ -50,7 +50,7 @@ if first == 1:#Decision Rule Approch
     '''
     simulator.initX()
     simulator.initXX()
-    #simulator.echoXX()
+    simulator.echoXX()
     print simulator.run(100)
     print simulator.bookLimRun(np.round,1000)
     print simulator.bookLimRun(np.ceil,1000)
