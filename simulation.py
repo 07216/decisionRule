@@ -149,7 +149,7 @@ class simulation:
             productDemand = realDemand[t*self.j:(t+1)*self.j]
             #print sum(tmpDemand)-sum(productDemand)
             for j in range(0,self.j):
-                print np.dot(np.transpose(self.XX[t,j]),np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))-min(self.bookLim[t,j],product[j])
+                print np.dot(np.transpose(self.XX[t,j]),np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))-min(self.bookLim[t,j],productDemand[j])
                 product[j] += np.dot(np.transpose(self.XX[t,j]),np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))
             for j in range(0,self.j):
                 if product[j]<0:
