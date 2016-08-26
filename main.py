@@ -49,7 +49,8 @@ if first == 1:#Decision Rule Approch
     opt.evolve()
     '''
     simulator.initX()
-    simulator.echoXX()
+    simulator.initXX()
+    #simulator.echoXX()
     print simulator.run(100)
     print simulator.bookLimRun(np.round,1000)
     print simulator.bookLimRun(np.ceil,1000)
