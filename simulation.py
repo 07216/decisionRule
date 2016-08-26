@@ -45,7 +45,7 @@ class simulation:
                     '''if p!=0 and self.X[t][j,p] !=0:
                         print self.X[t][j,p],t,j,p'''
                         
-    def initXX(self,rplc,k):
+    def initXX(self):
         self.XX={}
         self.bookLim = {}
         #self.INF = 1000000
@@ -58,9 +58,12 @@ class simulation:
                     if self.XX[t,j][d] != 1:
                         flag = d
                 if flag !=-1 :
-                    self.bookLim[t,j] = rplc(self.seg[t,j][flag+k])
+                    if d == 0 :
+                        self.bookLim[t,j] = 0
+                    else:
+                        self.bookLim[t,j] = self.seg[t,j][flag]
                 else:
-                    self.bookLim[t,j] = rplc(self.seg[t,j][self.d])
+                    self.bookLim[t,j] = self.seg[t,j][self.d]
                 #print self.bookLim[t,j]
                     
     def echoXX(self):
@@ -166,7 +169,7 @@ class simulation:
          #   print "Strange"
         return benefit    
 
-    def bookLimSim(self):
+    def bookLimSim(self,rplc):
         realDemand = self.sim()   
         
         c = np.copy(self.c)
@@ -174,7 +177,7 @@ class simulation:
         
         for t in range(0,self.t):
             for j in range(0,self.j):
-                sell = max(0,min(self.bookLim[t,j],realDemand[t*self.j+j]))
+                sell = max(0,min(rplc(self.bookLim[t,j]+self.X[t][j,0]),realDemand[t*self.j+j]))
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
@@ -220,9 +223,9 @@ class simulation:
         s /= n
         return s
     
-    def bookLimRun(self,n):
+    def bookLimRun(self,rplc,n):
         s = 0.0
         for i in range(0,n):
-            s += self.bookLimSim()
+            s += self.bookLimSim(rplc)
         s /= n
         return s
