@@ -119,7 +119,8 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
+                #sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = product[j]
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
@@ -136,12 +137,15 @@ class simulation:
             product = np.dot(self.X[t],history)
             #print product
             tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
+            for j in range(0,self.j):
+                product[j] += np.dot(self.XX[t,j],np.array(realNonLinearDemand[(t*self.j+j)*self.d:(t*self.j+j+1)*self.d]))
             productDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])+self.bookLim[t,j]))
+                #sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = product[j]
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
@@ -155,8 +159,8 @@ class simulation:
         for i in range(0,self.i):
             if c[i] <0:
                 print "Alert!"
-        if lessZero == 1:
-            print "Strange"
+        #if lessZero == 1:
+         #   print "Strange"
         return benefit    
 
     def bookLimSim(self):
