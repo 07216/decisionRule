@@ -55,6 +55,8 @@ class simulation:
                 flag = -1
                 for d in range(0,self.d):
                     self.XX[t,j][d] = self.xx[t,j,d].X
+                    if self.XX[t,j][d]!=0:
+                        print "XX:",self.XX[t,j][d],t,j,d
                     if self.XX[t,j][d] != 1:
                         flag = d
                 if flag !=-1 :
@@ -62,8 +64,6 @@ class simulation:
                 else:
                     self.bookLim[t,j] = rplc(self.seg[t,j][self.d])
                 #print self.bookLim[t,j]
-                if self.XX[t,j][d]!=0:
-                    print "XX:",self.XX[t,j][d],t,j,d
                     
     def atLeastOne(self,x):
         return int(x)+1
