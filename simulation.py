@@ -152,7 +152,7 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],product[j]))
+                sell = max(0,min(productDemand[j],rplc(product[j])))
                 #sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
@@ -173,24 +173,68 @@ class simulation:
 
     def bookLimSim(self,rplc):
         realDemand = self.sim()   
-        
+        realNonLinearDemand = self.nonLinearDemand(realDemand)
         c = np.copy(self.c)
+        demand = [1]
+        history = np.array(demand)
         benefit = 0.0
-        
-        for t in range(0,self.t):
+        #rplc = self.identity
+        lessZero = 0
+        #rplc = np.ceil
+        #rplc = np.round
+        for t in range(0,self.limt):
+            product = np.dot(self.X[t],history)
+            #print product
+            tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
+            productDemand = realDemand[t*self.j:(t+1)*self.j]            
             for j in range(0,self.j):
-                sell = max(0,min(rplc(self.bookLim[t,j]+self.X[t][j,0]),realDemand[t*self.j+j]))
+                product[j] += self.bookLim[t,j]
+            for j in range(0,self.j):
+                if product[j]<0:
+                    #print "Strange!",product[j]
+                    lessZero = 1
+                sell = max(0,min(productDemand[j],rplc(product[j])))
+                #sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
                         sell = min(sell,c[k])
                     benefit += sell * self.v[j]
                     for k in self.refJ[j]:
                         c[k] -= sell
+                            
+                #benefit += int(product[j]) * self.v[j]
+            demand += tmpDemand
+            if self.limt != 0:
+                history = np.array(demand)
+        
+        for t in range(self.limt,self.t):
+            product = np.dot(self.X[t],history)
+            #print product
+            tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
+            for j in range(0,self.j):
+                product[j] += self.bookLim[t,j]
+            productDemand = realDemand[t*self.j:(t+1)*self.j]
+            for j in range(0,self.j):
+                if product[j]<0:
+                    #print "Strange!",product[j]
+                    lessZero = 1
+                sell = max(0,min(productDemand[j],rplc(product[j])))
+                #sell = max(0,product[j])
+                if sell != 0:
+                    for k in self.refJ[j]:
+                        sell = min(sell,c[k])
+                    benefit += sell * self.v[j]
+                    for k in self.refJ[j]:
+                        c[k] -= sell
+            demand = [1] + demand[(self.j*self.d+1):] + tmpDemand
+            if self.limt != 0:
+                history = np.array(demand)
         
         for i in range(0,self.i):
             if c[i] <0:
                 print "Alert!"
-                
+        #if lessZero == 1:
+         #   print "Strange"
         return benefit    
         
     def simWithGivenDemand(self,x,realDemand):
