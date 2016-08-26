@@ -98,7 +98,7 @@ class simulation:
                         if d == 1:
                             result[(t*self.j+j)*self.d+d-1] = self.seg[t,j][d]
                         else:
-                            result[(t*self.j+j)*self.d+d-1] = self.seg[t,j][d+1] - self.seg[t,j][d-1]
+                            result[(t*self.j+j)*self.d+d-1] = self.seg[t,j][d+1] - self.seg[t,j][d]
         return result
 
     def identity(self,x):
