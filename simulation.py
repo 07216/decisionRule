@@ -57,6 +57,7 @@ class simulation:
                     self.XX[t,j][d] = self.xx[t,j,d].X
                     if self.XX[t,j][d] != 1:
                         flag = d
+                        print self.XX[t,j][d],t,j,d
                 if flag !=-1 :
                     if d == 0 :
                         self.bookLim[t,j] = 0
