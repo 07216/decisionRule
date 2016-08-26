@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage{amsmath,amssymb,bbm}
+\usepackage{amsmath,amssymb,bbm,comment}
 \title{Linear Decision Rule Approach}
 \author{Zhan Lin}
 
@@ -9,46 +9,67 @@
 \begin{document}
 \maketitle
 \section{Original Problem}
-Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Let $\xi^t$ be the observed history demands, $\xi_t$ be the demand at period t and $$\mathbf{x_t}(\xi^t,\xi_t) = \left(x_{t,1}(\xi^t,\xi_{t,1}),x_{t,2}(\xi^t,\xi_{t,2}),\ldots,x_{t,n}(\xi^t,\xi_{t,n})\right)^T$$ be the booking limits in period t. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
+Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Assuming observing $\tau$ periods of history,let $\xi^t$ be the observed history demands, $\xi_t$ be the demand at period t and $$\mathbf{x_t}(\xi^t,\xi_t) = \left(x_{t,1}(\xi^t,\xi_{t,1}),x_{t,2}(\xi^t,\xi_{t,2}),\ldots,x_{t,n}(\xi^t,\xi_{t,n})\right)^T$$ be the booking limits in period t. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
 
 \begin{equation}
 \begin{array}{ll}
 \max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T \mathbf{x_t} \left(\xi^t,\xi_t\right)\right)\\
 s.t. & \sum^T_{t=1} A \mathbf{x_t} \left(\xi^t,\xi_t\right) \leq \mathbf{c}\\
 & \mathbf{x_t}(\xi^t,\xi_t) \leq \xi_t\\
+& \mathbf{x_t}(\xi^t,\xi_t) \geq 0\\
 &\forall \xi \in \Xi,t=1,\ldots,T
 \end{array}
 \label{origin}
 \end{equation}
-\section{Linear Decision Rule Approach}
+\section{Linear Decision Rule Approach via Lifting}
 \subsection{Primal Problem}
-Approach original problem with $$\mathbf{x_{t,j}}(\xi^t,\xi_{t,j}) = X_t \xi^t + \mathbf{\tilde{X}_t}^T\left(\mathbf{1}_{\xi \in (l_1,r_1)}\right)^T \xi_t $$ , $\Xi = \left\{ \xi : W \xi \leq h\right\}$, and $p_t \xi =\xi_t$ where $X_t$, $P_t$ , $W$ and $p_t$ are all matrix. Then we obtain the primal problem
-
-
+Approach original problem with $$\mathbf{x_{t,j}}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=$$ where 
+$$L_{t,j}(x) = (L_{t,j,d}(x))_{d\times1}$$
+with
+$$
+L_{t,j,d}(x)  =
+\left\{
+\begin{array}{ll}
+x & r_i = 1\\
+\min\{x,z_1^{t,j}\}& r_{t,j}>1,d=1\\
+\max\{\min\{x,z_d^{t,j}\}-z^{t,j}_{d-1},0\} & r_{t,j}>1,d=2,\ldots,r_{t,j}-1\\
+\max\{x-z_{d-1}^{t,j},0\}& r_{t,j}>1,d=r_{t,j}
+\end{array}
+\right.
+$$
+and
+$$
+L(\xi^t)=(L_{\tilde{t},j}(\xi_{\tilde{t},j}))_{\tau\times j,1}
+$$
+It is obvious that the linear retraction operator corresponding to $L_{t,j}$ is $$R_{t,j}(y)=\sum^{r_{t,j}}_{d=1} y_d=e^T y$$
+According to \cite{GDR},
+with $\Xi = \left\{ \xi : \xi_1=1,l_{t,j}\leq \xi_{t,j} \leq r_{t,j}\right\}$,
+$$\text{conv}\Xi'=L(\Xi)=\left\{\xi' : \xi_1'=1,V_{t,j}^{-1}(1,\xi_{t,j}')_{(d+1)\times1}^T\geq 0\right\}$$
+$$
+V_{t,j}^{-1}=\begin{pmatrix}
+\frac{z^{t,j}_1}{z^{t,j}_1-l_{t,j}} & -\frac{1}{z^{t,j}_1-l^{t,j}_1}& & & &\\
+-\frac{l_{t,j}}{z^{t,j}_1-l_{t,j}}& \frac{1}{z^{t,j}_1-l_{t,j}}& -\frac{1}{z^{t,j}_2-z^{t,j}_1}& & &\\
+& &\frac{1}{z^{t,j}_2-z^{t,j}_1}&\ddots & &\\
+& & &\ddots& -\frac{1}{z^{t,j}_{r_{t,j}-1}-z^{t,j}_{r_{t,j}-2}}&\\
+& & & &\frac{1}{z^{t,j}_{r{t,j}-1}-z^{t,j}_{r_{t,j}-2} }&-\frac{1}{u_{t,j}-z^{t,j}_{r_{t,j}-1}}\\
+& & & & & \frac{1}{u_{t,j}-z^{t,j}_{r_{t,j}-1}}
+\end{pmatrix}
+$$
+ Then we obtain the primal problem
 \begin{equation}
 \begin{array}{ll}
-\max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T X_t P_t \xi\right)\\
-s.t. & \sum^T_{t=1} A X_t P_t \xi \leq \mathbf{c}\\
-& X_t P_t \xi \leq p_t\xi\\
-&\forall \xi \in \Xi = \left\{ \xi : W \xi \leq h\right\},t=1,\ldots,T
+\max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right)\\
+\text{s.t.} & \sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq \mathbf{c}\\
+& (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq p_t\xi\\
+& (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \geq 0\\
+&\forall \xi \in \text{conv}\Xi' ,t=1,\ldots,T
 \end{array}
 \label{primal}
 \end{equation}
-where $$W=\left(\begin{array}{lllll}
-1 & & &\\
--1 & & &\\
-& 1 & &\\
-& -1 & &\\
-& & \vdots &\\
-& & & 1\\
-& & & -1
-\end{array}
-\right)
-$$
-and $$h=\left(1,-1,q_{1,1,sup},-q_{1,1,inf},q_{1,2,sup},-q_{1,2,inf},\ldots,q_{t,n,sup},-q_{t,n,inf}\right)^T$$ in which $q_{t,j,p}$ is the $p$ percentile of $\xi_{t,j}$.
 
-There are $n m t \tau + 2 n m t + n^2 t^2$ variables and $m+2nt$ constraints in total.
 
+There are $O(n m rt \tau + n^2 t^2 r )$ variables and $O(t^2 n^2 r+t n m r)$ constraints in total.
+\begin{comment}
 \subsection{Duality}
 
 Firstly we transform equation(\ref{origin}) into a tighter formulation.
@@ -81,31 +102,61 @@ s.t. & \sum^T_{t=1} \tilde{A}^T Y_t P_t \xi \geq \mathbf{v}^T\\
 &\forall \xi \in \Xi\left\{ \xi : W \xi \leq h\right\},t=1,\ldots,T
 \end{array}
 \end{equation}
-
-\section{Numerical Results}
-Rounding can matter a lot to benefits. Therefore, I tried genetic algorithm to get a not bad policy. However, it sometimes offer a
-worse policy than simply ceil. 
-What's more, please notice that all results obtained now are under constant policies.
-
+\end{comment}
+\section{Computational Results}
+As we can see from Preservation of Structural Properties in Optimization with Decisions Truncated by Random Variables and Its Applications, $\tilde{X}_{t,j}(\xi^t,\xi_{t,j})$ should behave $u\bigwedge \xi_{t,j}$. Benefiting from piecewise linear function, the structure is preserved with linear decision rule. Therefore, it's convenient to implement the policy.
+What's more, rounding can matter a lot to benefits and some simple rounding policy is tested including ceiling, flooring, rounding, floor(x)+1. Results are computed at servers locating at USTC with 96 Intel Xeon CPU E5-4657L v2 2.4GHz and 256GB memory.Gurobi will make use of 32 cpu to solve the LP problem parallelly.
+\begin{comment}
 \subsection{Parameters}
 
 The upper bound and lower bound of $\xi$ in $\Xi$ play important roles in optimizing. With strict bounds, booking limits will be under rigorous limitations. Therefore we need to set lower bound of the primal problem a bit higher. In the first example of Re-Solving Stochastic Programming Models for Airline Revenue, upper bound = 80 percentile and lower bound = 60 percentile. In the second example, upper bound = 90 percentile and lower bound = 70 percentile. Results are given at table \ref{Summary}. The results of data from approximate linear programming are not listed here. But in most cases, comparing with approximate linear programming, linear decision rules will only result in 5 percentile loss.
-
+\end{comment}
 \begin{table}[]
 \centering
 \begin{tabular}{|l|c|c|c|c|}
 \hline
-                                  & DLP-alloc & SLP-alloc & LDR & Wait-and-see \\ \hline
-First Example without re-solving  & 401980    & 415410    &  419831   & 432730       \\ \hline
-Second Example without re-solving & 583630    & 595620    &  601212   & 432730       \\ \hline
-First Example with re-solving     & 409740    & 421894    &     & 623530       \\ \hline
-Second Example with re-solving    & 594021    & 604859    &     & 623530       \\ \hline
+                                  & DLP-alloc & SLP-alloc & round & ceil  \\ \hline
+Example 1 without re-solving  & 401980    & 415410    &  411651  & 421684       \\ \hline
+Example 2 without re-solving & 583630    & 595620    &   590245  & 604264    \\ \hline
+Example 1 with re-solving     & 409740    & 421894    &     &        \\ \hline
+Example 2 with re-solving    & 594021    & 604859    &     &   \\ \hline
+\end{tabular}
+\caption{Summary}
+\begin{tabular}{|l|c|c|c|}
+\hline
+                                  & floor &floor(x)+1&Wait-and-see\\ \hline
+Example 1 without re-solving  &374129&422066&432730    \\ \hline
+Example 2 without re-solving &560178&591747&623530       \\ \hline
+
+Example 1 with re-solving     &  &     &      623530       \\ \hline
+Example 2 with re-solving    & &     &      623530 \\ \hline
 \end{tabular}
 \caption{Summary}
 \label{Summary}
 \end{table}
 
+\begin{table}[]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Case&Parameters& Computational Time/s&Optimal Objective&Best Simulation Result \\
+\hline
+1&$t=10,\tau=0,r=7$& 22.25&415305&421684\\
+\hline
+2&$t=10,\tau=0,r=7$& 29.49&596130&604264\\
+\hline
+2&$t=10,\tau=5,r=7$& 27280.45&599866&601999\\
+\hline
+2&$t=5,\tau=5,r=5$& 18.94&557856&562202\\
+\hline
+\end{tabular}
+\caption{Summary}
+\label{Summary}
+\end{table}
 
+\begin{thebibliography}{13}
+\bibitem{GDR}Georghiou, A., Wiesemann, W. and Kuhn, D., 2015. Generalized decision rule approximations for stochastic programming via liftings. Mathematical Programming, 152(1-2), pp.301-338.
+\end{thebibliography}
 
 %构造c的时候可以与实际情况不同
 \end{document}

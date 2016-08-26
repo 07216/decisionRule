@@ -58,7 +58,7 @@ class simulation:
                     if self.XX[t,j][d] != 1:
                         if flag == -1:
                             flag = d
-                #            print self.XX[t,j][d],t,j,d,self.seg[t,j][d],self.seg[t,j][max(d-1,0)]
+                            print self.XX[t,j][d],t,j,d,self.seg[t,j][d],self.seg[t,j][max(d-1,0)]
                 if flag !=-1 :
                     if flag == 0 :
                         self.bookLim[t,j] = 0
@@ -66,7 +66,7 @@ class simulation:
                         self.bookLim[t,j] = self.seg[t,j][flag]
                 else:
                     self.bookLim[t,j] = self.seg[t,j][self.d]+1000
-                #print self.bookLim[t,j]
+                #print self.bookLim[t,j],t,j
                     
     def echoXX(self):
         for t in range(0,self.t):

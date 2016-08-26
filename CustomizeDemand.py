@@ -14,10 +14,10 @@ import Input
 
 class CustomizeDemand:
     def __init__(self,choose):
-        self.t = 10
+        self.t = 5
         self.limt = min(0,self.t)
         self.T = 100
-        self.d = 7
+        self.d = 1
         self.q = 3
         self.qq = self.d
         
