@@ -50,12 +50,12 @@ if first == 1:#Decision Rule Approch
     '''
     simulator.initX()
     simulator.initXX()
-    simulator.echoXX()
-    print simulator.run(100)
+    #simulator.echoXX()
     print simulator.bookLimRun(np.round,1000)
     print simulator.bookLimRun(np.ceil,1000)
     print simulator.bookLimRun(np.floor,1000)
     print simulator.bookLimRun(simulator.atLeastOne,1000)
+    print simulator.run(100)
 
 elif first == 0:#reduction of Approximate Linear Programming
     
