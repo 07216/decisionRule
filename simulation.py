@@ -52,8 +52,6 @@ class simulation:
         for t in range(0,self.t):
             for j in range(0,self.j):     #In the code, upbound = lowbound is not permitted as a result of non-technically selecting of basis function.           
                 self.bookLim[t,j] = 0
-                if self.seg[t,j][0] == self.seg[t,j][1]:
-                    continue
                 self.XX[t,j] = np.zeros((self.d,1))
                 flag = -1
                 low = 0
@@ -68,7 +66,9 @@ class simulation:
                     if self.XX[t,j][d] != 1:
                         if flag == -1:
                             flag = d
-                        
+                #As upbound = lowbound is not permitted
+                if self.seg[t,j][0] == self.seg[t,j][1]:
+                    self.bookLim[t,j] = 0
                 '''
                 if flag !=-1 :
                     if flag == 0 :
