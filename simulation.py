@@ -51,15 +51,25 @@ class simulation:
         #self.INF = 1000000
         for t in range(0,self.t):
             for j in range(0,self.j):     #In the code, upbound = lowbound is not permitted as a result of non-technically selecting of basis function.           
+                self.bookLim[t,j] = 0
+                if self.seg[t,j][0] == self.seg[t,j][1]:
+                    continue
                 self.XX[t,j] = np.zeros((self.d,1))
                 flag = -1
+                low = 0
                 for d in range(0,self.d):
                     self.XX[t,j][d] = self.xx[t,j,d].X
+                    self.bookLim += (self.seg[t,j][d+1]-low) * self.XX[t,j][d]
+                    low = self.seg[t,j][d+1]
+                    '''
                     if self.XX[t,j][d] !=0 :
                         print self.XX[t,j][d],t,j,d,self.seg[t,j][d],self.seg[t,j][max(d-1,0)]
+                    '''
                     if self.XX[t,j][d] != 1:
                         if flag == -1:
                             flag = d
+                        
+                '''
                 if flag !=-1 :
                     if flag == 0 :
                         self.bookLim[t,j] = 0
@@ -67,6 +77,7 @@ class simulation:
                         self.bookLim[t,j] = self.seg[t,j][flag]
                 else:
                     self.bookLim[t,j] = self.seg[t,j][self.d]+1000
+                '''
                 #print self.bookLim[t,j],t,j
                     
     def echoXX(self):
