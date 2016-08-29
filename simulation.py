@@ -59,7 +59,7 @@ class simulation:
                 low = 0
                 for d in range(0,self.d):
                     self.XX[t,j][d] = self.xx[t,j,d].X
-                    self.bookLim += (self.seg[t,j][d+1]-low) * self.XX[t,j][d]
+                    self.bookLim[t,j] += (self.seg[t,j][d+1]-low) * self.XX[t,j][d]
                     low = self.seg[t,j][d+1]
                     '''
                     if self.XX[t,j][d] !=0 :
