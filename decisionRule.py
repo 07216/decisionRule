@@ -155,6 +155,7 @@ class decisionRule:
             rhs[i] += self.xx[pt,pj,pd]
         for i in range(0,self.i):
             self.m.addConstr(rhs[i],GRB.EQUAL,lhs[i],'Z1 %d %d %d %d' %(pt,pj,pd,i))
+        return 1
         
     def paraGamma(self,t,pt,pj,pd):
         base = 2+(pt*self.j+pj)*(self.d+1)+pd
