@@ -6,13 +6,14 @@ Created on Thu Aug 04 15:23:11 2016
 """
 
 from gurobipy import *
-from joblib import Parallel, delayed
+from parmap import starmap
+from multiprocessing import Pool
 import numpy as np
 
 class decisionRule:
     def __init__(self):
         self.m = Model("Decision Rule Approch")
-        self.kernel = 32
+        self.pool = Pool(processes = 32)
         
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
@@ -263,7 +264,8 @@ class decisionRule:
         for i in range(0,self.i):
             self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
         #Beside first column
-        Parallel(n_jobs=self.kernel)(delayed(self.paraLambda)(pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+        starmap(self.paraLambda,[(pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d)],pool = self.pool)
+        Parallel(n_jobs=self.kernel)(delayed(self.paraLambda))
         #Gamma h >=0
         for t in range(0,self.t):
             lhs = {}
@@ -301,7 +303,7 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            Parallel(n_jobs=self.kernel)(delayed(self.paraGamma)(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+            starmap(self.paraGamma,[(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d)],pool = self.pool)
         #Omega h <=0
         for t in range(0,self.t):
             lhs = {}
@@ -341,7 +343,7 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            Parallel(n_jobs=self.kernel)(delayed(self.paraOmega)(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+            starmap(self.paraOmega,[(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d)],pool = self.pool)
                         
     def solve(self):
         self.m.optimize()
