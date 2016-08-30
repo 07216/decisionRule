@@ -25,14 +25,18 @@ demander = CustomizeDemand.CustomizeDemand(1)
 first = 1
 
 if first == 1:#Decision Rule Approch 
-    
+    print "Task Start",time.clock()
     decisionSolver = decisionRule.decisionRule()
     #   decisionSolver.echoInput()
     #decisionSolver.echoVal()
     decisionSolver.inputDemand(demander)
+    print "Input End",time.clock()
     decisionSolver.addVar()
+    print "Add variable end",time.clock()
     decisionSolver.addOpt()
+    print "Add optimal objective end",time.clock()
     decisionSolver.addConstr()
+    print "Add constriants end",time.clock()
     #decisionSolver.writeMPS()
     decisionSolver.solve()
     #decisionSolver.echoOpt()    
