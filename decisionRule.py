@@ -7,13 +7,12 @@ Created on Thu Aug 04 15:23:11 2016
 
 from gurobipy import *
 from parmap import starmap
-from multiprocessing import Pool
 import numpy as np
 
 class decisionRule:
     def __init__(self):
         self.m = Model("Decision Rule Approch")
-        self.pool = Pool(processes = 32)
+        self.kernel = 32
         
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
@@ -126,7 +125,7 @@ class decisionRule:
                     
         self.m.setObjective(obj,GRB.MAXIMIZE)
         
-    def paraLambda(self,pt,pj,pd):
+    def paraLambda(self,(pt,pj,pd)):
         base = 2+(pt*self.j+pj)*(self.d+1)+pd
         lhs = {}
         rhs = {}
@@ -158,7 +157,7 @@ class decisionRule:
             self.m.addConstr(rhs[i],GRB.EQUAL,lhs[i],'Z1 %d %d %d %d' %(pt,pj,pd,i))
         return 1
         
-    def paraGamma(self,t,pt,pj,pd):
+    def paraGamma(self,(t,pt,pj,pd)):
         base = 2+(pt*self.j+pj)*(self.d+1)+pd
         lhs = {}
         rhs = {}
@@ -190,7 +189,7 @@ class decisionRule:
             self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
         return 1
             
-    def paraOmega(self,t,pt,pj,pd):
+    def paraOmega(self,(t,pt,pj,pd)):
         base = 2+(pt*self.j+pj)*(self.d+1)+pd
         lhs = {}
         rhs = {}
@@ -264,8 +263,7 @@ class decisionRule:
         for i in range(0,self.i):
             self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
         #Beside first column
-        starmap(self.paraLambda,[(pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d)],pool = self.pool)
-        Parallel(n_jobs=self.kernel)(delayed(self.paraLambda))
+        Parallel(n_jobs=self.kernel)(delayed(self.paraLambda)(pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
         #Gamma h >=0
         for t in range(0,self.t):
             lhs = {}
@@ -303,7 +301,7 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            starmap(self.paraGamma,[(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d)],pool = self.pool)
+            Parallel(n_jobs=self.kernel)(delayed(self.paraGamma)(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
         #Omega h <=0
         for t in range(0,self.t):
             lhs = {}
@@ -343,7 +341,7 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            starmap(self.paraOmega,[(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d)],pool = self.pool)
+            Parallel(n_jobs=self.kernel)(delayed(self.paraOmega)(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
                         
     def solve(self):
         self.m.optimize()
