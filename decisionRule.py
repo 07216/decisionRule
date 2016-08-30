@@ -6,12 +6,13 @@ Created on Thu Aug 04 15:23:11 2016
 """
 
 from gurobipy import *
+from joblib import Parallel, delayed
 import numpy as np
 
 class decisionRule:
     def __init__(self):
         self.m = Model("Decision Rule Approch")
-        
+        self.kernel = 32
         
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
@@ -123,7 +124,100 @@ class decisionRule:
                     obj += self.v[j,0] * self.xx[t,j,d] * self.xi[1+(t*self.j+j)*self.d+d,0]
                     
         self.m.setObjective(obj,GRB.MAXIMIZE)
-    
+        
+    def paraLambda(self,pt,pj,pd):
+        base = 2+(pt*self.j+pj)*(self.d+1)+pd
+        lhs = {}
+        rhs = {}
+        for i in range(0,self.i):
+            lhs[i] = LinExpr()
+            rhs[i] = LinExpr()
+        if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
+            for i in range(0,self.i):
+                lhs[i] += self.l[i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                lhs[i] += self.l[i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+        else:
+            for i in range(0,self.i):
+                lhs[i] += self.l[i,base] * -1.0 
+                lhs[i] += self.l[i,base+1] * 1.0                        
+        #Ax xi
+        col = 1+(pt*self.j+pj)*self.d+pd
+        for t in range(pt+1,self.limt):
+            for j in range(0,self.j):
+                for i in self.refJ[j]:
+                    rhs[i] += self.x[t,j,col]
+        for t in range(max(pt+1,self.limt),min(self.t,pt+1+self.limt)):
+            for j in range(0,self.j):
+                for i in self.refJ[j]:
+                    rhs[i] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]
+        #Axx xi
+        for i in self.refJ[pj]:
+            rhs[i] += self.xx[pt,pj,pd]
+        for i in range(0,self.i):
+            self.m.addConstr(rhs[i],GRB.EQUAL,lhs[i],'Z1 %d %d %d %d' %(pt,pj,pd,i))
+        
+    def paraGamma(self,t,pt,pj,pd):
+        base = 2+(pt*self.j+pj)*(self.d+1)+pd
+        lhs = {}
+        rhs = {}
+        for i in range(0,self.j):
+            lhs[i] = LinExpr()
+            rhs[i] = LinExpr()
+        if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
+            for i in range(0,self.j):
+                lhs[i] += self.g[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                lhs[i] += self.g[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+        else:
+            for i in range(0,self.j):
+                lhs[i] += self.g[t,i,base] * -1.0 
+                lhs[i] += self.g[t,i,base+1] * 1.0                        
+        #Ax xi
+        col = 1+(pt*self.j+pj)*self.d+pd
+        if t < self.limt:
+            if pt < t:                              
+                for j in range(0,self.j):
+                    rhs[j] += self.x[t,j,col]
+        else:
+            if pt < t and pt >= t - self.limt:                            
+                for j in range(0,self.j):
+                    rhs[j] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]                            
+        #Axx xi
+        if pt == t:
+            rhs[pj] += self.xx[pt,pj,pd]
+        for j in range(0,self.j):
+            self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
+            
+    def paraOmega(self,t,pt,pj,pd):
+        base = 2+(pt*self.j+pj)*(self.d+1)+pd
+        lhs = {}
+        rhs = {}
+        for i in range(0,self.j):
+            lhs[i] = LinExpr()
+            rhs[i] = LinExpr()
+        if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
+            for i in range(0,self.j):
+                lhs[i] += self.o[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+                lhs[i] += self.o[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
+        else:
+            for i in range(0,self.j):
+                lhs[i] += self.o[t,i,base] * -1.0 
+                lhs[i] += self.o[t,i,base+1] * 1.0                        
+        #Ax xi
+        col = 1+(pt*self.j+pj)*self.d+pd
+        if t < self.limt:
+            if pt < t:                              
+                for j in range(0,self.j):
+                    rhs[j] += self.x[t,j,col]
+        else:
+            if pt < t and pt >= t - self.limt:                            
+                for j in range(0,self.j):
+                    rhs[j] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]                            
+        #Axx xi
+        if pt == t:
+            rhs[pj] += self.xx[pt,pj,pd] - 1
+        for j in range(0,self.j):
+            self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
+            
     def addConstr(self):
         #Lambda h <= 0 
         lhs = {}
@@ -166,38 +260,7 @@ class decisionRule:
         for i in range(0,self.i):
             self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
         #Beside first column
-        for pt in range(0,self.t):
-            for pj in range(0,self.j):
-                for pd in range(0,self.d):
-                    base = 2+(pt*self.j+pj)*(self.d+1)+pd
-                    lhs = {}
-                    rhs = {}
-                    for i in range(0,self.i):
-                        lhs[i] = LinExpr()
-                        rhs[i] = LinExpr()
-                    if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
-                        for i in range(0,self.i):
-                            lhs[i] += self.l[i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                            lhs[i] += self.l[i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                    else:
-                        for i in range(0,self.i):
-                            lhs[i] += self.l[i,base] * -1.0 
-                            lhs[i] += self.l[i,base+1] * 1.0                        
-                    #Ax xi
-                    col = 1+(pt*self.j+pj)*self.d+pd
-                    for t in range(pt+1,self.limt):
-                        for j in range(0,self.j):
-                            for i in self.refJ[j]:
-                                rhs[i] += self.x[t,j,col]
-                    for t in range(max(pt+1,self.limt),min(self.t,pt+1+self.limt)):
-                        for j in range(0,self.j):
-                            for i in self.refJ[j]:
-                                rhs[i] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]
-                    #Axx xi
-                    for i in self.refJ[pj]:
-                        rhs[i] += self.xx[pt,pj,pd]
-                    for i in range(0,self.i):
-                        self.m.addConstr(rhs[i],GRB.EQUAL,lhs[i],'Z1 %d %d %d %d' %(pt,pj,pd,i))
+        Parallel(n_jobs=self.kernel)(delayed(self.paraLambda)(pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
         #Gamma h >=0
         for t in range(0,self.t):
             lhs = {}
@@ -235,38 +298,7 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            for pt in range(0,self.t):
-                for pj in range(0,self.j):
-                    for pd in range(0,self.d):
-                        base = 2+(pt*self.j+pj)*(self.d+1)+pd
-                        lhs = {}
-                        rhs = {}
-                        for i in range(0,self.j):
-                            lhs[i] = LinExpr()
-                            rhs[i] = LinExpr()
-                        if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
-                            for i in range(0,self.j):
-                                lhs[i] += self.g[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                                lhs[i] += self.g[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                        else:
-                            for i in range(0,self.j):
-                                lhs[i] += self.g[t,i,base] * -1.0 
-                                lhs[i] += self.g[t,i,base+1] * 1.0                        
-                        #Ax xi
-                        col = 1+(pt*self.j+pj)*self.d+pd
-                        if t < self.limt:
-                            if pt < t:                              
-                                for j in range(0,self.j):
-                                    rhs[j] += self.x[t,j,col]
-                        else:
-                            if pt < t and pt >= t - self.limt:                            
-                                for j in range(0,self.j):
-                                    rhs[j] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]                            
-                        #Axx xi
-                        if pt == t:
-                            rhs[pj] += self.xx[pt,pj,pd]
-                        for j in range(0,self.j):
-                            self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
+            Parallel(n_jobs=self.kernel)(delayed(self.paraGamma)(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
         #Omega h <=0
         for t in range(0,self.t):
             lhs = {}
@@ -306,38 +338,8 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            for pt in range(0,self.t):
-                for pj in range(0,self.j):
-                    for pd in range(0,self.d):
-                        base = 2+(pt*self.j+pj)*(self.d+1)+pd
-                        lhs = {}
-                        rhs = {}
-                        for i in range(0,self.j):
-                            lhs[i] = LinExpr()
-                            rhs[i] = LinExpr()
-                        if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
-                            for i in range(0,self.j):
-                                lhs[i] += self.o[t,i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                                lhs[i] += self.o[t,i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                        else:
-                            for i in range(0,self.j):
-                                lhs[i] += self.o[t,i,base] * -1.0 
-                                lhs[i] += self.o[t,i,base+1] * 1.0                        
-                        #Ax xi
-                        col = 1+(pt*self.j+pj)*self.d+pd
-                        if t < self.limt:
-                            if pt < t:                              
-                                for j in range(0,self.j):
-                                    rhs[j] += self.x[t,j,col]
-                        else:
-                            if pt < t and pt >= t - self.limt:                            
-                                for j in range(0,self.j):
-                                    rhs[j] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]                            
-                        #Axx xi
-                        if pt == t:
-                            rhs[pj] += self.xx[pt,pj,pd] - 1
-                        for j in range(0,self.j):
-                            self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
+            Parallel(n_jobs=self.kernel)(delayed(self.paraOmega)(t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+                        
     def solve(self):
         self.m.optimize()
     
