@@ -8,6 +8,7 @@ Created on Thu Aug 04 15:23:11 2016
 from gurobipy import *
 from parmap import starmap
 import numpy as np
+from multiprocessing import Parallel
 
 class decisionRule:
     def __init__(self):
