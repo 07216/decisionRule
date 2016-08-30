@@ -125,7 +125,7 @@ class decisionRule:
                     
         self.m.setObjective(obj,GRB.MAXIMIZE)
         
-    def paraLambda(pt,pj,pd):
+    def paraLambda(self,pt,pj,pd):
         base = 2+(pt*self.j+pj)*(self.d+1)+pd
         lhs = {}
         rhs = {}
@@ -187,6 +187,7 @@ class decisionRule:
             rhs[pj] += self.xx[pt,pj,pd]
         for j in range(0,self.j):
             self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
+        return 1
             
     def paraOmega(self,t,pt,pj,pd):
         base = 2+(pt*self.j+pj)*(self.d+1)+pd
@@ -218,6 +219,7 @@ class decisionRule:
             rhs[pj] += self.xx[pt,pj,pd] - 1
         for j in range(0,self.j):
             self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
+        return 1
             
     def addConstr(self):
         #Lambda h <= 0 
@@ -261,7 +263,7 @@ class decisionRule:
         for i in range(0,self.i):
             self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
         #Beside first column
-        Parallel(n_jobs=self.kernel)(delayed(paraLambda)(pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+        Parallel(n_jobs=self.kernel)(delayed(self.paraLambda)(pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
         #Gamma h >=0
         for t in range(0,self.t):
             lhs = {}
