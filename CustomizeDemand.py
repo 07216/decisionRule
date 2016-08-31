@@ -90,8 +90,8 @@ class CustomizeDemand:
         self.monteCarlo = {}
         #Segmentation
         self.seg = {}
-        minsup = 0.001
-        mininf = 0.001
+        minsup = 0.01
+        mininf = 0.01
         for t in range(0,self.t):
             for j in range(0,20):
                 simGamma = np.random.gamma(40,size=(self.lenMon))
@@ -210,6 +210,15 @@ class CustomizeDemand:
         self.pushThreeLeg(1,2,2,4,7,6,5,3,8)
         self.pushThreeLeg(1,3,2,4,8,9,5,3,9)
         
+        totalLen = 1000.0
+        div = int(totalLen / self.t)
+        self.cons = np.zeros((self.t,2))
+        for t in range(0,self.t):            
+            for tt in range(t*div,(t+1)*div):
+                self.cons[t,0] +=  0.25 * 1.0/totalLen * (float(tt)/totalLen) ** (6 - 1) * (1- float(tt)/totalLen) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                self.cons[t,1] +=  0.75 * 1.0/totalLen * (float(tt)/totalLen) ** (2 - 1) * (1- float(tt)/totalLen) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                
+        self.monteCarlo = {}
         #Segmentation 
         self.h = []
         self.seg = {}
@@ -217,12 +226,17 @@ class CustomizeDemand:
         mininf = 0.001
         for t in range(0,self.t):
             for j in range(0,20):
+                simGamma = np.random.gamma(60,size=(self.lenMon))
                 if j%2 ==0:
-                    b = Gamma.ppf(1-minsup,60) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,60) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,0])
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
+                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 else:
-                    b = Gamma.ppf(1-minsup,60) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,60) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                    self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,1])
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
+                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -230,12 +244,17 @@ class CustomizeDemand:
                 self.seg[t,j] = new
                 
             for j in range(20,44):
+                simGamma = np.random.gamma(150,size=(self.lenMon))
                 if j%2 ==0:
-                    b = Gamma.ppf(1-minsup,150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,0])
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
+                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 else:
-                    b = Gamma.ppf(1-minsup,150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                    self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,1])
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
+                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -243,12 +262,17 @@ class CustomizeDemand:
                 self.seg[t,j] = new
                 
             for j in range(44,60):
+                simGamma = np.random.gamma(100,size=(self.lenMon))
                 if j%2 ==0:
-                    b = Gamma.ppf(1-minsup,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,0])
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
+                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 else:
-                    b = Gamma.ppf(1-minsup,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                    self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,1])
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
+                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
