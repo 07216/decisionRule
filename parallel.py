@@ -37,9 +37,7 @@ def paraLambda(ins,pt,pj,pd):
     #Axx xi
     for i in ins.refJ[pj]:
         rhs[i] += ins.xx[pt,pj,pd]
-    for i in range(0,ins.i):
-        ins.m.addConstr(rhs[i],GRB.EQUAL,lhs[i],'Z1 %d %d %d %d' %(pt,pj,pd,i))
-    return 1
+    return (lhs,rhs)
     
 def paraGamma(ins,t,pt,pj,pd):
     print "Second",t,pt,pj,pd
@@ -70,9 +68,7 @@ def paraGamma(ins,t,pt,pj,pd):
     #Axx xi
     if pt == t:
         rhs[pj] += ins.xx[pt,pj,pd]
-    for j in range(0,ins.j):
-        ins.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
-    return 1
+    return (lhs,rhs)
         
 def paraOmega(ins,t,pt,pj,pd):
     print "Third",t,pt,pj,pd
@@ -103,7 +99,5 @@ def paraOmega(ins,t,pt,pj,pd):
     #Axx xi
     if pt == t:
         rhs[pj] += ins.xx[pt,pj,pd] - 1
-    for j in range(0,ins.j):
-        ins.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
-    return 1
+    return (lhs,rhs)
             

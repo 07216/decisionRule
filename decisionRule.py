@@ -10,13 +10,13 @@ import numpy as np
 from parmap import starmap
 from joblib import Parallel, delayed
 from joblib.pool import has_shareable_memory
+from multiprocessing import Pool
 from parallel import *
 
 class decisionRule:
     def __init__(self):
         self.m = Model("Decision Rule Approch")
         self.kernel = 32
-        self.nbytes=1e9
         
         #Sparse P
         #self.P = np.zeros((20000,20000),dtype=np.float)
@@ -171,7 +171,12 @@ class decisionRule:
         for i in range(0,self.i):
             self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
         #Beside first column
-        Parallel(n_jobs=self.kernel, max_nbytes=self.nbytes)(delayed(has_shareable_memory)(paraLambda(self,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+            
+        result = Parallel(n_jobs=self.kernel)(delayed(paraLambda)(self,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+        for (lhs,rhs) in result:
+            for i in range(self.i):
+                self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
+        
         #Gamma h >=0
         for t in range(0,self.t):
             lhs = {}
@@ -209,8 +214,12 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            Parallel(n_jobs=self.kernel, max_nbytes=self.nbytes)(delayed(has_shareable_memory)(paraGamma(self,t,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
-        #Omega h <=0
+            
+            result = Parallel(n_jobs=self.kernel)(delayed(paraGamma)(self,t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+            for (lhs,rhs) in result:
+                for j in range(self.j):
+                    self.m.addConstr(lhs[j], GRB.EQUAL, rhs[j],'Constant2 %d' %(j))        #Omega h <=0
+                
         for t in range(0,self.t):
             lhs = {}
             for i in range(0,self.j):
@@ -249,8 +258,12 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            Parallel(n_jobs=self.kernel, max_nbytes=self.nbytes)(delayed(has_shareable_memory)(paraOmega(self,t,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
-                        
+                
+            result = Parallel(n_jobs=self.kernel)(delayed(paraOmega)(self,t,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+            for (lhs,rhs) in result:
+                for j in range(self.j):
+                    self.m.addConstr(lhs[j], GRB.EQUAL, rhs[j],'Constant3 %d' %(j))        #Omega h <=0            
+                    
     def solve(self):
         self.m.optimize()
     
