@@ -172,7 +172,7 @@ class decisionRule:
             self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
         #Beside first column
             
-        result = Parallel(n_jobs=self.kernel)(delayed(paraLambda)(self,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+            result = Parallel(n_jobs=self.kernel)(delayed(paraLambda)(self,pt,pj,pd) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
         for (lhs,rhs) in result:
             for i in range(self.i):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
