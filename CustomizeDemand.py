@@ -94,7 +94,7 @@ class CustomizeDemand:
         mininf = 0.01
         for t in range(0,self.t):
             for j in range(0,20):
-                simGamma = np.random.gamma(self.lenMon)
+                simGamma = np.random.gamma(40,size=(self.lenMon))
                 if j%2 ==0:
                     self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,0])
                     self.monteCarlo[t,j].sort()
@@ -112,7 +112,7 @@ class CustomizeDemand:
                 self.seg[t,j] = new
             
             for j in range(20,60):
-                simGamma = np.random.gamma(self.lenMon)
+                simGamma = np.random.gamma(1000,size=(self.lenMon))
                 if j%2 ==0:
                     self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,0])
                     self.monteCarlo[t,j].sort()
