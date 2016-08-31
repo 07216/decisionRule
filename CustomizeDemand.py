@@ -411,8 +411,8 @@ class CustomizeDemand:
             for j in range(0,self.j):
                 left = 0
                 for d in range(0,self.d):
-                    low = self.seg[t,2*j][d]
-                    up = self.seg[t,2*j][d+1]
+                    low = self.seg[t,j][d]
+                    up = self.seg[t,j][d+1]
                     if d == 0:
                         low = 0
                     self.xi[1+(t*self.j+j)*self.d+d],left =  self.avg(t,j,left,up,low)
