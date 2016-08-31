@@ -18,8 +18,7 @@ class CustomizeDemand:
         self.limt = min(limt,self.t)
         self.T = 100
         self.d = d
-        self.q = 3
-        self.qq = self.d
+        self.lenMon = 10000
         
         if choose ==0:
             self.reader = self.reductionALPReadIn()
@@ -81,7 +80,6 @@ class CustomizeDemand:
         self.h = []
         
         self.monteCarlo = {}
-        self.lenMon = 10000
         #Segmentation
         self.seg = {}
         minsup = 0.01
@@ -93,14 +91,14 @@ class CustomizeDemand:
                     for k in range(self.lenMon):
                         self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)))
                     self.monteCarlo[t,j].sort()
-                    b = self.monteCarlo[t,j][(1-minsup)*self.lenMon-1]
-                    a = self.monteCarlo[t,j][mininf*self.lenMon]
+                    b = self.monteCarlo[t,j][np.ceil((1-minsup)*self.lenMon-1)]
+                    a = self.monteCarlo[t,j][np.floor(mininf*self.lenMon)]
                 else:
                     for k in range(self.lenMon):
                         self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)))
                     self.monteCarlo[t,j].sort()
-                    b = self.monteCarlo[t,j][(1-minsup)*self.lenMon-1]
-                    a = self.monteCarlo[t,j][mininf*self.lenMon]
+                    b = self.monteCarlo[t,j][np.ceil((1-minsup)*self.lenMon-1)]
+                    a = self.monteCarlo[t,j][np.floor(mininf*self.lenMon)]
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -112,14 +110,14 @@ class CustomizeDemand:
                     for k in range(self.lenMon):
                         self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)))
                     self.monteCarlo[t,j].sort()
-                    b = self.monteCarlo[t,j][(1-minsup)*self.lenMon-1]
-                    a = self.monteCarlo[t,j][mininf*self.lenMon]
+                    b = self.monteCarlo[t,j][np.ceil((1-minsup)*self.lenMon-1)]
+                    a = self.monteCarlo[t,j][np.floor(mininf*self.lenMon)]
                 else:
                     for k in range(self.lenMon):
                         self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)))
                     self.monteCarlo[t,j].sort()
-                    b = self.monteCarlo[t,j][(1-minsup)*self.lenMon-1]
-                    a = self.monteCarlo[t,j][mininf*self.lenMon]
+                    b = self.monteCarlo[t,j][np.ceil((1-minsup)*self.lenMon-1)]
+                    a = self.monteCarlo[t,j][np.floor(mininf*self.lenMon)]
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
