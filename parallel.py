@@ -9,6 +9,7 @@ from gurobipy import *
 import numpy as np
 
 def paraLambda(ins,pt,pj,pd):
+    print "First",pt,pj,pd
     base = 2+(pt*ins.j+pj)*(ins.d+1)+pd
     lhs = {}
     rhs = {}
@@ -41,6 +42,7 @@ def paraLambda(ins,pt,pj,pd):
     return 1
     
 def paraGamma(ins,t,pt,pj,pd):
+    print "Second",t,pt,pj,pd
     base = 2+(pt*ins.j+pj)*(ins.d+1)+pd
     lhs = {}
     rhs = {}
@@ -73,6 +75,7 @@ def paraGamma(ins,t,pt,pj,pd):
     return 1
         
 def paraOmega(ins,t,pt,pj,pd):
+    print "Third",t,pt,pj,pd
     base = 2+(pt*ins.j+pj)*(ins.d+1)+pd
     lhs = {}
     rhs = {}
