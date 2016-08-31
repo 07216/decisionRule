@@ -222,8 +222,8 @@ class CustomizeDemand:
         #Segmentation 
         self.h = []
         self.seg = {}
-        minsup = 0.001
-        mininf = 0.001
+        minsup = 0.01
+        mininf = 0.01
         for t in range(0,self.t):
             for j in range(0,20):
                 simGamma = np.random.gamma(60,size=(self.lenMon))
@@ -280,109 +280,28 @@ class CustomizeDemand:
                 self.seg[t,j] = new
                 
         #Expectation of arrival process
-        eps = 1e-4
         self.xi = np.zeros((self.t*self.j*self.d+1,1),dtype=np.float)
         self.xi[0] = 1
         for t in range(0,self.t):
-            s = Gamma.ppf(mininf,60)
-            e = Gamma.ppf(1-minsup,60)
-            k = float(e-s)/self.d
-            for j in range(0,10):
+            for j in range(0,30):
+                left = 0
+                leftSec = 0
                 for d in range(0,self.d):
-                    ss = k*d+s
-                    ee = k*(d+1)+s
-                    low = self.seg[t,2*j][d]
-                    up = self.seg[t,2*j][d+1]
-                    
-                    if d == 0:
-                        low = 0
-                        '''
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,60)
-                        '''
-                    ct = 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,60),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,60))
-                    
-                    ss = k*d+s
-                    ee = k*(d+1)+s
-                    low = self.seg[t,2*j+1][d]
-                    up = self.seg[t,2*j+1][d+1]
-                    if d == 0:
-                        low = 0
-                    '''
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,60)
-                        '''
-                    ct = 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)                    
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,60),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,60)) 
-                    
-            s = Gamma.ppf(mininf,150)
-            e = Gamma.ppf(1-minsup,150)
-            k = float(e-s)/self.d
-            for j in range(10,22):
-                for d in range(0,self.d):
-                    ss = k*d+s
-                    ee = k*(d+1)+s
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
                     if d == 0:
                         low = 0
-                    '''
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,150)
-                        '''
-                    ct = 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,150),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,150))
+                    self.xi[1+(t*self.j+2*j)*self.d+d],left =  self.avg(t,2*j,left,up,low)
+                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (self.lenMon - left)
+                    self.xi[1+(t*self.j+2*j)*self.d+d] /= self.lenMon
                     
-                    ss = k*d+s
-                    ee = k*(d+1)+s
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
                     if d == 0:
                         low = 0
-                    '''
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,150)
-                        '''
-                    ct = 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)                    
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,150),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,150)) 
-       
-            s = Gamma.ppf(mininf,100)
-            e = Gamma.ppf(1-minsup,100)
-            k = float(e-s)/self.d
-            for j in range(22,30):
-                for d in range(0,self.d):
-                    ss = k*d+s
-                    ee = k*(d+1)+s
-                    low = self.seg[t,2*j][d]
-                    up = self.seg[t,2*j][d+1]
-                    if d == 0:
-                        low = 0
-                    '''
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,100)
-                        '''
-                    ct = 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,100),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,100))
-                    
-                    ss = k*d+s
-                    ee = k*(d+1)+s
-                    low = self.seg[t,2*j+1][d]
-                    up = self.seg[t,2*j+1][d+1]
-                    if d == 0:
-                        low = 0
-                    '''
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,100)
-                        '''
-                    ct = 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)                    
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,100),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,100)) 
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d],leftSec =  self.avg(t,2*j+1,leftSec,up,low)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (self.lenMon - leftSec)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] /= self.lenMon 
         #Up Bound And Low Bound For Demand
         #print self.xi
         #print self.h
@@ -407,18 +326,21 @@ class CustomizeDemand:
         self.refJ[20+4*id+2] = [d,e,f]
         self.refJ[20+4*id+3] = [d,e,f]
 
-    def produceDemandForSecondCaseInResolve(self):        
+    def produceDemandForSecondCaseInResolve(self):    
         self.realDemand = []
         for t in range(0,self.t):
             for j in range(0,10):
-                self.realDemand += [np.random.gamma(60) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
-                self.realDemand += [np.random.gamma(60) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
+                g = np.random.gamma(60)
+                self.realDemand += [np.random.poisson(g * self.cons[t][0])]
+                self.realDemand += [np.random.poisson(g * self.cons[t][1])]
             for j in range(10,22):
-                self.realDemand += [np.random.gamma(150) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
-                self.realDemand += [np.random.gamma(150) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
+                g = np.random.gamma(150)
+                self.realDemand += [np.random.poisson(g * self.cons[t][0])]
+                self.realDemand += [np.random.poisson(g * self.cons[t][1])]
             for j in range(22,30):
-                self.realDemand += [np.random.gamma(100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)]
-                self.realDemand += [np.random.gamma(100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)]
+                g = np.random.gamma(100)
+                self.realDemand += [np.random.poisson(g * self.cons[t][0])]
+                self.realDemand += [np.random.poisson(g * self.cons[t][1])]
         return self.realDemand
 
     def reductionALPReadIn(self):
@@ -439,10 +361,8 @@ class CustomizeDemand:
         
         #construct A
         self.A = np.zeros((self.i,self.j),dtype=np.float)
-        self.xi = np.zeros((self.t*self.j+1,1),dtype=np.float)
         self.prob = np.zeros((self.t*self.T*self.j+1,1),dtype=np.float)
         self.c = np.zeros((self.i,1),dtype=np.float)
-        self.h = np.zeros((2*(self.t*self.j+1),1),dtype=np.float)
         #Sparse W
         #self.W = np.zeros((2*(self.t*self.j+1),self.t*self.j+1),dtype=np.float)
         self.v = np.zeros((self.j,1),dtype=np.float)
@@ -459,30 +379,46 @@ class CustomizeDemand:
             self.c[item] = self.rALP.flight[item][2]
             #self.c[item] = 2
         #construct Exi
-        self.xi[0] = 1
-        self.prob[0] = 1
+        self.prob = {}
         for t in range(0,self.t * self.T):
             for j in range(0,self.j):
                 index = self.rALP.prdic[j]
-                self.prob[1+t*self.j+j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
+                self.prob[t,j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
+        
+        self.h = {}
+        self.monteCarlo = {}
+        self.seg = {}
+        minsup = 0.01
+        mininf = 0.01
         for t in range(0,self.t):
             for j in range(0,self.j):
-                self.xi[1+t*self.j+j] = 0
-                for T in range(0,self.T):
-                    self.xi[1+t*self.j+j] += self.prob[1+(t*self.T+T)*self.j+j]        
-        minsup = 1e-1
-        mininf = 7e-1
-        #construct h
-        self.h[0] = 1
-        self.h[1] = -1
+                self.monteCarlo[t,j] = []
+                for k in range(0,self.monteCarlo):
+                    self.monteCarlo[t,j].append(np.sum(np.random.uniform()<self.prob[t*self.T:(t+1)*self.T,j]))
+                self.monteCarlo[t,j].sort()
+                b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
+                a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
+                new = []
+                for d in range(0,self.d):
+                    new += [float(b-a)/self.d*d+a]
+                new += [b]
+                self.seg[t,j] = new
+                       
+        #Expectation of arrival process
+        self.xi = np.zeros((self.t*self.j*self.d+1,1),dtype=np.float)
+        self.xi[0] = 1
         for t in range(0,self.t):
-            for j in range(0,self.j):                
-                if self.xi[t*self.j+j+1] == 0:
-                    self.h[2*(1+t*self.j+j)] = 0
-                    self.h[2*(1+t*self.j+j)+1] = 0
-                else:
-                    self.h[2*(1+t*self.j+j)] = poisson.ppf(1-minsup,self.xi[t*self.j+j+1])
-                    self.h[2*(1+t*self.j+j)+1] = -poisson.ppf(mininf,self.xi[t*self.j+j+1])
+            for j in range(0,self.j):
+                left = 0
+                for d in range(0,self.d):
+                    low = self.seg[t,2*j][d]
+                    up = self.seg[t,2*j][d+1]
+                    if d == 0:
+                        low = 0
+                    self.xi[1+(t*self.j+j)*self.d+d],left =  self.avg(t,j,left,up,low)
+                    self.xi[1+(t*self.j+j)*self.d+d] += (up - low)* (self.lenMon - left)
+                    self.xi[1+(t*self.j+j)*self.d+d] /= self.lenMon
+        
         #construct v
         for j in range(0,self.j):
             self.v[j] = self.rALP.pval[j]
