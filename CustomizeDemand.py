@@ -130,10 +130,11 @@ class CustomizeDemand:
         self.xi[0] = 1
         for t in range(0,self.t):
             for j in range(0,30):
+                left = 0
+                leftSec = 0
                 for d in range(0,self.d):
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
-                    left = 0
                     if d == 0:
                         low = 0
                     self.xi[1+(t*self.j+2*j)*self.d+d],left =  self.avg(t,2*j,left,up,low)
@@ -142,11 +143,10 @@ class CustomizeDemand:
                     
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
-                    left = 0
                     if d == 0:
                         low = 0
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d],left =  self.avg(t,2*j+1,left,up,low)
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (self.lenMon - left)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d],left =  self.avg(t,2*j+1,leftSec,up,low)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (self.lenMon - leftSec)
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] /= self.lenMon
                     
         #print self.xi
