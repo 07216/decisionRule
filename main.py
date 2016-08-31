@@ -21,7 +21,8 @@ firstCaseInReSolve=1
 secondCaseInReSolve=2
 reductionALP=0
 
-demander = CustomizeDemand.CustomizeDemand(1,int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
+t,limt,d = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3])
+demander = CustomizeDemand.CustomizeDemand(1,t,limt,d)
 
 first = 1
 
@@ -44,7 +45,7 @@ if first == 1:#Decision Rule Approch
     decisionSolver.solve()
     #decisionSolver.echoOpt()    
     
-    print end-start
+    print t,limt,d,end-start
     
     simulator = simulation.simulation(decisionSolver,demander)
     '''
