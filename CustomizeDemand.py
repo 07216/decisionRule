@@ -427,10 +427,18 @@ class CustomizeDemand:
         #print sum(self.xi)
 
     def produceDemandForrALP(self):
+        tmpDemand = np.zeros((self.t*self.T,self.j), dtype=np.float)
+        for t in range(0,self.t*self.T):
+            p = np.random.uniform()
+            for j in range(0,self.j):
+                p-= self.prob[t,j]
+                if p<=0 :
+                    tmpDemand[t,j] += 1
+                    break
         self.realDemand = []
         for t in range(0,self.t):
             for j in range(0,self.j):
-                self.realDemand += [np.sum(np.random.uniform()<self.prob[t*self.T:(t+1)*self.T,j])]
+                self.realDemand += np.sum(tmpDemand[t*self.T:(t+1)*self.T,j])
         return self.realDemand
                 
     def cal(self,t,j,minp):
