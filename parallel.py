@@ -8,7 +8,9 @@ Created on Tue Aug 30 19:13:59 2016
 from gurobipy import *
 import numpy as np
 
-def paraLambda(ins,pt,pj,pd):
+def paraLambda(pt,pj,pd):
+    return 1
+    '''
     print "First",pt,pj,pd
     base = 2+(pt*ins.j+pj)*(ins.d+1)+pd
     lhs = {}
@@ -38,6 +40,7 @@ def paraLambda(ins,pt,pj,pd):
     for i in ins.refJ[pj]:
         rhs[i] += ins.xx[pt,pj,pd]
     return (lhs,rhs)
+    '''
     
 def paraGamma(ins,t,pt,pj,pd):
     print "Second",t,pt,pj,pd
