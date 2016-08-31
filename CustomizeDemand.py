@@ -32,7 +32,7 @@ class CustomizeDemand:
             self.sim = self.produceDemandForSecondCaseInResolve
     
     def avg(self,pt,pj,start,threshold,minus):
-        result = 0
+        result = 0.0
         for i in range(start,self.lenMon):
             if self.monteCarlo[pt,pj][i] > threshold:
                 break
@@ -90,8 +90,8 @@ class CustomizeDemand:
         self.monteCarlo = {}
         #Segmentation
         self.seg = {}
-        minsup = 0.01
-        mininf = 0.01
+        minsup = 0.001
+        mininf = 0.001
         for t in range(0,self.t):
             for j in range(0,20):
                 simGamma = np.random.gamma(40,size=(self.lenMon))
@@ -160,11 +160,13 @@ class CustomizeDemand:
         self.realDemand = []
         for t in range(0,self.t):
             for j in range(0,10):
-                self.realDemand += [np.random.poisson(np.random.gamma(40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6))]
-                self.realDemand += [np.random.poisson(np.random.gamma(40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6))]
+                g = np.random.gamme(40)
+                self.realDemand += [np.random.poisson(g * self.cons[t][0])]
+                self.realDemand += [np.random.poisson(g * self.cons[t][1])]
             for j in range(10,30):
-                self.realDemand += [np.random.poisson(np.random.gamma(100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6))]
-                self.realDemand += [np.random.poisson(np.random.gamma(100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6))]
+                g = np.random.gamme(100)
+                self.realDemand += [np.random.poisson(g * self.cons[t][0])]
+                self.realDemand += [np.random.poisson(g * self.cons[t][1])]
         return self.realDemand
                 
     def resolveDemandSecondCase(self):
