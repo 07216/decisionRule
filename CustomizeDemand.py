@@ -388,8 +388,8 @@ class CustomizeDemand:
         self.h = {}
         self.monteCarlo = {}
         self.seg = {}
-        minsup = 0.01
-        mininf = 0.01
+        minsup = 0.001
+        mininf = 0.001
         for t in range(0,self.t):
             for j in range(0,self.j):
                 self.monteCarlo[t,j] = []
