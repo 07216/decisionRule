@@ -18,7 +18,7 @@ class CustomizeDemand:
         self.limt = min(limt,self.t)
         self.T = T
         self.d = d
-        self.lenMon = 100000
+        self.lenMon = 10000
         
         if choose ==0:
             self.reader = self.reductionALPReadIn()
@@ -384,12 +384,12 @@ class CustomizeDemand:
             for j in range(0,self.j):
                 index = self.rALP.prdic[j]
                 self.prob[t,j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
-        
+        print self.prob
         self.h = {}
         self.monteCarlo = {}
         self.seg = {}
-        minsup = 0.001
-        mininf = 0.001
+        minsup = 0.01
+        mininf = 0.01
         for t in range(0,self.t):
             for j in range(0,self.j):
                 self.monteCarlo[t,j] = []
@@ -422,7 +422,8 @@ class CustomizeDemand:
         #construct v
         for j in range(0,self.j):
             self.v[j] = self.rALP.pval[j]
-        
+        print self.v
+        print self.c
         #for t in range(0,self.t):
             #for j in range(0,self.j):
                 #self.xi[1+t*self.j+j] *= 100
