@@ -457,3 +457,4 @@ class CustomizeDemand:
                 q = (p**(i+1))/tmp
             s += i
         return s
+        
