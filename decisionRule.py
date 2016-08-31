@@ -57,7 +57,7 @@ class decisionRule:
     
     def addVar(self):
         #add X
-        self.x = {}
+        self.x = np.empty((self.t,self.j,self.limt*self.j*self.d+1), dtype=object)
         #first limt time
         for t in range(0,self.limt):
             for j in range(0,self.j):
@@ -69,25 +69,25 @@ class decisionRule:
                 for p in range(0,self.limt*self.j*self.d+1):
                     self.x[t,j,p] = self.m.addVar(lb=-GRB.INFINITY, name = 'X %d %d %d' % (t,j,p))
         #add xx
-        self.xx = {}
+        self.xx = np.empty((self.t,self.j,self.d), dtype=object)
         for t in range(0,self.t):
             for j in range(0,self.j):
                 for d in range(0,self.d):
                     self.xx[t,j,d] = self.m.addVar(lb=-GRB.INFINITY, name = 'XX %d %d %d' % (t,j,d))
         #add Lambda
-        self.l = {}
+        self.l = np.empty((self.i,self.t*self.j*(self.d+1)+2), dtype=object)
         for p in range(0,self.i):
             for i in range(0,self.t*self.j*(self.d+1)+2):
                 self.l[p,i] = self.m.addVar(lb=-GRB.INFINITY, ub=0, name = 'Lambda %d %d' % (p,i))
                 
         #add Gamma
-        self.g = {}
+        self.g = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2), dtype=object)
         for t in range(0,self.t):
             for p in range(0,self.j):
                 for i in range(0,self.t*self.j*(self.d+1)+2):
                     self.g[t,p,i] = self.m.addVar(name = 'Omega %d %d %d' %(t,p,i))
         #add Omega
-        self.o = {}
+        self.o = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2))
         for t in range(0,self.t):
             for p in range(0,self.j):
                 for i in range(0,self.t*self.j*(self.d+1)+2):
