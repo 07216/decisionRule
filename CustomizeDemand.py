@@ -32,6 +32,14 @@ class CustomizeDemand:
             self.resolveDemandSecondCase()
             self.sim = self.produceDemandForSecondCaseInResolve
     
+    def avg(self,pt,pj,start,threshold,minus):
+        result = 0
+        for i in range(start,self.lenMon):
+            if self.monteCarlo[pt,pj][i] > threshold:
+                break
+            result += self.monteCarlo[pt,pj][i]-minus
+        return result,i
+    
     def resolveDemandFirstCase(self):   
         self.i = 10
         self.j = 60
@@ -72,18 +80,27 @@ class CustomizeDemand:
         #Whether we need to set h sepeart from seg? h for range ,seg for segmentation
         self.h = []
         
-        #Segmentation 
+        self.monteCarlo = {}
+        self.lenMon = 10000
+        #Segmentation
         self.seg = {}
         minsup = 0.01
         mininf = 0.01
         for t in range(0,self.t):
             for j in range(0,20):
+                self.monteCarlo[t,j] = []
                 if j%2 ==0:
-                    b = Gamma.ppf(1-minsup,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    for k in range(self.lenMon):
+                        self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(40) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)))
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][(1-minsup)*self.lenMon-1]
+                    a = self.monteCarlo[t,j][mininf*self.lenMon]
                 else:
-                    b = Gamma.ppf(1-minsup,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                    for k in range(self.lenMon):
+                        self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(40) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)))
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][(1-minsup)*self.lenMon-1]
+                    a = self.monteCarlo[t,j][mininf*self.lenMon]
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -92,11 +109,17 @@ class CustomizeDemand:
                 
             for j in range(20,60):
                 if j%2 ==0:
-                    b = Gamma.ppf(1-minsup,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
+                    for k in range(self.lenMon):
+                        self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)))
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][(1-minsup)*self.lenMon-1]
+                    a = self.monteCarlo[t,j][mininf*self.lenMon]
                 else:
-                    b = Gamma.ppf(1-minsup,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
-                    a = Gamma.ppf(mininf,100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
+                    for k in range(self.lenMon):
+                        self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(100) * 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)))
+                    self.monteCarlo[t,j].sort()
+                    b = self.monteCarlo[t,j][(1-minsup)*self.lenMon-1]
+                    a = self.monteCarlo[t,j][mininf*self.lenMon]
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -107,68 +130,45 @@ class CustomizeDemand:
         self.xi = np.zeros((self.t*self.j*self.d+1,1),dtype=np.float)
         self.xi[0] = 1
         for t in range(0,self.t):
-            s = Gamma.ppf(mininf,40)
-            e = Gamma.ppf(1-minsup,40)
-            k = float(e-s)/self.d
-            eps = 1e-3
             for j in range(0,10):
                 for d in range(0,self.d):
-                    ss = k*d+s
-                    ee = k*(d+1)+s
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
+                    left = 0
                     if d == 0:
                         low = 0
-                        ss = 0
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,40)
-                    ct = 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,40),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,40))
+                    self.xi[1+(t*self.j+2*j)*self.d+d],left =  self.avg(t,2*j,left,up,low)
+                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (self.lenMon - left)
+                    self.xi[1+(t*self.j+2*j)*self.d+d] /= self.lenMon
                     
-                    ss = k*d+s
-                    ee = k*(d+1)+s
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
+                    left = 0
                     if d == 0:
                         low = 0
-                        ss = 0
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,40)
-                    ct = 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)                    
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,40),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,40)) 
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d],left =  self.avg(t,2*j+1,left,up,low)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (self.lenMon - left)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] /= self.lenMon
                     
-            s = Gamma.ppf(mininf,100)
-            e = Gamma.ppf(1-minsup,100)
-            k = float(e-s)/self.d
             for j in range(10,30):
                 for d in range(0,self.d):
-                    ss = k*d+s
-                    ee = k*(d+1)+s
                     low = self.seg[t,2*j][d]
                     up = self.seg[t,2*j][d+1]
+                    left = 0
                     if d == 0:
                         low = 0
-                        ss = 0
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,100)
-                    ct = 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
-                    self.xi[1+(t*self.j+2*j)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,100),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,100))
+                    self.xi[1+(t*self.j+2*j)*self.d+d],left =  self.avg(t,2*j,left,up,low)
+                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (self.lenMon - left)
+                    self.xi[1+(t*self.j+2*j)*self.d+d] /= self.lenMon
                     
-                    ss = k*d+s
-                    ee = k*(d+1)+s
                     low = self.seg[t,2*j+1][d]
                     up = self.seg[t,2*j+1][d+1]
+                    left = 0
                     if d == 0:
                         low = 0
-                        ss = 0
-                    if d == self.d:
-                        ee = Gamma.ppf(1-eps,100)
-                    ct = 0.75 * 1.0/self.t * (float(t)/self.t) ** (2 - 1) * (1- float(t)/self.t) ** (6-1) * gamma(8)/gamma(2)/gamma(6)                    
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] =  quad(lambda x:(x*ct-low)*Gamma.pdf(x,100),ss,ee)[0] 
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (1 - Gamma.cdf(ee,100)) 
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d],left =  self.avg(t,2*j+1,left,up,low)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (self.lenMon - left)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d] /= self.lenMon
         #print self.xi
         #print self.h
     
