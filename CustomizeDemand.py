@@ -145,7 +145,7 @@ class CustomizeDemand:
                     up = self.seg[t,2*j+1][d+1]
                     if d == 0:
                         low = 0
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d],left =  self.avg(t,2*j+1,leftSec,up,low)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d],leftSec =  self.avg(t,2*j+1,leftSec,up,low)
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (self.lenMon - leftSec)
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] /= self.lenMon
                     
