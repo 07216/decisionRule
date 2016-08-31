@@ -87,7 +87,7 @@ class decisionRule:
                 for i in range(0,self.t*self.j*(self.d+1)+2):
                     self.g[t,p,i] = self.m.addVar(name = 'Omega %d %d %d' %(t,p,i))
         #add Omega
-        self.o = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2))
+        self.o = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2), dtype=object)
         for t in range(0,self.t):
             for p in range(0,self.j):
                 for i in range(0,self.t*self.j*(self.d+1)+2):
