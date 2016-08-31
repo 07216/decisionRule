@@ -139,7 +139,7 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = max(0,min(productDemand[j],product[j]))
                 #sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
@@ -168,7 +168,7 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = max(0,min(productDemand[j],product[j]))
                 #sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
@@ -209,7 +209,7 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = max(0,min(np.floor(productDemand[j]),rplc(product[j])))
                 #sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
@@ -234,7 +234,7 @@ class simulation:
                 if product[j]<0:
                     #print "Strange!",product[j]
                     lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = max(0,min(np.floor(productDemand[j]),rplc(product[j])))
                 #sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
