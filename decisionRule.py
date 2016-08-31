@@ -33,8 +33,6 @@ class decisionRule:
         self.t = recorder.t
         self.limt  = recorder.limt
         self.d = recorder.d
-        self.q = recorder.q
-        self.qq = recorder.qq
            
     def echoInput(self):
         print "i:%d"%self.i

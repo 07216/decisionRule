@@ -23,8 +23,6 @@ class simulation:
         self.limt  = recorder.limt
         self.sim = recorder.sim
         self.d = recorder.d
-        self.q = recorder.q
-        self.qq = recorder.qq
         self.x = decisionSolver.x
         self.xx = decisionSolver.xx
         
