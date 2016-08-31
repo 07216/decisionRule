@@ -160,11 +160,11 @@ class CustomizeDemand:
         self.realDemand = []
         for t in range(0,self.t):
             for j in range(0,10):
-                g = np.random.gamme(40)
+                g = np.random.gamma(40)
                 self.realDemand += [np.random.poisson(g * self.cons[t][0])]
                 self.realDemand += [np.random.poisson(g * self.cons[t][1])]
             for j in range(10,30):
-                g = np.random.gamme(100)
+                g = np.random.gamma(100)
                 self.realDemand += [np.random.poisson(g * self.cons[t][0])]
                 self.realDemand += [np.random.poisson(g * self.cons[t][1])]
         return self.realDemand
