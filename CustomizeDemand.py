@@ -432,7 +432,7 @@ class CustomizeDemand:
         self.realDemand = []
         for t in range(0,self.t):
             for j in range(0,self.j):
-                self.realDemand += [np.random.poisson(self.xi[1+t*self.j+j],1)]
+                self.realDemand += [np.sum(np.random.uniform()<self.prob[t*self.T:(t+1)*self.T,j])]
         return self.realDemand
                 
     def cal(self,t,j,minp):
