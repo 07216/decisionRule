@@ -438,7 +438,7 @@ class CustomizeDemand:
         self.realDemand = []
         for t in range(0,self.t):
             for j in range(0,self.j):
-                self.realDemand += np.sum(tmpDemand[t*self.T:(t+1)*self.T,j])
+                self.realDemand += [np.sum(tmpDemand[t*self.T:(t+1)*self.T,j])]
         return self.realDemand
                 
     def cal(self,t,j,minp):
