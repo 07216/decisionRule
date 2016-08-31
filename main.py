@@ -17,12 +17,12 @@ import gene
 import numpy as np
 #from guppy import hpy
 
+reductionALP=0
 firstCaseInReSolve=1
 secondCaseInReSolve=2
-reductionALP=0
 
-t,limt,d = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3])
-demander = CustomizeDemand.CustomizeDemand(1,t,limt,d)
+choose,t,limt,d,T = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5])
+demander = CustomizeDemand.CustomizeDemand(choose,t,limt,d,T)
 
 first = 1
 

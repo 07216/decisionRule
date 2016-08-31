@@ -13,10 +13,10 @@ from scipy.integrate import quad
 import Input
 
 class CustomizeDemand:
-    def __init__(self,choose, t=10, limt=0, d=7):
+    def __init__(self,choose, t=10, limt=0, d=7, T = 20):
         self.t = t
         self.limt = min(limt,self.t)
-        self.T = 100
+        self.T = T
         self.d = d
         self.lenMon = 10000
         
@@ -379,7 +379,7 @@ class CustomizeDemand:
             self.c[item] = self.rALP.flight[item][2]
             #self.c[item] = 2
         #construct Exi
-        self.prob = {}
+        self.prob = np.zeros((self.t*self.T,self.j), dtype=np.float)
         for t in range(0,self.t * self.T):
             for j in range(0,self.j):
                 index = self.rALP.prdic[j]
@@ -393,7 +393,7 @@ class CustomizeDemand:
         for t in range(0,self.t):
             for j in range(0,self.j):
                 self.monteCarlo[t,j] = []
-                for k in range(0,self.monteCarlo):
+                for k in range(0,self.lenMon):
                     self.monteCarlo[t,j].append(np.sum(np.random.uniform()<self.prob[t*self.T:(t+1)*self.T,j]))
                 self.monteCarlo[t,j].sort()
                 b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
