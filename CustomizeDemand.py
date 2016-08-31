@@ -105,6 +105,7 @@ class CustomizeDemand:
                     self.monteCarlo[t,j].sort()
                     b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
                     a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
+                a = 0.
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -123,6 +124,7 @@ class CustomizeDemand:
                     self.monteCarlo[t,j].sort()
                     b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
                     a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
+                a = 0.
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
@@ -396,7 +398,7 @@ class CustomizeDemand:
                     self.monteCarlo[t,j].append(np.sum(np.random.uniform(size=self.T)<self.prob[t*self.T:(t+1)*self.T,j]))
                 self.monteCarlo[t,j].sort()
                 b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
-                a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
+                a = 0#self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]
