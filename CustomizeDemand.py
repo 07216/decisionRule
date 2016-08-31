@@ -384,7 +384,6 @@ class CustomizeDemand:
             for j in range(0,self.j):
                 index = self.rALP.prdic[j]
                 self.prob[t,j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
-        print self.prob
         self.h = {}
         self.monteCarlo = {}
         self.seg = {}
@@ -394,7 +393,7 @@ class CustomizeDemand:
             for j in range(0,self.j):
                 self.monteCarlo[t,j] = []
                 for k in range(0,self.lenMon):
-                    self.monteCarlo[t,j].append(np.sum(np.random.uniform()<self.prob[t*self.T:(t+1)*self.T,j]))
+                    self.monteCarlo[t,j].append(np.sum(np.random.uniform(size=self.T)<self.prob[t*self.T:(t+1)*self.T,j]))
                 self.monteCarlo[t,j].sort()
                 b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
                 a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
@@ -422,8 +421,6 @@ class CustomizeDemand:
         #construct v
         for j in range(0,self.j):
             self.v[j] = self.rALP.pval[j]
-        print self.v
-        print self.c
         #for t in range(0,self.t):
             #for j in range(0,self.j):
                 #self.xi[1+t*self.j+j] *= 100
