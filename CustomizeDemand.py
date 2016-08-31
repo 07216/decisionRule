@@ -81,7 +81,7 @@ class CustomizeDemand:
         
         totalLen = 1000.0
         div = int(totalLen / self.t)
-        self.cons = np.zeros((self.t,4))
+        self.cons = np.zeros((self.t,2))
         for t in range(0,self.t):            
             for tt in range(t*div,(t+1)*div):
                 self.cons[t,0] +=  0.25 * 1.0/totalLen * (float(tt)/totalLen) ** (6 - 1) * (1- float(tt)/totalLen) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
@@ -112,7 +112,7 @@ class CustomizeDemand:
                 self.seg[t,j] = new
             
             for j in range(20,60):
-                simGamma = np.random.gamma(1000,size=(self.lenMon))
+                simGamma = np.random.gamma(100,size=(self.lenMon))
                 if j%2 ==0:
                     self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,0])
                     self.monteCarlo[t,j].sort()
