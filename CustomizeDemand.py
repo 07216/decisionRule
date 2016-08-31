@@ -104,8 +104,9 @@ class CustomizeDemand:
                     new += [float(b-a)/self.d*d+a]
                 new += [b]
                 self.seg[t,j] = new
-                
+            
             for j in range(20,60):
+                self.monteCarlo[t,j] = []
                 if j%2 ==0:
                     for k in range(self.lenMon):
                         self.monteCarlo[t,j].append(np.random.poisson(np.random.gamma(100) * 0.25 * 1.0/self.t * (float(t)/self.t) ** (6 - 1) * (1- float(t)/self.t) ** (2-1) * gamma(8)/gamma(2)/gamma(6)))
