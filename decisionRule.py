@@ -170,7 +170,7 @@ class decisionRule:
         for i in range(0,self.i):
             self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
         #Beside first column
-        Parallel(n_jobs=self.kernel)(delayed(has_shareable_memory)(paraLambda(self,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+        Parallel(n_jobs=self.kernel, max_nbytes=1e6)(delayed(has_shareable_memory)(paraLambda(self,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
         #Gamma h >=0
         for t in range(0,self.t):
             lhs = {}
@@ -208,7 +208,7 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            Parallel(n_jobs=self.kernel)(delayed(has_shareable_memory)(paraGamma(self,t,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+            Parallel(n_jobs=self.kernel, max_nbytes=1e6)(delayed(has_shareable_memory)(paraGamma(self,t,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
         #Omega h <=0
         for t in range(0,self.t):
             lhs = {}
@@ -248,7 +248,7 @@ class decisionRule:
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i])
             #Beside first column
-            Parallel(n_jobs=self.kernel)(delayed(has_shareable_memory)(paraOmega(self,t,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
+            Parallel(n_jobs=self.kernel, max_nbytes=1e6)(delayed(has_shareable_memory)(paraOmega(self,t,pt,pj,pd)) for pt in range(self.t) for pj in range(self.j) for pd in range(self.d))
                         
     def solve(self):
         self.m.optimize()
