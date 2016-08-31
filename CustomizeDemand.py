@@ -13,11 +13,11 @@ from scipy.integrate import quad
 import Input
 
 class CustomizeDemand:
-    def __init__(self,choose):
-        self.t = 10
-        self.limt = min(2,self.t)
+    def __init__(self,choose, t=10, limt=0, d=7):
+        self.t = t
+        self.limt = min(limt,self.t)
         self.T = 100
-        self.d = 7
+        self.d = d
         self.q = 3
         self.qq = self.d
         

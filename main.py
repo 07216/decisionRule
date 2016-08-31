@@ -7,6 +7,7 @@ Created on Wed Aug 03 16:50:33 2016
 
 
 import Input
+import sys
 import decisionRule
 import rALP
 import time
@@ -20,7 +21,7 @@ firstCaseInReSolve=1
 secondCaseInReSolve=2
 reductionALP=0
 
-demander = CustomizeDemand.CustomizeDemand(1)
+demander = CustomizeDemand.CustomizeDemand(1,int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]))
 
 first = 1
 
@@ -30,16 +31,20 @@ if first == 1:#Decision Rule Approch
     #   decisionSolver.echoInput()
     #decisionSolver.echoVal()
     decisionSolver.inputDemand(demander)
-    print "Input End",time.clock()
+    start = time.clock()
+    print "Input End",start
     decisionSolver.addVar()
     print "AddVar End",time.clock()
     decisionSolver.addOpt()
     print "AddOpt End",time.clock()
     decisionSolver.addConstr()
-    print "AddCons End",time.clock()
+    end = time.clock()
+    print "AddCons End",end
     #decisionSolver.writeMPS()
     decisionSolver.solve()
     #decisionSolver.echoOpt()    
+    
+    print end-start
     
     simulator = simulation.simulation(decisionSolver,demander)
     '''
