@@ -123,79 +123,32 @@ class decisionRule:
         self.m.setObjective(obj,GRB.MAXIMIZE)
     
     def addConstr(self):
-        #Lambda h <= 0 
         lhs = {}
         for i in range(0,self.i):
             lhs[i] = LinExpr()
-            lhs[i] += self.l[i,0] - self.l[i,1]
-        #For Constant demand xi
-        for pt in range(0,self.t):
-            for pj in range(0,self.j):
-                if self.seg[pt,pj][1] == self.seg[pt,pj][0]:
-                    base = (pt*self.j+pj)*(self.d+1)+2
-                    for i in range(0,self.i):
-                        lhs[i] += self.l[i,base] * - float(self.seg[pt,pj][0])/self.d
-                        lhs[i] += self.l[i,base+self.d] * float(self.seg[pt,pj][0])/self.d
-        for i in range(0,self.i):
-            self.m.addConstr(lhs[i],GRB.LESS_EQUAL,0)
-        #Lambda for Lambda*W = Z1
-        #Frist Column
-        lhs = {}
-        rhs = {}
-        for i in range(0,self.i):
-            lhs[i] = LinExpr()
-            rhs[i] = LinExpr()
-        for i in range(0,self.i):
-            lhs[i] += self.l[i,0] - self.l[i,1]
-        for pt in range(0,self.t):
-            for pj in range(0,self.j):
-                if self.seg[pt,pj][1] == self.seg[pt,pj][0]:
-                    continue
-                base = (pt*self.j+pj)*(self.d+1)+2
-                for i in range(0,self.i):
-                    lhs[i] += self.l[i,base] * float(self.seg[pt,pj][1]) / (self.seg[pt,pj][1] - self.seg[pt,pj][0])
-                    lhs[i] += self.l[i,base+1] * float(self.seg[pt,pj][0]) / (-self.seg[pt,pj][1] + self.seg[pt,pj][0])
+        for t in range(0,self.limt):
+            for j in range(0,self.j):
+                for i in self.refJ[j]:
+                    for p in range(0,t*self.j*self.d+1):
+                        lhs[i] += self.x[t,j,p] * self.xi[p,0]
+        #after first limt time
+        for t in range(self.limt,self.t):
+            for j in range(0,self.j):
+                for i in self.refJ[j]:
+                    #first element of xi = 1
+                    lhs[i] += self.x[t,j,0]
+                    for p in range(1,self.limt*self.j*self.d+1):
+                        lhs[i] += self.x[t,j,p] * self.xi[(t-self.limt)*self.j*self.d+p,0]
+                    
         for t in range(0,self.t):
             for j in range(0,self.j):
                 for i in self.refJ[j]:
-                    rhs[i] += self.x[t,j,0]
+                    for d in range(0,self.d):
+                        lhs[i] += self.xx[t,j,d] * self.xi[1+(t*self.j+j)*self.d+d,0]
+        
         for i in range(0,self.i):
-            rhs[i] += -self.c[i,0]
-        for i in range(0,self.i):
-            self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
-        #Beside first column
-        for pt in range(0,self.t):
-            for pj in range(0,self.j):
-                for pd in range(0,self.d):
-                    base = 2+(pt*self.j+pj)*(self.d+1)+pd
-                    lhs = {}
-                    rhs = {}
-                    for i in range(0,self.i):
-                        lhs[i] = LinExpr()
-                        rhs[i] = LinExpr()
-                    if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
-                        for i in range(0,self.i):
-                            lhs[i] += self.l[i,base] * -1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                            lhs[i] += self.l[i,base+1] * 1.0 / (self.seg[pt,pj][pd+1] - self.seg[pt,pj][pd])
-                    else:
-                        for i in range(0,self.i):
-                            lhs[i] += self.l[i,base] * -1.0 
-                            lhs[i] += self.l[i,base+1] * 1.0                        
-                    #Ax xi
-                    col = 1+(pt*self.j+pj)*self.d+pd
-                    for t in range(pt+1,self.limt):
-                        for j in range(0,self.j):
-                            for i in self.refJ[j]:
-                                rhs[i] += self.x[t,j,col]
-                    for t in range(max(pt+1,self.limt),min(self.t,pt+1+self.limt)):
-                        for j in range(0,self.j):
-                            for i in self.refJ[j]:
-                                rhs[i] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]
-                    #Axx xi
-                    for i in self.refJ[pj]:
-                        rhs[i] += self.xx[pt,pj,pd]
-                    for i in range(0,self.i):
-                        self.m.addConstr(rhs[i],GRB.EQUAL,lhs[i],'Z1 %d %d %d %d' %(pt,pj,pd,i))
+            self.m.addConstr(lhs[i], GRB.EQUAL, self.c[i],'Constrant %d' %(i))
+            
         #Gamma h >=0
         for t in range(0,self.t):
             lhs = {}
