@@ -124,7 +124,7 @@ class CustomizeDemand:
                     self.monteCarlo[t,j].sort()
                     b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
                     a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
-                a = 0.
+                #a = 0.
                 new = []
                 for d in range(0,self.d):
                     new += [float(b-a)/self.d*d+a]

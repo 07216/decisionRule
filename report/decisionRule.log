@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.9.14)  26 AUG 2016 13:06
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.9.14)  1 SEP 2016 15:15
 entering extended mode
 **D:/stfile/Documents/paper/or/decisionRule/report/decisionRule.tex
 (D:/stfile/Documents/paper/or/decisionRule/report/decisionRule.tex
@@ -137,21 +137,26 @@ ed by $\OT1/cmr/bx/n/10 v \OT1/cmr/m/n/10 = (\OML/cmm/m/it/10 v[]; [] ; v[]\OT1
 
 {D:/Program Files/CTEX/UserData/pdftex/config/pdftex.map{Unicode.sfd}{UGBK.sfd}
 }]
-Overfull \hbox (12.63655pt too wide) detected at line 57
+Overfull \hbox (12.63655pt too wide) detected at line 60
 \OML/cmm/m/it/10 V[] \OT1/cmr/m/n/10 = []
+ []
+
+
+Overfull \hbox (42.01184pt too wide) detected at line 71
+[]
  []
 
 [2]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 114.
+               Default added (so using `tbp') on input line 118.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 138.
+               Default added (so using `tbp') on input line 142.
 
 
-Overfull \hbox (101.34871pt too wide) in paragraph at lines 140--153
+Overfull \hbox (101.34871pt too wide) in paragraph at lines 144--157
  [][] 
  []
 
@@ -163,7 +168,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  1200 strings out of 495354
  13806 string characters out of 3183075
- 66745 words of memory out of 3000000
+ 67745 words of memory out of 3000000
  4394 multiletter control sequences out of 15000+200000
  12122 words of font info for 47 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -183,7 +188,7 @@ iles/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files/CT
 EX/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy5.pfb><D:/Program Files/CTEX/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmsy7.pfb><D:/Program Files/CTEX/MiKTeX/fonts/
 type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on decisionRule.pdf (4 pages, 171737 bytes).
+Output written on decisionRule.pdf (4 pages, 171956 bytes).
 PDF statistics:
  79 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

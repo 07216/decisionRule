@@ -21,9 +21,12 @@ s.t. & \sum^T_{t=1} A \mathbf{x_t} \left(\xi^t,\xi_t\right) \leq \mathbf{c}\\
 \end{array}
 \label{origin}
 \end{equation}
+
+It's important to notice that the j-th element of $\mathbf{x}_t$
+
 \section{Linear Decision Rule Approach via Lifting}
 \subsection{Primal Problem}
-Approach original problem with $$x_{t,j}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=(X_tP_tL(\xi))_j+\tilde{X}_{t,j}Q_{t,j}L(\xi)$$ where 
+Approach original problem with $$x_{t,j}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=(X_tP_tL(\xi))_j+\tilde{X}_{t,j}Q_{t,j}L(\xi)$$ where
 $$L_{t,j}(x) = (L_{t,j,d}(x))_{r_{t,j}\times1}$$
 with
 $$
@@ -55,11 +58,11 @@ V_{t,j}^{-1}=\begin{pmatrix}
 & & & & & \frac{1}{u_{t,j}-z^{t,j}_{r_{t,j}-1}}
 \end{pmatrix}
 $$
- Then we obtain the primal problem
+Then we obtain the primal problem
 \begin{equation}
 \begin{array}{ll}
 \max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right)\\
-\text{s.t.} & \sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq \mathbf{c}\\
+\text{s.t.} & \sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq 2\mathbf{c} - \mathbb{E}_{\xi}\left(\sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right)\\
 & (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq e^T p_t\xi\\
 & (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \geq 0\\
 &\forall \xi \in \text{conv}\Xi' ,t=1,\ldots,T
@@ -67,6 +70,7 @@ $$
 \label{primal}
 \end{equation}
 
+The correction $\mathbf{c} - \mathbb{E}_{\xi}\left(\sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right) $arises from inaccurately approaching $\mathbf{x}(\xi^t,\xi_t)$.
 
 There are $O(n m rt \tau + n^2 t^2 r )$ variables and $O(t^2 n^2 r+t n m r)$ constraints in total.
 \begin{comment}

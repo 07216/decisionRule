@@ -23,14 +23,14 @@ s.t. & \sum^T_{t=1} A \mathbf{x_t} \left(\xi^t,\xi_t\right) \leq \mathbf{c}\\
 \end{equation}
 \section{Linear Decision Rule Approach via Lifting}
 \subsection{Primal Problem}
-Approach original problem with $$\mathbf{x_{t,j}}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=$$ where 
-$$L_{t,j}(x) = (L_{t,j,d}(x))_{d\times1}$$
+Approach original problem with $$x_{t,j}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=(X_tP_tL(\xi))_j+\tilde{X}_{t,j}Q_{t,j}L(\xi)$$ where
+$$L_{t,j}(x) = (L_{t,j,d}(x))_{r_{t,j}\times1}$$
 with
 $$
 L_{t,j,d}(x)  =
 \left\{
 \begin{array}{ll}
-x & r_i = 1\\
+x & r_{t,j} = 1\\
 \min\{x,z_1^{t,j}\}& r_{t,j}>1,d=1\\
 \max\{\min\{x,z_d^{t,j}\}-z^{t,j}_{d-1},0\} & r_{t,j}>1,d=2,\ldots,r_{t,j}-1\\
 \max\{x-z_{d-1}^{t,j},0\}& r_{t,j}>1,d=r_{t,j}
@@ -55,12 +55,12 @@ V_{t,j}^{-1}=\begin{pmatrix}
 & & & & & \frac{1}{u_{t,j}-z^{t,j}_{r_{t,j}-1}}
 \end{pmatrix}
 $$
- Then we obtain the primal problem
+ As we cannot approach $\mathbf{x}(\xi^t,\xi_t)$ accurately,we have to add a correction on the right of constraint. Then we obtain the primal problem
 \begin{equation}
 \begin{array}{ll}
 \max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right)\\
 \text{s.t.} & \sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq \mathbf{c}\\
-& (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq p_t\xi\\
+& (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq e^T p_t\xi\\
 & (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \geq 0\\
 &\forall \xi \in \text{conv}\Xi' ,t=1,\ldots,T
 \end{array}
@@ -104,7 +104,7 @@ s.t. & \sum^T_{t=1} \tilde{A}^T Y_t P_t \xi \geq \mathbf{v}^T\\
 \end{equation}
 \end{comment}
 \section{Computational Results}
-As we can see from Preservation of Structural Properties in Optimization with Decisions Truncated by Random Variables and Its Applications, $\tilde{X}_{t,j}(\xi^t,\xi_{t,j})$ should behave $u\bigwedge \xi_{t,j}$. Benefiting from piecewise linear function, the structure is preserved with linear decision rule. Therefore, it's convenient to implement the policy.
+As we can see from Preservation of Structural Properties in Optimization with Decisions Truncated by Random Variables and Its Applications, $\tilde{X}_{t,j}(\xi^t,\xi_{t,j})$ should behave $u\bigwedge \xi_{t,j}$. Benefiting from piecewise linear function, the structure is preserved with linear decision rule. Therefore, it's convenient to implement the policy as we can get $u$ from $\tilde{X}_{t,j}$.
 What's more, rounding can matter a lot to benefits and some simple rounding policy is tested including ceiling, flooring, rounding, floor(x)+1. Results are computed at servers locating at USTC with 96 Intel Xeon CPU E5-4657L v2 2.4GHz and 256GB memory.Gurobi will make use of 32 cpu to solve the LP problem parallelly.
 \begin{comment}
 \subsection{Parameters}
@@ -128,7 +128,7 @@ Example 2 with re-solving    & 594021    & 604859    &     &   \\ \hline
 Example 1 without re-solving  &374129&422066&432730    \\ \hline
 Example 2 without re-solving &560178&591747&623530       \\ \hline
 
-Example 1 with re-solving     &  &     &      623530       \\ \hline
+Example 1 with re-solving     &  &     &      432730       \\ \hline
 Example 2 with re-solving    & &     &      623530 \\ \hline
 \end{tabular}
 \caption{Summary}
