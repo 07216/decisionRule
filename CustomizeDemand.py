@@ -347,7 +347,7 @@ class CustomizeDemand:
 
     def reductionALPReadIn(self):
         reader = Input.Input()
-        reader.readIn('data/rm_200_4_1.6_4.0.txt')
+        reader.readIn('data/rm_200_4_1.0_4.0.txt')
         reader.product()
         reader.leg()
         reader.construct()
@@ -376,6 +376,7 @@ class CustomizeDemand:
             #Hint Item[1] is from 1 to ...
             #print item
             self.A[item[0],item[1]-1] = 1
+            print item
         #construct c
         for item in range(0,self.i):
             self.c[item] = self.rALP.flight[item][2]
