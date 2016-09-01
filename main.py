@@ -67,6 +67,7 @@ if first == 0:#Decision Rule Approch
     print simulator.bookLimRun(np.ceil,1000)
     print simulator.bookLimRun(np.floor,1000)
     print simulator.bookLimRun(simulator.atLeastOne,1000)
+    print simulator.bookLimRun(simulator.atLeastTwo,1000)
     print simulator.run(1000)
 
 elif first == 1:#reduction of Approximate Linear Programming

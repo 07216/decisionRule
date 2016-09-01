@@ -94,6 +94,9 @@ class simulation:
         
     def atLeastOne(self,x):
         return int(x)+1
+        
+    def atLeastTwo(self,x):
+        return int(x)+2
     
     def nonLinearDemand(self,realDemand):
         result = [0] * (self.t*self.j*self.d)
