@@ -347,7 +347,7 @@ class CustomizeDemand:
 
     def reductionALPReadIn(self):
         reader = Input.Input()
-        reader.readIn('data/rm_200_4_1.0_4.0.txt')
+        reader.readIn('data/rm_200_4_1.6_4.0.txt')
         reader.product()
         reader.leg()
         reader.construct()
@@ -389,7 +389,7 @@ class CustomizeDemand:
         self.h = {}
         self.monteCarlo = {}
         self.seg = {}
-        minsup = 0.01
+        minsup = 0.001
         mininf = 0.01
         for t in range(0,self.t):
             for j in range(0,self.j):
