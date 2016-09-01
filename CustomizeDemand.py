@@ -34,7 +34,7 @@ class CustomizeDemand:
     def avg(self,pt,pj,start,threshold,minus,diff):
         result = 0.0
         for i in range(start,self.lenMon):
-            if diff>1 and self.monteCarlo[pt,pj][i] > threshold:
+            if self.monteCarlo[pt,pj][i] > threshold:
                 return result,i
             result += self.monteCarlo[pt,pj][i]-minus
         return result,self.lenMon

@@ -159,7 +159,7 @@ class decisionRule:
             for j in range(0,self.j):
                 for i in self.refJ[j]:
                     rhs[i] += self.x[t,j,0]
-                    
+        #C-E\xi
         for t in range(0,self.limt):
             for j in range(0,self.j):
                 for i in self.refJ[j]:
