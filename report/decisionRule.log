@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.9.14)  26 AUG 2016 13:06
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.9.14)  1 SEP 2016 11:54
 entering extended mode
 **D:/stfile/Documents/paper/or/decisionRule/report/decisionRule.tex
 (D:/stfile/Documents/paper/or/decisionRule/report/decisionRule.tex
@@ -137,7 +137,7 @@ ed by $\OT1/cmr/bx/n/10 v \OT1/cmr/m/n/10 = (\OML/cmm/m/it/10 v[]; [] ; v[]\OT1
 
 {D:/Program Files/CTEX/UserData/pdftex/config/pdftex.map{Unicode.sfd}{UGBK.sfd}
 }]
-Overfull \hbox (12.63655pt too wide) detected at line 57
+Overfull \hbox (12.59602pt too wide) detected at line 57
 \OML/cmm/m/it/10 V[] \OT1/cmr/m/n/10 = []
  []
 
@@ -183,7 +183,7 @@ iles/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files/CT
 EX/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy5.pfb><D:/Program Files/CTEX/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmsy7.pfb><D:/Program Files/CTEX/MiKTeX/fonts/
 type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on decisionRule.pdf (4 pages, 171737 bytes).
+Output written on decisionRule.pdf (4 pages, 171710 bytes).
 PDF statistics:
  79 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

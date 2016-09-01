@@ -23,7 +23,7 @@ s.t. & \sum^T_{t=1} A \mathbf{x_t} \left(\xi^t,\xi_t\right) \leq \mathbf{c}\\
 \end{equation}
 \section{Linear Decision Rule Approach via Lifting}
 \subsection{Primal Problem}
-Approach original problem with $$x_{t,j}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=(X_tP_tL(\xi))_j+\tilde{X}_{t,j}Q_{t,j}L(\xi)$$ where 
+Approach original problem with $$x_{t,j}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=(X_tP_tL(\xi))_j+\tilde{X}_{t,j}Q_{t,j}L(\xi)$$ where
 $$L_{t,j}(x) = (L_{t,j,d}(x))_{r_{t,j}\times1}$$
 with
 $$
@@ -47,7 +47,7 @@ with $\Xi = \left\{ \xi : \xi_1=1,l_{t,j}\leq \xi_{t,j} \leq r_{t,j}\right\}$,
 $$\text{conv}\Xi'=L(\Xi)=\left\{\xi' : \xi_1'=1,V_{t,j}^{-1}(1,\xi_{t,j}')_{(d+1)\times1}^T\geq 0\right\}$$
 $$
 V_{t,j}^{-1}=\begin{pmatrix}
-\frac{z^{t,j}_1}{z^{t,j}_1-l_{t,j}} & -\frac{1}{z^{t,j}_1-l^{t,j}_1}& & & &\\
+\frac{z^{t,j}_1}{z^{t,j}_1-l_{t,j}} & -\frac{1}{z^{t,j}_1-l_{t,j}}& & & &\\
 -\frac{l_{t,j}}{z^{t,j}_1-l_{t,j}}& \frac{1}{z^{t,j}_1-l_{t,j}}& -\frac{1}{z^{t,j}_2-z^{t,j}_1}& & &\\
 & &\frac{1}{z^{t,j}_2-z^{t,j}_1}&\ddots & &\\
 & & &\ddots& -\frac{1}{z^{t,j}_{r_{t,j}-1}-z^{t,j}_{r_{t,j}-2}}&\\
