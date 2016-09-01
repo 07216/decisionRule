@@ -79,7 +79,7 @@ class simulation:
                 '''
                 #print self.bookLim[t,j],t,j
 
-    def bookLimLeft(self):
+    def bookLimLeft(self):  
         c = self.c.copy()
         for t in range(self.t):
             for j in range(self.j):
