@@ -24,7 +24,7 @@ secondCaseInReSolve=2
 choose,t,limt,d,T = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5])
 demander = CustomizeDemand.CustomizeDemand(choose,t,limt,d,T)
 
-first = 0
+first = 1
 
 if first == 0:#Decision Rule Approch 
     
@@ -67,7 +67,7 @@ if first == 0:#Decision Rule Approch
     print simulator.bookLimRun(simulator.atLeastOne,1000)
     print simulator.run(1000)
 
-elif first == 0:#reduction of Approximate Linear Programming
+elif first == 1:#reduction of Approximate Linear Programming
     
     reduction = rALP.rALP(demander.reader)
     reduction.construct()
