@@ -159,8 +159,30 @@ class decisionRule:
             for j in range(0,self.j):
                 for i in self.refJ[j]:
                     rhs[i] += self.x[t,j,0]
+                    
+        for t in range(0,self.limt):
+            for j in range(0,self.j):
+                for i in self.refJ[j]:
+                    for p in range(0,t*self.j*self.d+1):
+                        rhs[i] += self.x[t,j,p] * self.xi[p,0]
+                    #obj += self.v[j,0] * self.x[j,p]
+        #after first limt time
+        for t in range(self.limt,self.t):
+            for j in range(0,self.j):
+                for i in self.refJ[j]:
+                    #first element of xi = 1
+                    rhs[i] += self.x[t,j,0]
+                    for p in range(1,self.limt*self.j*self.d+1):
+                        rhs[i] += self.x[t,j,p] * self.xi[(t-self.limt)*self.j*self.d+p,0]
+                    
+        for t in range(0,self.t):
+            for j in range(0,self.j):
+                for i in self.refJ[j]:
+                    for d in range(0,self.d):
+                        rhs[i] += self.xx[t,j,d] * self.xi[1+(t*self.j+j)*self.d+d,0]
+                    
         for i in range(0,self.i):
-            rhs[i] += -self.c[i,0]
+            rhs[i] += -2*self.c[i,0]
         for i in range(0,self.i):
             self.m.addConstr(lhs[i], GRB.EQUAL, rhs[i],'Constant %d' %(i))
         #Beside first column
