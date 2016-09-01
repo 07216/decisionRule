@@ -35,9 +35,9 @@ class CustomizeDemand:
         result = 0.0
         for i in range(start,self.lenMon):
             if self.monteCarlo[pt,pj][i] > threshold:
-                break
+                return result,i
             result += self.monteCarlo[pt,pj][i]-minus
-        return result,i
+        return result,self.lenMon
     
     def resolveDemandFirstCase(self):   
         self.i = 10
@@ -376,7 +376,6 @@ class CustomizeDemand:
             #Hint Item[1] is from 1 to ...
             #print item
             self.A[item[0],item[1]-1] = 1
-            print item
         #construct c
         for item in range(0,self.i):
             self.c[item] = self.rALP.flight[item][2]
@@ -387,6 +386,7 @@ class CustomizeDemand:
             for j in range(0,self.j):
                 index = self.rALP.prdic[j]
                 self.prob[t,j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
+                print t,j,self.prob[t,j]
         self.h = {}
         self.monteCarlo = {}
         self.seg = {}
