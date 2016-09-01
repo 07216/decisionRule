@@ -198,7 +198,7 @@ class simulation:
                 print "Alert!"
         #if lessZero == 1:
          #   print "Strange"
-        #print c
+        print c
         return benefit    
 
     def bookLimSim(self,rplc):
