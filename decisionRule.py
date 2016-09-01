@@ -361,6 +361,16 @@ class decisionRule:
                     obj += self.xi[1+t*self.j+j,0] * self.v[j,0] * self.x[t,j,p].X * self.xi[(t-self.limt)*self.j+p,0]
         print obj
     
+    def expectedLeftDemand(self):
+        c = self.c.copy()
+        for t in range(self.t):
+            for j in range(self.j):
+                for i in self.refJ[j]:
+                    c[i] -= self.x[t,j,0].X
+                for d in range(self.d):
+                    c[i] -= self.xx[t,j,d].X * self.xi[1+(t*self.j+j)*self.d+d]
+        print c
+    
     def writeMPS(self):
         self.m.write("out.lp")
     

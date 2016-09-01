@@ -43,6 +43,7 @@ if first == 0:#Decision Rule Approch
     print "AddCons End",end
     #decisionSolver.writeMPS()
     decisionSolver.solve()
+    decisionSolver.expectedLeftDemand()
     #decisionSolver.echoOpt()    
     
     print t,limt,d,end-start
