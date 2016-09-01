@@ -332,8 +332,12 @@ class decisionRule:
                                 for j in range(0,self.j):
                                     rhs[j] += self.x[t,j,1+((pt-(t-self.limt))*self.j+pj)*self.d+pd]                            
                         #Axx xi
+                        if self.seg[pt,pj][1] != self.seg[pt,pj][0]:
+                            minus = 1
+                        else:
+                            minus = 1.0/self.d
                         if pt == t:
-                            rhs[pj] += self.xx[pt,pj,pd] - 1
+                            rhs[pj] += self.xx[pt,pj,pd] - minus
                         for j in range(0,self.j):
                             self.m.addConstr(rhs[j],GRB.EQUAL,lhs[j])
     def solve(self):
