@@ -400,7 +400,7 @@ class CustomizeDemand:
                     self.monteCarlo[t,j].append(np.sum(np.random.uniform(size=self.T)<self.prob[t*self.T:(t+1)*self.T,j]))
                 self.monteCarlo[t,j].sort()
                 b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
-                print b
+                #print b
                 a = 0#self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 new = []
                 for d in range(0,self.d):
@@ -423,7 +423,7 @@ class CustomizeDemand:
                     self.xi[1+(t*self.j+j)*self.d+d] += (up - low)* (self.lenMon - left)
                     self.xi[1+(t*self.j+j)*self.d+d] /= self.lenMon
         
-        print self.xi
+        #print self.xi
         #construct v
         for j in range(0,self.j):
             self.v[j] = self.rALP.pval[j]
