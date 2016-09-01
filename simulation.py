@@ -78,7 +78,15 @@ class simulation:
                     self.bookLim[t,j] = self.seg[t,j][self.d]+1000
                 '''
                 #print self.bookLim[t,j],t,j
-                    
+
+    def bookLimLeft(self):
+        c = self.c.copy()
+        for t in range(self.t):
+            for j in range(self.j):
+                for i in self.refJ[j]:
+                    c[i] -= self.bookLim[t,j]
+        print c
+    
     def echoXX(self):
         for t in range(0,self.t):
             for j in range(0,self.j):

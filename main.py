@@ -62,6 +62,7 @@ if first == 0:#Decision Rule Approch
     simulator.initX()
     simulator.initXX()
     #simulator.echoXX()
+    simulator.bookLimLeft()
     print simulator.bookLimRun(np.round,1000)
     print simulator.bookLimRun(np.ceil,1000)
     print simulator.bookLimRun(np.floor,1000)
