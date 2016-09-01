@@ -18,7 +18,7 @@ class CustomizeDemand:
         self.limt = min(limt,self.t)
         self.T = T
         self.d = d
-        self.lenMon = 100000
+        self.lenMon = 10000
         
         if choose ==0:
             self.reader = self.reductionALPReadIn()
@@ -421,6 +421,7 @@ class CustomizeDemand:
                     self.xi[1+(t*self.j+j)*self.d+d] += (up - low)* (self.lenMon - left)
                     self.xi[1+(t*self.j+j)*self.d+d] /= self.lenMon
         
+        print self.xi
         #construct v
         for j in range(0,self.j):
             self.v[j] = self.rALP.pval[j]

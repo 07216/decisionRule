@@ -57,10 +57,10 @@ class simulation:
                     self.XX[t,j][d] = self.xx[t,j,d].X
                     self.bookLim[t,j] += (self.seg[t,j][d+1]-low) * self.XX[t,j][d]
                     low = self.seg[t,j][d+1]
-                    
+                    '''
                     if self.XX[t,j][d] !=0 :
                         print self.XX[t,j][d],t,j,d
-                    
+                    '''
                     if self.XX[t,j][d] != 1:
                         if flag == -1:
                             flag = d
