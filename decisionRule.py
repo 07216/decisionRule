@@ -219,7 +219,7 @@ class decisionRule:
                             lhs[i] += self.g[t,i,base+self.d] * float(self.seg[pt,pj][0])/self.d
             base = self.t*self.j*(self.d+1)+2
             for pt in range(self.t):
-                for i in range(self.i):
+                for i in range(self.j):
                     lhs[i] += self.g[t,i,base+pt] * -self.sum[pt]
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i],GRB.GREATER_EQUAL,0)
@@ -294,7 +294,7 @@ class decisionRule:
                             lhs[i] += self.o[t,i,base+self.d] * float(self.seg[pt,pj][0])/self.d
             base = self.t*self.j*(self.d+1)+2
             for pt in range(self.t):
-                for i in range(self.i):
+                for i in range(self.j):
                     lhs[i] += self.o[t,i,base+pt] * -self.sum[pt]
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i],GRB.LESS_EQUAL,0)
