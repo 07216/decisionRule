@@ -31,10 +31,10 @@ class CustomizeDemand:
             self.resolveDemandSecondCase()
             self.sim = self.produceDemandForSecondCaseInResolve
     
-    def avg(self,pt,pj,start,threshold,minus):
+    def avg(self,pt,pj,start,threshold,minus,diff):
         result = 0.0
         for i in range(start,self.lenMon):
-            if self.monteCarlo[pt,pj][i] > threshold:
+            if diff>1 and self.monteCarlo[pt,pj][i] > threshold:
                 return result,i
             result += self.monteCarlo[pt,pj][i]-minus
         return result,self.lenMon
@@ -143,7 +143,7 @@ class CustomizeDemand:
                     up = self.seg[t,2*j][d+1]
                     if d == 0:
                         low = 0
-                    self.xi[1+(t*self.j+2*j)*self.d+d],left =  self.avg(t,2*j,left,up,low)
+                    self.xi[1+(t*self.j+2*j)*self.d+d],left =  self.avg(t,2*j,left,up,low,self.d-d)
                     self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (self.lenMon - left)
                     self.xi[1+(t*self.j+2*j)*self.d+d] /= self.lenMon
                     
@@ -151,7 +151,7 @@ class CustomizeDemand:
                     up = self.seg[t,2*j+1][d+1]
                     if d == 0:
                         low = 0
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d],leftSec =  self.avg(t,2*j+1,leftSec,up,low)
+                    self.xi[1+(t*self.j+2*j+1)*self.d+d],leftSec =  self.avg(t,2*j+1,leftSec,up,low,self.d-d)
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (self.lenMon - leftSec)
                     self.xi[1+(t*self.j+2*j+1)*self.d+d] /= self.lenMon
                     
@@ -417,7 +417,7 @@ class CustomizeDemand:
                     up = self.seg[t,j][d+1]
                     if d == 0:
                         low = 0
-                    self.xi[1+(t*self.j+j)*self.d+d],left =  self.avg(t,j,left,up,low)
+                    self.xi[1+(t*self.j+j)*self.d+d],left =  self.avg(t,j,left,up,low,self.d-d)
                     self.xi[1+(t*self.j+j)*self.d+d] += (up - low)* (self.lenMon - left)
                     self.xi[1+(t*self.j+j)*self.d+d] /= self.lenMon
         
