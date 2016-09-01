@@ -147,7 +147,7 @@ class decisionRule:
                         lhs[i] += self.xx[t,j,d] * self.xi[1+(t*self.j+j)*self.d+d,0]
         
         for i in range(0,self.i):
-            self.m.addConstr(lhs[i], GRB.EQUAL, self.c[i],'Constrant %d' %(i))
+            self.m.addConstr(lhs[i], GRB.LESS_EQUAL, self.c[i],'Constrant %d' %(i))
             
         #Gamma h >=0
         for t in range(0,self.t):
