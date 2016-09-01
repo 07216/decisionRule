@@ -76,20 +76,20 @@ class decisionRule:
         #add Lambda
         self.l = np.empty((self.i,self.t*self.j*(self.d+1)+2+self.t), dtype=object)
         for p in range(0,self.i):
-            for i in range(0,self.t*self.j*(self.d+1)+2):
+            for i in range(0,self.t*self.j*(self.d+1)+2+self.t):
                 self.l[p,i] = self.m.addVar(lb=-GRB.INFINITY, ub=0, name = 'Lambda %d %d' % (p,i))
                 
         #add Gamma
         self.g = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2+self.t), dtype=object)
         for t in range(0,self.t):
             for p in range(0,self.j):
-                for i in range(0,self.t*self.j*(self.d+1)+2):
+                for i in range(0,self.t*self.j*(self.d+1)+2+self.t):
                     self.g[t,p,i] = self.m.addVar(name = 'Gamma %d %d %d' %(t,p,i))
         #add Omega
         self.o = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2+self.t), dtype=object)
         for t in range(0,self.t):
             for p in range(0,self.j):
-                for i in range(0,self.t*self.j*(self.d+1)+2):
+                for i in range(0,self.t*self.j*(self.d+1)+2+self.t):
                     self.o[t,p,i] = self.m.addVar(lb=-GRB.INFINITY, ub=0, name = 'Omega %d %d %d' %(t,p,i))
 
         self.m.update()
