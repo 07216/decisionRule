@@ -33,6 +33,7 @@ class decisionRule:
         self.t = recorder.t
         self.limt  = recorder.limt
         self.d = recorder.d
+        self.sum = recorder.sum
            
     def echoInput(self):
         print "i:%d"%self.i
@@ -73,19 +74,19 @@ class decisionRule:
                 for d in range(0,self.d):
                     self.xx[t,j,d] = self.m.addVar(lb=-GRB.INFINITY, name = 'XX %d %d %d' % (t,j,d))
         #add Lambda
-        self.l = np.empty((self.i,self.t*self.j*(self.d+1)+2), dtype=object)
+        self.l = np.empty((self.i,self.t*self.j*(self.d+1)+2+self.t), dtype=object)
         for p in range(0,self.i):
             for i in range(0,self.t*self.j*(self.d+1)+2):
                 self.l[p,i] = self.m.addVar(lb=-GRB.INFINITY, ub=0, name = 'Lambda %d %d' % (p,i))
                 
         #add Gamma
-        self.g = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2), dtype=object)
+        self.g = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2+self.t), dtype=object)
         for t in range(0,self.t):
             for p in range(0,self.j):
                 for i in range(0,self.t*self.j*(self.d+1)+2):
                     self.g[t,p,i] = self.m.addVar(name = 'Gamma %d %d %d' %(t,p,i))
         #add Omega
-        self.o = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2), dtype=object)
+        self.o = np.empty((self.t,self.j,self.t*self.j*(self.d+1)+2+self.t), dtype=object)
         for t in range(0,self.t):
             for p in range(0,self.j):
                 for i in range(0,self.t*self.j*(self.d+1)+2):
@@ -136,6 +137,10 @@ class decisionRule:
                     for i in range(0,self.i):
                         lhs[i] += self.l[i,base] * - float(self.seg[pt,pj][0])/self.d
                         lhs[i] += self.l[i,base+self.d] * float(self.seg[pt,pj][0])/self.d
+        base = self.t*self.j*(self.d+1)+2
+        for pt in range(self.t):
+            for i in range(self.i):
+                lhs[i] += self.l[i,base+pt] * -self.sum[pt]
         for i in range(0,self.i):
             self.m.addConstr(lhs[i],GRB.LESS_EQUAL,0)
         #Lambda for Lambda*W = Z1
@@ -181,6 +186,8 @@ class decisionRule:
                         for i in range(0,self.i):
                             lhs[i] += self.l[i,base] * -1.0 
                             lhs[i] += self.l[i,base+1] * 1.0                        
+                    for i in range(self.i):
+                        lhs[i] += -self.l[i,2+self.t*self.j*(self.d+1)+pt]
                     #Ax xi
                     col = 1+(pt*self.j+pj)*self.d+pd
                     for t in range(pt+1,self.limt):
@@ -210,6 +217,10 @@ class decisionRule:
                         for i in range(0,self.j):
                             lhs[i] += self.g[t,i,base] * - float(self.seg[pt,pj][0])/self.d
                             lhs[i] += self.g[t,i,base+self.d] * float(self.seg[pt,pj][0])/self.d
+            base = self.t*self.j*(self.d+1)+2
+            for pt in range(self.t):
+                for i in range(self.i):
+                    lhs[i] += self.g[t,i,base+pt] * -self.sum[pt]
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i],GRB.GREATER_EQUAL,0)
         for t in range(0,self.t):
@@ -249,7 +260,9 @@ class decisionRule:
                         else:
                             for i in range(0,self.j):
                                 lhs[i] += self.g[t,i,base] * -1.0 
-                                lhs[i] += self.g[t,i,base+1] * 1.0                        
+                                lhs[i] += self.g[t,i,base+1] * 1.0                  
+                        for i in range(self.j):
+                            lhs[i] += -self.g[t,i,2+self.t*self.j*(self.d+1)+pt]                
                         #Ax xi
                         col = 1+(pt*self.j+pj)*self.d+pd
                         if t < self.limt:
@@ -279,6 +292,10 @@ class decisionRule:
                         for i in range(0,self.j):
                             lhs[i] += self.o[t,i,base] * - float(self.seg[pt,pj][0])/self.d
                             lhs[i] += self.o[t,i,base+self.d] * float(self.seg[pt,pj][0])/self.d
+            base = self.t*self.j*(self.d+1)+2
+            for pt in range(self.t):
+                for i in range(self.i):
+                    lhs[i] += self.o[t,i,base+pt] * -self.sum[pt]
             for i in range(0,self.j):
                 self.m.addConstr(lhs[i],GRB.LESS_EQUAL,0)
         #Omega for Omega W= Z2
@@ -320,7 +337,9 @@ class decisionRule:
                         else:
                             for i in range(0,self.j):
                                 lhs[i] += self.o[t,i,base] * -1.0 
-                                lhs[i] += self.o[t,i,base+1] * 1.0                        
+                                lhs[i] += self.o[t,i,base+1] * 1.0                  
+                        for i in range(self.j):
+                            lhs[i] += -self.o[t,i,2+self.t*self.j*(self.d+1)+pt]          
                         #Ax xi
                         col = 1+(pt*self.j+pj)*self.d+pd
                         if t < self.limt:

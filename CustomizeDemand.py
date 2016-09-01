@@ -389,9 +389,11 @@ class CustomizeDemand:
         self.h = {}
         self.monteCarlo = {}
         self.seg = {}
+        self.sum = {}
         minsup = 0.001
         mininf = 0.01
         for t in range(0,self.t):
+            self.sum[t] = np.sum(self.prob[t*self.T:(t+1)*self.T,:])
             for j in range(0,self.j):
                 self.monteCarlo[t,j] = []
                 for k in range(0,self.lenMon):
