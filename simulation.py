@@ -42,6 +42,7 @@ class simulation:
                     self.X[t][j,p] = self.x[t,j,p].X
                     '''if p!=0 and self.X[t][j,p] !=0:
                         print self.X[t][j,p],t,j,p'''
+            print t,self.X[t][:,0]
                         
     def initXX(self):
         self.XX={}
