@@ -9,24 +9,38 @@
 \begin{document}
 \maketitle
 \section{Original Problem}
-Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Assuming observing $\tau$ periods of history,let $\xi^t$ be the observed history demands, $\xi_t$ be the demand at period t and $$\mathbf{x_t}(\xi^t,\xi_t) = \left(x_{t,1}(\xi^t,\xi_{t,1}),x_{t,2}(\xi^t,\xi_{t,2}),\ldots,x_{t,n}(\xi^t,\xi_{t,n})\right)^T$$ be the booking limits in period t. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
+Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Assuming observing $\tau$ periods of history,let $\xi^t$ be the observed history demands, $\xi_t$ be the demand at period t and $$\mathbf{x_t}(\xi^{t-1},\xi_t) = \left(x_{t,1}(\xi^{t-1},\xi_{t,1}),x_{t,2}(\xi^{t-1},\xi_{t,2}),\ldots,x_{t,n}(\xi^{t-1},\xi_{t,n})\right)^T$$ be the booking limits in period t. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
 
 \begin{equation}
 \begin{array}{ll}
-\max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T \mathbf{x_t} \left(\xi^t,\xi_t\right)\right)\\
-s.t. & \sum^T_{t=1} A \mathbf{x_t} \left(\xi^t,\xi_t\right) \leq \mathbf{c}\\
-& \mathbf{x_t}(\xi^t,\xi_t) \leq \xi_t\\
-& \mathbf{x_t}(\xi^t,\xi_t) \geq 0\\
+\max\limits_{\mathbf{x_t}} &\mathbb{E}_{\xi}\left(\sum\limits^T_{t=1} \mathbf{v}^T \mathbf{x_t} \left(\xi^{t-1},\xi_t\right)\right)\\
+s.t. & \sum\limits^T_{t=1} A \mathbf{x_t} \left(\xi^{t-1},\xi_t\right) \leq \mathbf{c}\\
+& \mathbf{x_t}(\xi^{t-1},\xi_t) \geq 0\\
 &\forall \xi \in \Xi,t=1,\ldots,T
 \end{array}
 \label{origin}
 \end{equation}
 
-It's important to notice that the j-th element of $\mathbf{x}_t$ 
+It's important to notice that actually $x_{t,j}(\xi^{t-1},\xi_t) = u(\xi^{t-1}) \bigwedge \xi_t$ and equation \ref{origin} can be reformulated as the following equation \ref{originsec} according to Preservation of Structural Properties in Optimization
+with Decisions Truncated by Random Variables and
+Its Applications.
+
+\begin{equation}
+\begin{array}{ll}
+\max\limits_{\mathbf{\mathcal{X}_t}} &\mathbb{E}_{\xi}\left(\sum\limits^T_{t=1} \mathbf{v}^T \mathbf{\mathcal{X}_t}\left(\xi_t\right)\right)\\
+s.t. & \sum\limits^T_{t=1} A \mathbf{\mathcal{X}_t}\left(\xi_t\right) \leq \mathbf{c}\\
+&0 \leq \mathcal{X}_t(\xi_t) \leq \xi_t\\
+& \mathbf{\mathcal{X}_t}(\xi_t) = (\mathcal{X}_{t,1}(\xi_{t,1}),\mathcal{X}_{t,2}(\xi_{t,2})\ldots,\mathcal{X}_{t,j}(\xi_{t,j}))^T \in \mathcal{F}(\xi^{t-1})\\
+&\forall \xi \in \Xi,t=1,\ldots,T
+\end{array}
+\label{originsec}
+\end{equation}
+where $\mathcal{F}(\xi^{t-1})=\{f(\xi_t):f(\xi_t) = u(\xi^{t-1}) \bigwedge \xi_t\}$.
 
 \section{Linear Decision Rule Approach via Lifting}
 \subsection{Primal Problem}
-Approach original problem with $$x_{t,j}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=(X_tP_tL(\xi))_j+\tilde{X}_{t,j}Q_{t,j}L(\xi)$$ where
+
+Approach original problem with $$x_{t,j}(\xi^{t-1},\xi_{t,j})=(X_tP_tL(\xi))_j+\tilde{X}_{t,j}Q_{t,j}L(\xi)$$ where
 $$L_{t,j}(x) = (L_{t,j,d}(x))_{r_{t,j}\times1}$$
 with
 $$
@@ -42,7 +56,7 @@ x & r_{t,j} = 1\\
 $$
 and
 $$
-L(\xi^t)=(L_{\tilde{t},j}(\xi_{\tilde{t},j}))_{\tau\times j,1}
+L(\xi^{t-1})=(L_{\tilde{t},j}(\xi_{\tilde{t},j}))_{\tau\times j,1}
 $$
 It is obvious that the linear retraction operator corresponding to $L_{t,j}$ is $$R_{t,j}(y)=\sum^{r_{t,j}}_{d=1} y_d=e^T y$$
 According to \cite{GDR},
@@ -70,7 +84,7 @@ Then we obtain the primal problem
 \label{primal}
 \end{equation}
 
-The correction $\mathbf{c} - \mathbb{E}_{\xi}\left(\sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right) $arises from inaccurately approaching $\mathbf{x}(\xi^t,\xi_t)$.
+The correction $\mathbf{c} - \mathbb{E}_{\xi}\left(\sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right) $arises from inaccurately approaching $\mathbf{x}(\xi^{t-1},\xi_t)$.
 
 There are $O(n m rt \tau + n^2 t^2 r )$ variables and $O(t^2 n^2 r+t n m r)$ constraints in total.
 \begin{comment}
@@ -79,9 +93,9 @@ There are $O(n m rt \tau + n^2 t^2 r )$ variables and $O(t^2 n^2 r+t n m r)$ con
 Firstly we transform equation(\ref{origin}) into a tighter formulation.
 \begin{equation}
 \begin{array}{ll}
-\max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T \mathbf{x_t} \left(\xi^t\right)\right)\\
-s.t. & \sum^T_{t=1} \tilde{A} \mathbf{x_t} \left(\xi^t\right) \leq \mathbf{ \tilde{c}}_t\left(\xi\right)\\
-& \mathbf{x_t} \left(\xi^t\right) \geq 0\\
+\max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T \mathbf{x_t} \left(\xi^{t-1}\right)\right)\\
+s.t. & \sum^T_{t=1} \tilde{A} \mathbf{x_t} \left(\xi^{t-1}\right) \leq \mathbf{ \tilde{c}}_t\left(\xi\right)\\
+& \mathbf{x_t} \left(\xi^{t-1}\right) \geq 0\\
 &\forall \xi \in \Xi,t=1,\ldots,T
 \end{array}
 \label{duality:origin}
@@ -90,9 +104,9 @@ Then it has a duality.
 
 \begin{equation}
 \begin{array}{ll}
-\min &\mathbb{E}_{\xi}\left(\sum^T_{t=1}  \mathbf{ \tilde{c}}_t\left(\xi\right)^T \mathbf{y_t} \left(\xi^t\right)\right)\\
-s.t. & \sum^T_{t=1} \tilde{A}^T \mathbf{y_t} \left(\xi^t\right) \geq \mathbf{v}^T\\
-& \mathbf{y_t} \left(\xi^t\right) \geq 0\\
+\min &\mathbb{E}_{\xi}\left(\sum^T_{t=1}  \mathbf{ \tilde{c}}_t\left(\xi\right)^T \mathbf{y_t} \left(\xi^{t-1}\right)\right)\\
+s.t. & \sum^T_{t=1} \tilde{A}^T \mathbf{y_t} \left(\xi^{t-1}\right) \geq \mathbf{v}^T\\
+& \mathbf{y_t} \left(\xi^{t-1}\right) \geq 0\\
 &\forall \xi \in \Xi,t=1,\ldots,T
 \end{array}
 \end{equation}
@@ -100,7 +114,7 @@ We can apply same approach and obtain
 
 \begin{equation}
 \begin{array}{ll}
-\min &\mathbb{E}_{\xi}\left(\sum^T_{t=1}  \left(\mathbf{c}^T,(p_t\xi)^T \right)\mathbf{y_t} \left(\xi^t\right)\right)\\
+\min &\mathbb{E}_{\xi}\left(\sum^T_{t=1}  \left(\mathbf{c}^T,(p_t\xi)^T \right)\mathbf{y_t} \left(\xi^{t-1}\right)\right)\\
 s.t. & \sum^T_{t=1} \tilde{A}^T Y_t P_t \xi \geq \mathbf{v}^T\\
 & Y_t P_t \xi  \geq 0\\
 &\forall \xi \in \Xi\left\{ \xi : W \xi \leq h\right\},t=1,\ldots,T
@@ -108,7 +122,7 @@ s.t. & \sum^T_{t=1} \tilde{A}^T Y_t P_t \xi \geq \mathbf{v}^T\\
 \end{equation}
 \end{comment}
 \section{Computational Results}
-As we can see from Preservation of Structural Properties in Optimization with Decisions Truncated by Random Variables and Its Applications, $\tilde{X}_{t,j}(\xi^t,\xi_{t,j})$ should behave $u\bigwedge \xi_{t,j}$. Benefiting from piecewise linear function, the structure is preserved with linear decision rule. Therefore, it's convenient to implement the policy as we can get $u$ from $\tilde{X}_{t,j}$.
+As we can see from Preservation of Structural Properties in Optimization with Decisions Truncated by Random Variables and Its Applications, $\tilde{X}_{t,j}(\xi^{t-1},\xi_{t,j})$ should behave $u\bigwedge \xi_{t,j}$. Benefiting from piecewise linear function, the structure is preserved with linear decision rule. Therefore, it's convenient to implement the policy as we can get $u$ from $\tilde{X}_{t,j}$.
 What's more, rounding can matter a lot to benefits and some simple rounding policy is tested including ceiling, flooring, rounding, floor(x)+1. Results are computed at servers locating at USTC with 96 Intel Xeon CPU E5-4657L v2 2.4GHz and 256GB memory.Gurobi will make use of 32 cpu to solve the LP problem parallelly.
 \begin{comment}
 \subsection{Parameters}

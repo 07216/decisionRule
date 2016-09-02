@@ -9,7 +9,7 @@
 \begin{document}
 \maketitle
 \section{Original Problem}
-Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Assuming observing $\tau$ periods of history,let $\xi^t$ be the observed history demands, $\xi_t$ be the demand at period t and $$\mathbf{x_t}(\xi^t,\xi_t) = \left(x_{t,1}(\xi^t,\xi_{t,1}),x_{t,2}(\xi^t,\xi_{t,2}),\ldots,x_{t,n}(\xi^t,\xi_{t,n})\right)^T$$ be the booking limits in period t. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
+Consider a network system consisting of $m$ resources, with capacity levels $\mathbf{c}=(c_1,\ldots,c_m)^T$, and $n$ products, with corresponding prices denoted by $\mathbf{v} = (v_1,\ldots,v_n)^T$. Each products needs at most one unit of each resource. Let $A = \left(a_{ij}\right)$ be the resource coefficient matrix, where $a_{ij}=1$ if product j uses one unit of resource i and $a_{ij}=0$ otherwise. Define $\xi = \left(1, \xi_{1,1}, \xi_{1,2}, \ldots, \xi_{1,n}, \ldots, \xi_{t,1}, \xi_{t,2}, \ldots, \xi_{t,n} \right)^T $ where $\xi_{t,j}$ is demand of product $j$ in period $t$. Assuming observing $\tau$ periods of history,let $\xi^t$ be the observed history demands, $\xi_t$ be the demand at period t and $$\mathbf{x_t}(\xi^t,\xi_t) = \left(x_{t,1}(\xi^{t-1},\xi_{t,1}),x_{t,2}(\xi^t,\xi_{t,2}),\ldots,x_{t,n}(\xi^t,\xi_{t,n})\right)^T$$ be the booking limits in period t. Realisation of $\xi$ is limited to $\Xi$. The optimality equations can be expressed as
 
 \begin{equation}
 \begin{array}{ll}
@@ -21,6 +21,9 @@ s.t. & \sum^T_{t=1} A \mathbf{x_t} \left(\xi^t,\xi_t\right) \leq \mathbf{c}\\
 \end{array}
 \label{origin}
 \end{equation}
+
+It's important to notice that the j-th element of $\mathbf{x}_t$
+
 \section{Linear Decision Rule Approach via Lifting}
 \subsection{Primal Problem}
 Approach original problem with $$x_{t,j}(\xi^t,\xi_{t,j}) = \left(X_t L_{t}\left(\xi^t\right) \right)_j + \tilde{X}_{t,j}L_{t,j}\left(\xi_{t,j}\right)=(X_tP_tL(\xi))_j+\tilde{X}_{t,j}Q_{t,j}L(\xi)$$ where
@@ -55,11 +58,11 @@ V_{t,j}^{-1}=\begin{pmatrix}
 & & & & & \frac{1}{u_{t,j}-z^{t,j}_{r_{t,j}-1}}
 \end{pmatrix}
 $$
- As we cannot approach $\mathbf{x}(\xi^t,\xi_t)$ accurately,we have to add a correction on the right of constraint. Then we obtain the primal problem
+Then we obtain the primal problem
 \begin{equation}
 \begin{array}{ll}
 \max &\mathbb{E}_{\xi}\left(\sum^T_{t=1} \mathbf{v}^T (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right)\\
-\text{s.t.} & \sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq \mathbf{c}\\
+\text{s.t.} & \sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq 2\mathbf{c} - \mathbb{E}_{\xi}\left(\sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right)\\
 & (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \leq e^T p_t\xi\\
 & (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi \geq 0\\
 &\forall \xi \in \text{conv}\Xi' ,t=1,\ldots,T
@@ -67,6 +70,7 @@ $$
 \label{primal}
 \end{equation}
 
+The correction $\mathbf{c} - \mathbb{E}_{\xi}\left(\sum^T_{t=1} A (X_t P_t + \sum_{k=1}^j\tilde{X}_{t,k}Q_{t,k})\xi\right) $arises from inaccurately approaching $\mathbf{x}(\xi^t,\xi_t)$.
 
 There are $O(n m rt \tau + n^2 t^2 r )$ variables and $O(t^2 n^2 r+t n m r)$ constraints in total.
 \begin{comment}
