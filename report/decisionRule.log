@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.9.14)  1 SEP 2016 18:56
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2014.9.14)  2 SEP 2016 16:18
 entering extended mode
 **D:/stfile/Documents/paper/or/decisionRule/report/decisionRule.tex
 (D:/stfile/Documents/paper/or/decisionRule/report/decisionRule.tex
@@ -100,98 +100,254 @@ LaTeX Font Info:    Overwriting math alphabet `\mathbbmss' in version `bold'
 \CommentStream=\write3
 
 Excluding comment 'comment')
+("D:\Program Files\CTEX\MiKTeX\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+("D:\Program Files\CTEX\MiKTeX\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks19
+)
+("D:\Program Files\CTEX\MiKTeX\tex\latex\graphics\graphics.sty"
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+("D:\Program Files\CTEX\MiKTeX\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+("D:\Program Files\CTEX\MiKTeX\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+("D:\Program Files\CTEX\MiKTeX\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+("D:\Program Files\CTEX\MiKTeX\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/message (HO)
+)
+("D:\Program Files\CTEX\MiKTeX\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2011/04/18 v1.20 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count99
+))
+\Gin@req@height=\dimen112
+\Gin@req@width=\dimen113
+)
+("D:\Program Files\CTEX\MiKTeX\tex\latex\ams\classes\amsthm.sty"
+Package: amsthm 2004/08/06 v2.20
+\thm@style=\toks20
+\thm@bodyfont=\toks21
+\thm@headfont=\toks22
+\thm@notefont=\toks23
+\thm@headpunct=\toks24
+\thm@preskip=\skip46
+\thm@postskip=\skip47
+\thm@headsep=\skip48
+\dth@everypar=\toks25
+)
+("D:\Program Files\CTEX\MiKTeX\tex\latex\was\gensymb.sty"
+Package: gensymb 2003/07/02 v1.0 (WaS)
+)
+("D:\Program Files\CTEX\MiKTeX\tex\latex\geometry\geometry.sty"
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+("D:\Program Files\CTEX\MiKTeX\tex\generic\oberdiek\ifpdf.sty"
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+("D:\Program Files\CTEX\MiKTeX\tex\generic\oberdiek\ifvtex.sty"
+Package: ifvtex 2010/03/01 v1.5 Switches for detecting VTeX and its modes (HO)
+Package ifvtex Info: VTeX not detected.
+)
+("D:\Program Files\CTEX\MiKTeX\tex\generic\ifxetex\ifxetex.sty"
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count100
+\Gm@cntv=\count101
+\c@Gm@tempcnt=\count102
+\Gm@bindingoffset=\dimen114
+\Gm@wd@mp=\dimen115
+\Gm@odd@mp=\dimen116
+\Gm@even@mp=\dimen117
+\Gm@layoutwidth=\dimen118
+\Gm@layoutheight=\dimen119
+\Gm@layouthoffset=\dimen120
+\Gm@layoutvoffset=\dimen121
+\Gm@dimlist=\toks26
+
+("D:\Program Files\CTEX\MiKTeX\tex\latex\geometry\geometry.cfg"))
 (D:\stfile\Documents\paper\or\decisionRule\report\decisionRule.aux
 
 LaTeX Warning: Label `Summary' multiply defined.
 
+
+LaTeX Warning: Label `Summary' multiply defined.
+
 )
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Try loading font information for U+msa on input line 10.
- ("D:\Program Files\CTEX\MiKTeX\tex\latex\amsfonts\umsa.fd"
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
+LaTeX Font Info:    ... okay on input line 10.
+ ("D:\Program Files\CTEX\MiKTeX\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count103
+\scratchdimen=\dimen122
+\scratchbox=\box28
+\nofMPsegments=\count104
+\nofMParguments=\count105
+\everyMPshowfont=\toks27
+\MPscratchCnt=\count106
+\MPscratchDim=\dimen123
+\MPnumerator=\count107
+\makeMPintoPDFobject=\count108
+\everyMPtoPDFconversion=\toks28
+)
+LaTeX Info: Redefining \celsius on input line 10.
+Package gensymb Info: Faking symbols for \degree and \celsius on input line 10.
+
+
+
+Package gensymb Warning: Not defining \perthousand.
+
+LaTeX Info: Redefining \ohm on input line 10.
+Package gensymb Info: Using \Omega for \ohm on input line 10.
+
+Package gensymb Warning: Not defining \micro.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(71.13188pt, 472.03123pt, 71.13188pt)
+* v-part:(T,H,B)=(71.13188pt, 652.70622pt, 71.13188pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=472.03123pt
+* \textheight=652.70622pt
+* \oddsidemargin=-1.1381pt
+* \evensidemargin=-1.1381pt
+* \topmargin=-38.1381pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Font Info:    Try loading font information for U+msa on input line 11.
+("D:\Program Files\CTEX\MiKTeX\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 10.
+LaTeX Font Info:    Try loading font information for U+msb on input line 11.
 
 ("D:\Program Files\CTEX\MiKTeX\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
-)
-Overfull \hbox (27.02544pt too wide) in paragraph at lines 12--12
-\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 c[]; [] ; c[]\OT1/cmr/m/n/10 )[]$, and $\OML/
-cmm/m/it/10 n$ \OT1/cmr/m/n/10 prod-uct-s, with cor-re-spond-ing prices de-not-
-ed by $\OT1/cmr/bx/n/10 v \OT1/cmr/m/n/10 = (\OML/cmm/m/it/10 v[]; [] ; v[]\OT1
-/cmr/m/n/10 )[]$.
- []
-
-[1
+) [1
 
 {D:/Program Files/CTEX/UserData/pdftex/config/pdftex.map{Unicode.sfd}{UGBK.sfd}
-}] [2]
-Overfull \hbox (12.63655pt too wide) detected at line 73
-\OML/cmm/m/it/10 V[] \OT1/cmr/m/n/10 = []
- []
+}]
+<plf_0.pdf, id=19, 578.16pt x 430.0065pt>
+File: plf_0.pdf Graphic file (type pdf)
+ <use plf_0.pdf>
+Package pdftex.def Info: plf_0.pdf used on input line 76.
+(pdftex.def)             Requested size: 330.42041pt x 245.74927pt.
+ [2] [3 <D:/stfile/Documents/paper/or/decisionRule/report/plf_0.pdf>]
+<plf_1.pdf, id=46, 578.16pt x 430.0065pt>
+File: plf_1.pdf Graphic file (type pdf)
+ <use plf_1.pdf>
+Package pdftex.def Info: plf_1.pdf used on input line 119.
+(pdftex.def)             Requested size: 330.42041pt x 245.74927pt.
 
+<plf_2.pdf, id=47, 578.16pt x 430.0065pt>
+File: plf_2.pdf Graphic file (type pdf)
+ <use plf_2.pdf>
+Package pdftex.def Info: plf_2.pdf used on input line 125.
+(pdftex.def)             Requested size: 330.42041pt x 245.74927pt.
 
-Overfull \hbox (42.01184pt too wide) detected at line 84
-[]
- []
+<compara.pdf, id=48, 578.16pt x 430.0065pt>
+File: compara.pdf Graphic file (type pdf)
+ <use compara.pdf>
+Package pdftex.def Info: compara.pdf used on input line 146.
+(pdftex.def)             Requested size: 472.03123pt x 351.07225pt.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 131.
+               Default added (so using `tbp') on input line 195.
 
-[3]
+[4 <D:/stfile/Documents/paper/or/decisionRule/report/plf_1.pdf>]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 155.
+               Default added (so using `tbp') on input line 218.
 
 
-Overfull \hbox (101.34871pt too wide) in paragraph at lines 157--170
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 240.
+
+
+Overfull \hbox (8.02765pt too wide) in paragraph at lines 242--255
  [][] 
  []
 
-[4] [5] (D:\stfile\Documents\paper\or\decisionRule\report\decisionRule.aux)
+[5 <D:/stfile/Documents/paper/or/decisionRule/report/plf_2.pdf>] [6 <D:/stfile/
+Documents/paper/or/decisionRule/report/compara.pdf>] [7]
+(D:\stfile\Documents\paper\or\decisionRule\report\decisionRule.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 1201 strings out of 495354
- 13817 string characters out of 3183075
- 69745 words of memory out of 3000000
- 4395 multiletter control sequences out of 15000+200000
- 12122 words of font info for 47 fonts, out of 3000000 for 9000
+ 2722 strings out of 495354
+ 34974 string characters out of 3183075
+ 101330 words of memory out of 3000000
+ 5856 multiletter control sequences out of 15000+200000
+ 12468 words of font info for 48 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
- 27i,9n,24p,1064b,209s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 27i,9n,32p,1064b,222s stack positions out of 5000i,500n,10000p,200000b,50000s
 <D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><D:/P
 rogram Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx12.pfb><D:/Program 
 Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx5.pfb><D:/Program Files/CT
 EX/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx7.pfb><D:/Program Files/CTEX/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmex10.pfb><D:/Program Files/CTEX/MiKTeX/fonts
 /type1/public/amsfonts/cm/cmmi10.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/
-public/amsfonts/cm/cmmi5.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/a
-msfonts/cm/cmmi7.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/
-cm/cmr10.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12
-.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><D:
-/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><D:/Program 
-Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><D:/Program Files/CTE
-X/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><D:/Program Files/CTEX/MiKTe
-X/fonts/type1/public/amsfonts/cm/cmsy5.pfb><D:/Program Files/CTEX/MiKTeX/fonts/
-type1/public/amsfonts/cm/cmsy7.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/pu
-blic/amsfonts/symbols/msbm10.pfb>
-Output written on decisionRule.pdf (5 pages, 182833 bytes).
+public/amsfonts/cm/cmmi12.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/
+amsfonts/cm/cmmi5.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts
+/cm/cmmi7.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi
+8.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><D
+:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><D:/Progra
+m Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><D:/Program Files/
+CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><D:/Program Files/CTEX/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmr7.pfb><D:/Program Files/CTEX/MiKTeX/fonts/
+type1/public/amsfonts/cm/cmr8.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/pub
+lic/amsfonts/cm/cmsy10.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmsy5.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm
+/cmsy7.pfb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.p
+fb><D:/Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><D:/
+Program Files/CTEX/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb><D:/Pr
+ogram Files/CTEX/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on decisionRule.pdf (7 pages, 423166 bytes).
 PDF statistics:
- 86 PDF objects out of 1000 (max. 8388607)
+ 186 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

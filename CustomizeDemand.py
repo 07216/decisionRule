@@ -385,7 +385,7 @@ class CustomizeDemand:
         for t in range(0,self.t * self.T):
             for j in range(0,self.j):
                 index = self.rALP.prdic[j]
-                self.prob[t,j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
+                self.prob[t,j] = self.rALP.bdic[(t,iwndex[0],index[1],index[2])]
         self.h = {}
         self.monteCarlo = {}
         self.seg = {}
