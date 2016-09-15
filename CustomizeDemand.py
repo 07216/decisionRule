@@ -19,8 +19,8 @@ class CustomizeDemand:
         self.limt = min(limt,self.t)
         self.T = T
         self.d = d
-        self.lenMon = 100
-        self.lenMonSec = 100
+        self.lenMon = 10000
+        self.lenMonSec = 10000
         self.a = 7
         self.b = 7
         self.r = self.a * self.b
@@ -224,7 +224,7 @@ class CustomizeDemand:
                     row += [rowBase + 4*j+3]
                     col += [self.t*self.j+j*self.r+a*self.b+b]
                     data += [self.mesh[0,j][1][b]]
-                    
+        colBase = self.t*self.j
         for t in range(1,self.t):
             for j in range(self.j):
                 
@@ -241,31 +241,31 @@ class CustomizeDemand:
                     row += [rowBase + 4*(t*self.j+j)+3]
                     col += [tt*self.j+j]
                     data += [-1]
-                    
-            for a in range(self.a):
-                for b in range(self.b):
-                    row += [rowBase + 4*(t*self.j+j)]
-                    col += [self.t*self.j+(t*self.j+j)*self.r+a*self.b+b]
-                    data += [-self.mesh[t,j][0][a]]
+                        
+                for a in range(self.a):
+                    for b in range(self.b):
+                        row += [rowBase + 4*(t*self.j+j)]
+                        col += [colBase + (t*self.j+j)*self.r+a*self.b+b]
+                        data += [-self.mesh[t,j][0][a]]
+                
+                for a in range(self.a):
+                    for b in range(self.b):
+                        row += [rowBase + 4*(t*self.j+j)+1]
+                        col += [colBase + (t*self.j+j)*self.r+a*self.b+b]
+                        data += [self.mesh[t,j][0][a]]
+                
+                for a in range(self.a):
+                    for b in range(self.b):
+                        row += [rowBase + 4*(t*self.j+j)+2]
+                        col += [colBase + (t*self.j+j)*self.r+a*self.b+b]
+                        data += [-self.mesh[t,j][1][b]]
+                
+                for a in range(self.a):
+                    for b in range(self.b):
+                        row += [rowBase + 4*(t*self.j+j)+3]
+                        col += [colBase + (t*self.j+j)*self.r+a*self.b+b]
+                        data += [self.mesh[t,j][1][b]]
             
-            for a in range(self.a):
-                for b in range(self.b):
-                    row += [rowBase + 4*(t*self.j+j)+1]
-                    col += [self.t*self.j+(t*self.j+j)*self.r+a*self.b+b]
-                    data += [self.mesh[t,j][0][a]]
-            
-            for a in range(self.a):
-                for b in range(self.b):
-                    row += [rowBase + 4*(t*self.j+j)+2]
-                    col += [self.t*self.j+(t*self.j+j)*self.r+a*self.b+b]
-                    data += [-self.mesh[t,j][1][b]]
-            
-            for a in range(self.a):
-                for b in range(self.b):
-                    row += [rowBase + 4*(t*self.j+j)+3]
-                    col += [self.t*self.j+(t*self.j+j)*self.r+a*self.b+b]
-                    data += [self.mesh[t,j][1][b]]
-        
         row += [self.t*self.j*8,self.t*self.j*8+1]
         col += [self.t*self.j+self.t*self.j*self.r,self.t*self.j+self.t*self.j*self.r]
         data += [1,-1]

@@ -135,10 +135,10 @@ class decisionRule:
         c = self.c.copy()
         for t in range(self.t):
             for j in range(self.j):
-                for i in self.refJ[j]:
-                    c[i] -= self.x[t,j,0].X
-                for d in range(self.d):
-                    c[i] -= self.xx[t,j,d].X * self.xi[1+(t*self.j+j)*self.d+d]
+                for i in range(self.refJ[j]):
+                    for a in range(self.a):
+                        for b in range(self.b):
+                            c[i] -= self.x[t,j,a,b] * self.xi[t,j,a,b]
         print c
     
     def writeMPS(self):
