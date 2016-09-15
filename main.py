@@ -24,8 +24,8 @@ secondCaseInReSolve=2
 choose,t,limt,d,T = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5])
 demander = CustomizeDemand.CustomizeDemand(choose,t,limt,d,T)
 '''
-demander = CustomizeDemand.CustomizeDemand(0,200,1,1,1)
-first = 1
+demander = CustomizeDemand.CustomizeDemand(1,5,5,1,1)
+first = 0
 
 if first == 0:#Decision Rule Approch 
     
@@ -43,34 +43,25 @@ if first == 0:#Decision Rule Approch
     end = time.clock()
     print "AddCons End",end
     #decisionSolver.writeMPS()
-    decisionSolver.solve()
-    decisionSolver.expectedLeftDemand()
+    decisionSolver.solve()   
+    #decisionSolver.expectedLeftDemand()
     #decisionSolver.echoOpt()    
     
-    print t,limt,d,end-start
     
+    #print t,limt,d,end-start
     simulator = simulation.simulation(decisionSolver,demander)
-    '''
-    realDemand = {}
-    for i in range(0,3):
-        realDemand[i] = demander.sim()
     
-    opt = gene.gene(decisionSolver,simulator)
-    opt.initX()
-    opt.setSTD(realDemand)
-    opt.evolve()
-    '''
-    simulator.initX()
-    simulator.initXX()
+    #simulator.initX()
+    #simulator.initXX()
     #simulator.echoXX()
-    simulator.bookLimLeft()
+    #simulator.bookLimLeft()
     print simulator.bookLimRun(np.round,1000)
     print simulator.bookLimRun(np.ceil,1000)
     print simulator.bookLimRun(np.floor,1000)
     print simulator.bookLimRun(simulator.atLeastOne,1000)
     print simulator.bookLimRun(simulator.atLeastTwo,1000)
     print simulator.bookLimRun(simulator.atLeastThree,1000)
-    print simulator.run(1000)
+    #print simulator.run(1000)
 
 elif first == 1:#reduction of Approximate Linear Programming
     

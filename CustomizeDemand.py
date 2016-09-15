@@ -6,6 +6,7 @@ Created on Wed Aug 10 15:42:43 2016
 """
 
 import numpy as np
+import scipy as sp
 from scipy.special import gamma
 from scipy.stats import gamma as Gamma
 from scipy.stats import poisson
@@ -18,7 +19,11 @@ class CustomizeDemand:
         self.limt = min(limt,self.t)
         self.T = T
         self.d = d
-        self.lenMon = 10000
+        self.lenMon = 100
+        self.lenMonSec = 100
+        self.a = 7
+        self.b = 7
+        self.r = self.a * self.b
         
         if choose ==0:
             self.reader = self.reductionALPReadIn()
@@ -76,8 +81,6 @@ class CustomizeDemand:
                 self.A[b*2+1,2*j+1] = 1
                 self.refJ[2*j] = [a*2,b*2+1]
                 self.refJ[2*j+1] = [a*2,b*2+1]
-        #Whether we need to set h sepeart from seg? h for range ,seg for segmentation
-        self.h = []
         
         totalLen = 1000.0
         div = int(totalLen / self.t)
@@ -87,76 +90,276 @@ class CustomizeDemand:
                 self.cons[t,0] +=  0.25 * 1.0/totalLen * (float(tt)/totalLen) ** (6 - 1) * (1- float(tt)/totalLen) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
                 self.cons[t,1] +=  0.75 * 1.0/totalLen * (float(tt)/totalLen) ** (2 - 1) * (1- float(tt)/totalLen) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                 
+        minf = 0.001
+        msup = 0.999
         self.monteCarlo = {}
-        #Segmentation
-        self.seg = {}
-        minsup = 0.01
-        mininf = 0.01
+        self.lb={}
+        self.ub={}
         for t in range(0,self.t):
             for j in range(0,20):
                 simGamma = np.random.gamma(40,size=(self.lenMon))
                 if j%2 ==0:
                     self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,0])
                     self.monteCarlo[t,j].sort()
-                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
-                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 else:
                     self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,1])
                     self.monteCarlo[t,j].sort()
-                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
-                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
-                a = 0.
-                new = []
-                for d in range(0,self.d):
-                    new += [float(b-a)/self.d*d+a]
-                new += [b]
-                self.seg[t,j] = new
+                self.ub[t,j] = self.monteCarlo[t,j][int(np.ceil(msup*self.lenMon-1))]
+                self.lb[t,j] = self.monteCarlo[t,j][int(np.floor(minf*self.lenMon))]
             
             for j in range(20,60):
                 simGamma = np.random.gamma(100,size=(self.lenMon))
                 if j%2 ==0:
                     self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,0])
                     self.monteCarlo[t,j].sort()
-                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
-                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
                 else:
                     self.monteCarlo[t,j] = np.random.poisson(simGamma * self.cons[t,1])
                     self.monteCarlo[t,j].sort()
-                    b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
-                    a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
-                #a = 0.
-                new = []
-                for d in range(0,self.d):
-                    new += [float(b-a)/self.d*d+a]
-                new += [b]
-                self.seg[t,j] = new
-        #print self.seg
-        #Expectation of arrival process
-        self.xi = np.zeros((self.t*self.j*self.d+1,1),dtype=np.float)
-        self.xi[0] = 1
-        for t in range(0,self.t):
-            for j in range(0,30):
-                left = 0
-                leftSec = 0
-                for d in range(0,self.d):
-                    low = self.seg[t,2*j][d]
-                    up = self.seg[t,2*j][d+1]
-                    if d == 0:
-                        low = 0
-                    self.xi[1+(t*self.j+2*j)*self.d+d],left =  self.avg(t,2*j,left,up,low,self.d-d)
-                    self.xi[1+(t*self.j+2*j)*self.d+d] += (up - low)* (self.lenMon - left)
-                    self.xi[1+(t*self.j+2*j)*self.d+d] /= self.lenMon
+                self.ub[t,j] = self.monteCarlo[t,j][int(np.ceil(msup*self.lenMon-1))]
+                self.lb[t,j] = self.monteCarlo[t,j][int(np.floor(minf*self.lenMon))]
                     
-                    low = self.seg[t,2*j+1][d]
-                    up = self.seg[t,2*j+1][d+1]
-                    if d == 0:
-                        low = 0
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d],leftSec =  self.avg(t,2*j+1,leftSec,up,low,self.d-d)
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] += (up - low)* (self.lenMon - leftSec)
-                    self.xi[1+(t*self.j+2*j+1)*self.d+d] /= self.lenMon
+        self.exi = np.zeros((self.t,self.j),dtype=np.float)
+        for t in range(self.t):
+            for j in range(self.j):
+                self.exi[t,j] = np.mean(self.monteCarlo[t,j])
+        
+        self.yub = np.zeros((self.t,self.j),dtype=np.float)
+        self.ylb = np.zeros((self.t,self.j),dtype=np.float)
+        for t in range(1,self.t):
+            for j in range(self.j):
+                self.yub[t,j] = self.ub[t-1,j] + self.yub[t-1,j]
+                self.ylb[t,j] = self.lb[t-1,j] + self.ylb[t-1,j]
+        for j in range(self.j):
+            self.yub[0,j] = 1
+        self.produceMesh()
+        tmp = {}
+        cu = {}
+        self.xi = np.zeros((self.t,self.j,self.a,self.b),dtype=np.float)
+        for s in range(self.lenMonSec):
+            #simulation
+            for t in range(self.t):
+                
+                simGamma = np.random.gamma(40)
+                for j in range(20):
+                    if j%2 ==0:
+                        tmp[t,j] = np.random.poisson(simGamma * self.cons[t,0])
+                    else:
+                        tmp[t,j] = np.random.poisson(simGamma * self.cons[t,1])
+                
+                simGamma = np.random.gamma(100)
+                for j in range(20,60):
+                    if j%2 ==0:
+                        tmp[t,j] = np.random.poisson(simGamma * self.cons[t,0])
+                    else:
+                        tmp[t,j] = np.random.poisson(simGamma * self.cons[t,1])
+            #calculate
+            for j in range(self.j):
+                cu[j] = 0
+            for t in range(self.t):
+                for j in range(self.j):
+                    result = self.pieceWiseFunctionOnMesh(t,j,tmp[t,j],cu[j]+(t==0))
+                    for (a,b,value) in result:
+                        self.xi[t,j,a,b] += value
+                    cu[j] += tmp[t,j]
+        #mean
+        for t in range(self.t):
+            for j in range(self.j):
+                for a in range(self.a):
+                    for b in range(self.b):
+                        self.xi[t,j,a,b] /= float(self.lenMonSec)
+        self.buildWh()
+        
+    def buildWh(self):
+        #W
+        #First Block
+        self.row = 8*self.t*self.j+2+self.t*self.j*self.r
+        self.col = self.t*self.j+self.r*self.t*self.j+1
+        row = []
+        col = []
+        data = []
+        for t in range(self.t):
+            for j in range(self.j):
+                row += [2*(t*self.j+j),2*(t*self.j+j)+1]
+                col += [t*self.j+j,t*self.j+j]
+                data += [1,-1]
+        #Second Block
+        rowBase = self.t*self.j*2
+        colBase = self.t*self.j
+        for t in range(self.t):
+            for j in range(self.j):
+                for r in range(self.r):
+                    row += [rowBase + 2*(t*self.j+j)]
+                    col += [colBase + (t*self.j+j)*self.r+r]
+                    data += [1]
+                for r in range(self.r):
+                    row += [rowBase + 2*(t*self.j+j) + 1]
+                    col += [colBase + (t*self.j+j)*self.r+r]
+                    data += [-1]
+        #Last Block
+        rowBase = 4*self.t*self.j
+        for j in range(self.j):
+            row += [rowBase + 4*j,rowBase + 4*j+1,rowBase + 4 * j + 2 , rowBase + 4*j+3 ]
+            col += [j,j,self.t*self.j+self.t*self.j*self.r,self.t*self.j+self.t*self.j*self.r]
+            data += [1,-1,1,-1]
+            for a in range(self.a):
+                for b in range(self.b):
+                    row += [rowBase + 4*j]
+                    col += [self.t*self.j+j*self.r+a*self.b+b]
+                    data += [-self.mesh[0,j][0][a]]
+            
+            for a in range(self.a):
+                for b in range(self.b):
+                    row += [rowBase + 4*j+1]
+                    col += [self.t*self.j+j*self.r+a*self.b+b]
+                    data += [self.mesh[0,j][0][a]]
+            
+            for a in range(self.a):
+                for b in range(self.b):
+                    row += [rowBase + 4*j+2]
+                    col += [self.t*self.j+j*self.r+a*self.b+b]
+                    data += [-self.mesh[0,j][1][b]]
+            
+            for a in range(self.a):
+                for b in range(self.b):
+                    row += [rowBase + 4*j+3]
+                    col += [self.t*self.j+j*self.r+a*self.b+b]
+                    data += [self.mesh[0,j][1][b]]
                     
-        #print self.xi
-        #print self.h
+        for t in range(1,self.t):
+            for j in range(self.j):
+                
+                row += [rowBase + 4*(t*self.j+j),rowBase + 4*(t*self.j+j)+1]
+                col += [t*self.j+j,t*self.j+j]                
+                data += [1,-1]
+                
+                for tt in range(t):
+                    row += [rowBase + 4*(t*self.j+j)+2]
+                    col += [tt*self.j+j]
+                    data += [1]
+                
+                for tt in range(t):
+                    row += [rowBase + 4*(t*self.j+j)+3]
+                    col += [tt*self.j+j]
+                    data += [-1]
+                    
+            for a in range(self.a):
+                for b in range(self.b):
+                    row += [rowBase + 4*(t*self.j+j)]
+                    col += [self.t*self.j+(t*self.j+j)*self.r+a*self.b+b]
+                    data += [-self.mesh[t,j][0][a]]
+            
+            for a in range(self.a):
+                for b in range(self.b):
+                    row += [rowBase + 4*(t*self.j+j)+1]
+                    col += [self.t*self.j+(t*self.j+j)*self.r+a*self.b+b]
+                    data += [self.mesh[t,j][0][a]]
+            
+            for a in range(self.a):
+                for b in range(self.b):
+                    row += [rowBase + 4*(t*self.j+j)+2]
+                    col += [self.t*self.j+(t*self.j+j)*self.r+a*self.b+b]
+                    data += [-self.mesh[t,j][1][b]]
+            
+            for a in range(self.a):
+                for b in range(self.b):
+                    row += [rowBase + 4*(t*self.j+j)+3]
+                    col += [self.t*self.j+(t*self.j+j)*self.r+a*self.b+b]
+                    data += [self.mesh[t,j][1][b]]
+        
+        row += [self.t*self.j*8,self.t*self.j*8+1]
+        col += [self.t*self.j+self.t*self.j*self.r,self.t*self.j+self.t*self.j*self.r]
+        data += [1,-1]
+        rowBase = self.t*self.j*8+2
+        colBase = self.t*self.j
+        for t in range(self.t):
+            for j in range(self.j):
+                for  r in range(self.r):
+                    row += [rowBase + (t*self.j+j)*self.r+r]
+                    col += [colBase + (t*self.j+j)*self.r+r]
+                    data += [1]
+        
+        self.w = sp.sparse.csc_matrix((data,(row,col)),\
+        shape=(self.t*self.j*8+2+self.t*self.j*self.r,self.t*self.j+self.t*self.j*self.r+1))
+        
+        data = []
+        for t in range(self.t):
+            for j in range(self.j):
+                data += [self.lb[t,j]]
+                data += [-self.ub[t,j]]
+        for t in range(self.t):
+            for j in range(self.j):
+                data += [1,-1]
+        for t in range(self.t):
+            for j in range(self.j):
+                data += [0,0,0,0]
+        data += [1,-1]
+        data += [0] * (self.t*self.j*self.r)
+        self.h = np.array(data)
+
+        
+    def tri(self,t,j,x1,y1,x2,y2,x3,y3,x,y):#
+        x1 = self.mesh[t,j][0][x1]
+        x2 = self.mesh[t,j][0][x2]
+        x3 = self.mesh[t,j][0][x3]
+        y1 = self.mesh[t,j][1][y1]
+        y2 = self.mesh[t,j][1][y2]
+        y3 = self.mesh[t,j][1][y3]
+        dx1 = x2-x1
+        dy1 = y2-y1
+        dx2 = x3-x1
+        dy2 = y3-y1
+        A = np.array([[dx1,dy1],[dx2,dy2]])
+        b = np.array([1,1])
+        xx = np.linalg.solve(A,b)
+        a = xx[0]
+        b = xx[1]
+        d = -1
+        return -(a*(x-x1)+b*(y-y1)+d)
+    
+    def pieceWiseFunctionOnMesh(self,t,j,x,y):#
+        x = max(min(self.ub[t,j],x),self.lb[t,j])
+        y = max(min(self.yub[t,j],y),self.ylb[t,j])
+        flag = 0
+        for a in range(self.a):
+            if self.mesh[t,j][0][a] >= x:
+                if self.mesh[t,j][0][a] == x:
+                    flag = 1
+                break
+        for b in range(self.b):
+            if self.mesh[t,j][1][b] >= y :
+                if self.mesh[t,j][1][b] == y:
+                    if flag == 1:
+                        flag = 3
+                    else:
+                        flag = 2
+                break
+        if flag == 0 :
+            dy = y-self.mesh[t,j][1][b-1]
+            dx = x-self.mesh[t,j][0][a]
+            ddy = self.mesh[t,j][1][b] - self.mesh[t,j][1][b-1]
+            ddx = self.mesh[t,j][0][a-1] - self.mesh[t,j][0][a]
+            if dx*ddy - ddx*dy>0:
+                result = [(a-1,b,self.tri(t,j,a-1,b,a,b,a,b-1,x,y)), (a,b,self.tri(t,j,a,b,a-1,b,a,b-1,x,y)), \
+                (a,b-1,self.tri(t,j,a,b-1,a,b,a-1,b,x,y))]
+            else:
+                result = [(a-1,b-1,self.tri(t,j,a-1,b-1,a-1,b,a,b-1,x,y)), (a-1,b,self.tri(t,j,a-1,b,a,b-1,a-1,b-1,x,y)), \
+                (a,b-1,self.tri(t,j,a,b-1,a-1,b-1,a-1,b,x,y))]
+        elif flag == 1:
+                result = [(a,b-1,1-(y-self.mesh[t,j][1][b-1])/float(self.mesh[t,j][1][b]-self.mesh[t,j][1][b-1])), \
+                        (a,b,(y-self.mesh[t,j][1][b-1])/float(self.mesh[t,j][1][b]-self.mesh[t,j][1][b-1]))]
+        elif flag == 2:
+                result = [(a-1,b,1-(x-self.mesh[t,j][0][a-1])/float(self.mesh[t,j][0][a]-self.mesh[t,j][0][a-1])), \
+                        (a,b,(x-self.mesh[t,j][0][a-1])/float(self.mesh[t,j][0][a]-self.mesh[t,j][0][a-1]))]
+        else:
+            result = [(a,b,1)]
+        return result
+    
+    def produceMesh(self):
+        self.mesh = {}
+        for t in range(self.t):
+            for j in range(self.j):
+                self.mesh[t,j] = [np.linspace(self.lb[t,j],self.ub[t,j],self.a),\
+                np.linspace(self.ylb[t,j],self.yub[t,j],self.b)]
     
     def produceDemandForFirstCaseInResolve(self):        
         self.realDemand = []

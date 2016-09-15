@@ -17,68 +17,18 @@ class simulation:
         self.v = recorder.v
         self.c = recorder.c
         self.h = recorder.h
-        self.seg = recorder.seg
         self.refJ = recorder.refJ
         self.t = recorder.t
         self.limt  = recorder.limt
         self.sim = recorder.sim
         self.d = recorder.d
+        self.fun = recorder.pieceWiseFunctionOnMesh
+        self.mesh = recorder.mesh
+        self.r = recorder.r
+        self.a = recorder.a
+        self.b = recorder.b
         self.x = decisionSolver.x
-        self.xx = decisionSolver.xx
-        
-    def initX(self):
-        self.X = {}
-        for t in range(0,self.limt):
-            self.X[t] = np.zeros((self.j,1+t*self.j*self.d),dtype=np.float)
-            for j in range(0,self.j):
-                for p in range(0,1+t*self.j*self.d):
-                    self.X[t][j,p] = self.x[t,j,p].X
-                    '''if p!=0 and self.X[t][j,p] !=0:
-                        print self.X[t][j,p],t,j,p'''
-        for t in range(self.limt,self.t):
-            self.X[t] = np.zeros((self.j,1+self.limt*self.j*self.d),dtype=np.float)
-            for j in range(0,self.j):
-                for p in range(0,1+self.limt*self.j*self.d):
-                    self.X[t][j,p] = self.x[t,j,p].X
-                    '''if p!=0 and self.X[t][j,p] !=0:
-                        print self.X[t][j,p],t,j,p'''
-            print t,self.X[t][:,0]
                         
-    def initXX(self):
-        self.XX={}
-        self.bookLim = {}
-        #self.INF = 1000000
-        for t in range(0,self.t):
-            for j in range(0,self.j):     #In the code, upbound = lowbound is not permitted as a result of non-technically selecting of basis function.           
-                self.bookLim[t,j] = 0
-                self.XX[t,j] = np.zeros((self.d,1))
-                flag = -1
-                low = 0
-                for d in range(0,self.d):
-                    self.XX[t,j][d] = self.xx[t,j,d].X
-                    self.bookLim[t,j] += (self.seg[t,j][d+1]-low) * self.XX[t,j][d]
-                    low = self.seg[t,j][d+1]
-                    '''
-                    if self.XX[t,j][d] !=0 :
-                        print self.XX[t,j][d],t,j,d
-                    '''
-                    if self.XX[t,j][d] != 1:
-                        if flag == -1:
-                            flag = d
-                #As upbound = lowbound is not permitted
-                if self.seg[t,j][0] == self.seg[t,j][1]:
-                    self.bookLim[t,j] = 0
-                '''
-                if flag !=-1 :
-                    if flag == 0 :
-                        self.bookLim[t,j] = 0
-                    else:
-                        self.bookLim[t,j] = self.seg[t,j][flag]
-                else:
-                    self.bookLim[t,j] = self.seg[t,j][self.d]+1000
-                '''
-                #print self.bookLim[t,j],t,j
-
     def bookLimLeft(self):  
         c = self.c.copy()
         for t in range(self.t):
@@ -102,28 +52,16 @@ class simulation:
         return int(x)+3
     
     def nonLinearDemand(self,realDemand):
-        result = [0] * (self.t*self.j*self.d)
-        for t in range(0,self.t):
-            for j in range(0,self.j):
-                if self.seg[t,j][0] == self.seg[t,j][1]:
-                    for d in range(0,self.d):
-                        result[(t*self.j+j)*self.d+d] = float(realDemand[t*self.j+j])/self.d
-                    continue
-                for d in range(1,self.d+1):
-                    if d == self.d:
-                        result[(t*self.j+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
-                        break
-                    if realDemand[t*self.j+j] <= self.seg[t,j][d]:
-                        if d == 1:
-                            result[(t*self.j+j)*self.d+d-1] = realDemand[t*self.j+j]
-                        else:
-                            result[(t*self.j+j)*self.d+d-1] = realDemand[t*self.j+j] - self.seg[t,j][d-1]
-                        break
-                    else:
-                        if d == 1:
-                            result[(t*self.j+j)*self.d+d-1] = self.seg[t,j][d]
-                        else:
-                            result[(t*self.j+j)*self.d+d-1] = self.seg[t,j][d] - self.seg[t,j][d-1]
+        result = realDemand
+        cu = [0] * self.j
+        for t in range(self.t):
+            for j in range(self.j):
+                add = [0] * self.r
+                tmp = self.fun(t,j,realDemand[t*self.j+j],cu[j]+(t==0))
+                for (a,b,value) in tmp:
+                    add[a*self.b+b] += value
+                cu[j] += realDemand[t*self.j+j]
+                result += add
         return result
 
     def identity(self,x):
@@ -201,54 +139,36 @@ class simulation:
         #print c
         return benefit    
 
+    def inter(self,t,j,y):
+        y = max(self.mesh[t,j][1][0],min(self.mesh[t,j][1][-1],y))
+        for i in range(self.b):
+            if self.mesh[t,j][1][i] >= y:
+                break
+        if i==0:
+            return self.x[t,j,self.a-1,0].x
+            
+        return self.x[t,j,self.a-1,i-1].x+(self.x[t,j,self.a-1,i].x-self.x[t,j,self.a-1,i-1].x)* \
+                (y-self.mesh[t,j][1][i-1]) / float(self.mesh[t,j][1][i]-self.mesh[t,j][1][i-1])
+        
     def bookLimSim(self,rplc):
         realDemand = self.sim()   
-        realNonLinearDemand = self.nonLinearDemand(realDemand)
         c = np.copy(self.c)
-        demand = [1]
-        history = np.array(demand)
         benefit = 0.0
         #rplc = self.identity
-        lessZero = 0
         #rplc = np.ceil
         #rplc = np.round
-        for t in range(0,self.limt):
-            product = np.dot(self.X[t],history)
+        product = {}
+        cu = [0] * self.j
+        for t in range(self.t):
+            for j in range(self.j):
+                product[t,j] = self.inter(t,j,cu[j]+(t==0))
+                cu[j] += realDemand[t*self.j+j]
+                    
+        for t in range(self.t):
             #print product
-            tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
-            productDemand = realDemand[t*self.j:(t+1)*self.j]            
-            for j in range(0,self.j):
-                product[j] += self.bookLim[t,j]
-            for j in range(0,self.j):
-                if product[j]<0:
-                    #print "Strange!",product[j]
-                    lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
-                #sell = max(0,product[j])
-                if sell != 0:
-                    for k in self.refJ[j]:
-                        sell = min(sell,c[k])
-                    benefit += sell * self.v[j]
-                    for k in self.refJ[j]:
-                        c[k] -= sell
-                            
-                #benefit += int(product[j]) * self.v[j]
-            demand += tmpDemand
-            if self.limt != 0:
-                history = np.array(demand)
-        
-        for t in range(self.limt,self.t):
-            product = np.dot(self.X[t],history)
-            #print product
-            tmpDemand = realNonLinearDemand[t*self.j*self.d:(t+1)*self.j*self.d]
-            for j in range(0,self.j):
-                product[j] += self.bookLim[t,j]
             productDemand = realDemand[t*self.j:(t+1)*self.j]
             for j in range(0,self.j):
-                if product[j]<0:
-                    #print "Strange!",product[j]
-                    lessZero = 1
-                sell = max(0,min(productDemand[j],rplc(product[j])))
+                sell = max(0,min(productDemand[j],rplc(product[t,j])))
                 #sell = max(0,product[j])
                 if sell != 0:
                     for k in self.refJ[j]:
@@ -256,9 +176,6 @@ class simulation:
                     benefit += sell * self.v[j]
                     for k in self.refJ[j]:
                         c[k] -= sell
-            demand = [1] + demand[(self.j*self.d+1):] + tmpDemand
-            if self.limt != 0:
-                history = np.array(demand)
         
         for i in range(0,self.i):
             if c[i] <0:
