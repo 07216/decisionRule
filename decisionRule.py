@@ -117,7 +117,13 @@ class decisionRule:
                         z[i,start:end] += self.x[t,j,a]
                                 '''
         for i in range(self.i):
-            z[i,self.col-1] += -self.c[i]
+            z[i,self.col-1] += -2*self.c[i]
+        for t in range(self.t):
+            for j in range(self.j):
+                for i in self.refJ[j]:
+                    for a in range(self.a):
+                        for b in range(self.b):
+                            z[i,self.col-1] += self.x[t,j,a,b] * self.xi[t,j,a,b]
         for i in range(tmp.shape[0]):
             for j in range(tmp.shape[1]):
                 self.m.addConstr(tmp[i,j],GRB.EQUAL,z[i,j])

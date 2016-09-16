@@ -22,7 +22,7 @@ class CustomizeDemand:
         self.lenMon = 10000
         self.lenMonSec = 10000
         self.a = 7
-        self.b = 7
+        self.b = 10
         self.r = self.a * self.b
         
         if choose ==0:
@@ -90,11 +90,15 @@ class CustomizeDemand:
                 self.cons[t,0] +=  0.25 * 1.0/totalLen * (float(tt)/totalLen) ** (6 - 1) * (1- float(tt)/totalLen) ** (2-1) * gamma(8)/gamma(2)/gamma(6)
                 self.cons[t,1] +=  0.75 * 1.0/totalLen * (float(tt)/totalLen) ** (2 - 1) * (1- float(tt)/totalLen) ** (6-1) * gamma(8)/gamma(2)/gamma(6)
                 
-        minf = 0.001
-        msup = 0.999
+        minf = 0.01
+        msup = 0.99
+        mxinf = 0.01
+        mxsup = 0.99
         self.monteCarlo = {}
         self.lb={}
         self.ub={}
+        self.xub = {}
+        self.xlb = {}
         for t in range(0,self.t):
             for j in range(0,20):
                 simGamma = np.random.gamma(40,size=(self.lenMon))
@@ -106,6 +110,8 @@ class CustomizeDemand:
                     self.monteCarlo[t,j].sort()
                 self.ub[t,j] = self.monteCarlo[t,j][int(np.ceil(msup*self.lenMon-1))]
                 self.lb[t,j] = self.monteCarlo[t,j][int(np.floor(minf*self.lenMon))]
+                self.xub[t,j] = self.monteCarlo[t,j][int(np.ceil(mxsup*self.lenMon-1))]
+                self.xlb[t,j] = self.monteCarlo[t,j][int(np.floor(mxinf*self.lenMon))]
             
             for j in range(20,60):
                 simGamma = np.random.gamma(100,size=(self.lenMon))
@@ -117,12 +123,9 @@ class CustomizeDemand:
                     self.monteCarlo[t,j].sort()
                 self.ub[t,j] = self.monteCarlo[t,j][int(np.ceil(msup*self.lenMon-1))]
                 self.lb[t,j] = self.monteCarlo[t,j][int(np.floor(minf*self.lenMon))]
+                self.xub[t,j] = self.monteCarlo[t,j][int(np.ceil(mxsup*self.lenMon-1))]
+                self.xlb[t,j] = self.monteCarlo[t,j][int(np.floor(mxinf*self.lenMon))]
                     
-        self.exi = np.zeros((self.t,self.j),dtype=np.float)
-        for t in range(self.t):
-            for j in range(self.j):
-                self.exi[t,j] = np.mean(self.monteCarlo[t,j])
-        
         self.yub = np.zeros((self.t,self.j),dtype=np.float)
         self.ylb = np.zeros((self.t,self.j),dtype=np.float)
         for t in range(1,self.t):
@@ -284,8 +287,8 @@ class CustomizeDemand:
         data = []
         for t in range(self.t):
             for j in range(self.j):
-                data += [self.lb[t,j]]
-                data += [-self.ub[t,j]]
+                data += [self.xlb[t,j]]
+                data += [-self.xub[t,j]]
         for t in range(self.t):
             for j in range(self.j):
                 data += [1,-1]
@@ -588,42 +591,61 @@ class CustomizeDemand:
         for t in range(0,self.t * self.T):
             for j in range(0,self.j):
                 index = self.rALP.prdic[j]
-                self.prob[t,j] = self.rALP.bdic[(t,iwndex[0],index[1],index[2])]
-        self.h = {}
+                self.prob[t,j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
         self.monteCarlo = {}
-        self.seg = {}
-        minsup = 0.001
-        mininf = 0.01
+        minf = 0.01
+        msup = 0.99
+        mxsup = 0.9
+        mxinf = 0.1
+        self.xub = np.zeros((self.t,self.j),dtype=np.float)
+        self.xlb = np.zeros((self.t,self.j),dtype=np.float)
+        self.ub = np.zeros((self.t,self.j),dtype=np.float)
+        self.lb = np.zeros((self.t,self.j),dtype=np.float)
         for t in range(0,self.t):
             for j in range(0,self.j):
                 self.monteCarlo[t,j] = []
                 for k in range(0,self.lenMon):
                     self.monteCarlo[t,j].append(np.sum(np.random.uniform(size=self.T)<self.prob[t*self.T:(t+1)*self.T,j]))
                 self.monteCarlo[t,j].sort()
-                b = self.monteCarlo[t,j][int(np.ceil((1-minsup)*self.lenMon-1))]
+                self.xub[t,j] = self.monteCarlo[t,j][int(np.ceil(mxsup*self.lenMon-1))]
+                self.xlb[t,j] = self.monteCarlo[t,j][int(np.floor(mxinf*self.lenMon))]
+                self.ub[t,j] = self.monteCarlo[t,j][int(np.ceil(msup*self.lenMon-1))]
                 #print b
-                a = self.monteCarlo[t,j][int(np.floor(mininf*self.lenMon))]
-                new = []
-                for d in range(0,self.d):
-                    new += [float(b-a)/self.d*d+a]
-                new += [b]
-                self.seg[t,j] = new
+                self.lb[t,j] = self.monteCarlo[t,j][int(np.floor(minf*self.lenMon))]
                        
-        #Expectation of arrival process
-        self.xi = np.zeros((self.t*self.j*self.d+1,1),dtype=np.float)
-        self.xi[0] = 1
-        for t in range(0,self.t):
-            for j in range(0,self.j):
-                left = 0
-                for d in range(0,self.d):
-                    low = self.seg[t,j][d]
-                    up = self.seg[t,j][d+1]
-                    if d == 0:
-                        low = 0
-                    self.xi[1+(t*self.j+j)*self.d+d],left =  self.avg(t,j,left,up,low,self.d-d)
-                    self.xi[1+(t*self.j+j)*self.d+d] += (up - low)* (self.lenMon - left)
-                    self.xi[1+(t*self.j+j)*self.d+d] /= self.lenMon
-        
+        self.yub = np.zeros((self.t,self.j),dtype=np.float)
+        self.ylb = np.zeros((self.t,self.j),dtype=np.float)
+        for t in range(1,self.t):
+            for j in range(self.j):
+                self.yub[t,j] = self.ub[t-1,j] + self.yub[t-1,j]
+                self.ylb[t,j] = self.lb[t-1,j] + self.ylb[t-1,j]
+        for j in range(self.j):
+            self.yub[0,j] = 1
+        self.produceMesh()
+        tmp = {}
+        cu = {}
+        self.xi = np.zeros((self.t,self.j,self.a,self.b),dtype=np.float)
+        for s in range(self.lenMonSec):
+            #simulation
+            for t in range(self.t):
+                for j in range(self.j):
+                    tmp[t,j]=np.sum(np.random.uniform(size=self.T)<self.prob[t*self.T:(t+1)*self.T,j])
+            #calculate
+            for j in range(self.j):
+                cu[j] = 0
+            for t in range(self.t):
+                for j in range(self.j):
+                    result = self.pieceWiseFunctionOnMesh(t,j,tmp[t,j],cu[j]+(t==0))
+                    for (a,b,value) in result:
+                        self.xi[t,j,a,b] += value
+                    cu[j] += tmp[t,j]
+        #mean
+        for t in range(self.t):
+            for j in range(self.j):
+                for a in range(self.a):
+                    for b in range(self.b):
+                        self.xi[t,j,a,b] /= float(self.lenMonSec)        
+        self.buildWh()
         #print self.xi
         #construct v
         for j in range(0,self.j):
