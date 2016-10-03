@@ -16,7 +16,7 @@ class rALP:
         self.t = relrALP.n
         
         
-        self.t = 20#customized periods
+        self.t = 200#customized periods
         
         
         #Sparse P
@@ -73,18 +73,18 @@ class rALP:
         for t in range(0,self.t):
             for i in range(0,self.i):
                 for k in range(0,self.c[i]):
-                    self.y[t,i,k] = self.m.addVar(name = 'y %d %d %d' %(t,i,k) )
+                    self.y[t,i,k] = self.m.addVar(lb=-GRB.INFINITY, name = 'y %d %d %d' %(t,i,k) )
         self.z = {}
         for t in range(0,self.t):
             for j in range(0,self.j):
                 for i in range(0,self.i):
                     for k in range(0,int(self.c[i])):
-                        self.z[t,j,i,k] = self.m.addVar(name = 'z %d %d %d %d' %(t,j,i,k) )
+                        self.z[t,j,i,k] = self.m.addVar(lb=-GRB.INFINITY, name = 'z %d %d %d %d' %(t,j,i,k) )
                     self.z[t,j,i,int(self.c[i,0])] = self.m.addVar(ub=0,lb=0,name = 'z %d %d %d %d' %(t,j,i,self.c[i,0]) )
         self.q = {}
         for t in range(0,self.t):
             for j in range(0,self.j):
-                self.q[t,j] = self.m.addVar(name = 'q %d %d' %(t,j) )
+                self.q[t,j] = self.m.addVar(lb=-GRB.INFINITY, name = 'q %d %d' %(t,j) )
         self.m.update()
     
     def addOpt(self):
