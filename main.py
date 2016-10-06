@@ -58,12 +58,14 @@ if first == 0:#Decision Rule Approch
     #simulator.initXX()
     #simulator.echoXX()
     #simulator.bookLimLeft()
-    print "Round:",simulator.bookLimRun(np.round,1000),"111111111111111111111111111111111111111111"
+    print "Round:",simulator.bookLimRun(np.round,100),"111111111111111111111111111111111111111111"
+    '''
     print "Ceil:",simulator.bookLimRun(np.ceil,1000),"2222222222222222222222222222222222222"
     print "Floor:",simulator.bookLimRun(np.floor,1000),"33333333333333333333333333333333333333"
     print simulator.bookLimRun(simulator.atLeastOne,1000)
     print simulator.bookLimRun(simulator.atLeastTwo,1000)
     print simulator.bookLimRun(simulator.atLeastThree,1000)
+    '''
     #print simulator.run(1000)
 
 elif first == 1:#reduction of Approximate Linear Programming
