@@ -24,10 +24,13 @@ secondCaseInReSolve=2
 choose,t,limt,d,T = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5])
 demander = CustomizeDemand.CustomizeDemand(choose,t,limt,d,T)
 '''
-demander = CustomizeDemand.CustomizeDemand(1,5,5,1,1)
+demander = CustomizeDemand.CustomizeDemand(0,5,5,1,40)
 first = 0
 
 if first == 0:#Decision Rule Approch 
+    
+    reduction = rALP.rALP(demander.reader)
+    reduction.construct()
     
     decisionSolver = decisionRule.decisionRule()
     #   decisionSolver.echoInput()
@@ -49,15 +52,15 @@ if first == 0:#Decision Rule Approch
     
     
     #print t,limt,d,end-start
-    simulator = simulation.simulation(decisionSolver,demander)
+    simulator = simulation.simulation(decisionSolver,demander,reduction,demander.reader)
     
     #simulator.initX()
     #simulator.initXX()
     #simulator.echoXX()
     #simulator.bookLimLeft()
-    print simulator.bookLimRun(np.round,1000)
-    print simulator.bookLimRun(np.ceil,1000)
-    print simulator.bookLimRun(np.floor,1000)
+    print "Round:",simulator.bookLimRun(np.round,1000),"111111111111111111111111111111111111111111"
+    print "Ceil:",simulator.bookLimRun(np.ceil,1000),"2222222222222222222222222222222222222"
+    print "Floor:",simulator.bookLimRun(np.floor,1000),"33333333333333333333333333333333333333"
     print simulator.bookLimRun(simulator.atLeastOne,1000)
     print simulator.bookLimRun(simulator.atLeastTwo,1000)
     print simulator.bookLimRun(simulator.atLeastThree,1000)

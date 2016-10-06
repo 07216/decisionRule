@@ -51,7 +51,11 @@ class rALP:
             for j in range(0,self.j):
                 index = self.rALP.prdic[j]
                 self.xi[1+t*self.j+j] = self.rALP.bdic[(t,index[0],index[1],index[2])]
-                
+
+    def setPara(self,t,c,xi):
+        self.c = c
+        self.xi = xi
+        
     def echoInput(self):
         print "i:%d"%self.i
         print "j:%d"%self.j
@@ -93,6 +97,11 @@ class rALP:
             for j in range(0,self.j):
                 obj += self.xi[1+t*self.j+j,0] * self.v[j,0] * self.q[t,j]
         self.m.setObjective(obj,GRB.MAXIMIZE)
+        self.m.params.OptimalityTol = 1e-3
+        self.m.params.FeasibilityTol = 1e-3
+        self.m.params.BarConvTol = 1e-3
+        self.m.params.method = 2
+        self.m.params.crossover = 0
     
     def addConstr(self):
         #y
@@ -121,7 +130,11 @@ class rALP:
                         
     def solve(self):
         self.m.optimize()
+        return self.m.ObjVal
     
+    def reptxu(self,t,x,u):
+        return 0
+        
     def echoOpt(self):
         print self.m.getObjective().getValue()
     
