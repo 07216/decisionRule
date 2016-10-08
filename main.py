@@ -24,7 +24,7 @@ secondCaseInReSolve=2
 choose,t,limt,d,T = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5])
 demander = CustomizeDemand.CustomizeDemand(choose,t,limt,d,T)
 '''
-demander = CustomizeDemand.CustomizeDemand(0,1,5,1,200)
+demander = CustomizeDemand.CustomizeDemand(0,5,5,1,40)
 first = 0
 
 if first == 0:#Decision Rule Approch 
@@ -58,7 +58,7 @@ if first == 0:#Decision Rule Approch
     #simulator.initXX()
     #simulator.echoXX()
     #simulator.bookLimLeft()
-    print "Round:",simulator.bookLimRun(np.round,100),"111111111111111111111111111111111111111111"
+    print "Round:",simulator.bookLimRun(np.round,3),"111111111111111111111111111111111111111111"
     '''
     print "Ceil:",simulator.bookLimRun(np.ceil,1000),"2222222222222222222222222222222222222"
     print "Floor:",simulator.bookLimRun(np.floor,1000),"33333333333333333333333333333333333333"

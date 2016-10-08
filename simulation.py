@@ -161,7 +161,7 @@ class simulation:
             for i in self.refJ[j]:
                 cc[i] += product[j]
         for i in range(self.i):
-            c[i] = int(np.round(cc[i]))
+            c[i] = int(np.floor(cc[i]))
         xi = np.zeros((self.T*self.j+1,1))
         xi[0] = 1
         for tt in range(self.T):
@@ -180,8 +180,8 @@ class simulation:
         for j in range(0,self.j):
             r.v[j] = r.rALP.pval[j]
 
-        r.c = self.c
-        r.xi = self.alpXi
+        r.c = c
+        r.xi = xi
         r.addVar()
         r.addOpt()
         r.addConstr()
@@ -243,7 +243,7 @@ class simulation:
         #if lessZero == 1:
          #   print "Strange"
         print "simulation:",sum(val),benefit,benefitSec,"sssssssssssssssssssssssssssssssssssssssssss"
-        return benefit    
+        return sum(val)    
         
     def simWithGivenDemand(self,x,realDemand):
         c = np.copy(self.c)

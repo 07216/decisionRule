@@ -116,6 +116,12 @@ class decisionRule:
                         end = start + self.b
                         z[i,start:end] += self.x[t,j,a]
                                 '''
+        
+        #<=C
+        for i in range(self.i):
+            z[i,self.col-1] += -self.c[i]
+            '''
+        #<=C+C-EX
         for i in range(self.i):
             z[i,self.col-1] += -2*self.c[i]
         for t in range(self.t):
@@ -127,7 +133,7 @@ class decisionRule:
         for i in range(tmp.shape[0]):
             for j in range(tmp.shape[1]):
                 self.m.addConstr(tmp[i,j],GRB.EQUAL,z[i,j])
-                
+                '''
     def solve(self):
         self.m.optimize()
     

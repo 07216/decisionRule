@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage{graphicx,subcaption,amsmath,amssymb}
+\usepackage{graphicx,subcaption,amsmath,amssymb,amsthm}
 \usepackage[margin=2.5cm]{geometry}
 \linespread{1.6}
 \begin{document}
@@ -20,7 +20,7 @@ Let $\xi$ be the uncertain demand $\in [l,u]$ and $\{x_{i},0 \leq i \leq n:x_0 =
 $$
 L_0(\xi) = \left\{
 \begin{array}{ll}
-1-\xi & \xi \in [l,x_1]\\
+1-(\xi-l)/(x_1-l) & \xi \in [l,x_1]\\
 0 & \xi \in (x_1,u]
 \end{array}
 \right.
@@ -28,8 +28,8 @@ $$
 $$
 L_1(\xi) = \left\{
 \begin{array}{ll}
-\xi & \xi \in [l,x_1]\\
-1-(\xi-x_1) & \xi \in (x_1,x_2]\\
+(\xi-l)/(x_1-l) & \xi \in [l,x_1]\\
+1-(\xi-x_1)/(x_2-x_1) & \xi \in (x_1,x_2]\\
 0 & \xi \in (x_2,u]
 \end{array}
 \right.
@@ -39,8 +39,8 @@ $$
 L_i(\xi) = \left\{
 \begin{array}{ll}
 0 & \xi\in[0,x_{i-1}]\\
-\xi-x_{i-1} & \xi \in [x_{i-1},x_i]\\
-1-(\xi-x_i) & \xi \in (x_i,x_{i+1}]\\
+(\xi-x_{i-1})/(x_i-x_{i-1}) & \xi \in (x_{i-1},x_i]\\
+1-(\xi-x_i)/(x_{i+1}-x_i) & \xi \in (x_i,x_{i+1}]\\
 0 & \xi \in (x_{i+1},u]
 \end{array}
 \right.
@@ -102,7 +102,7 @@ R^{len}(L^{len}(\xi))
 \end{array}
 \right)
 $$
-Approaching the original problem with lifting variables, we will have a equation
+Approaching the original problem with lifting variables, we will have below equation
 $$
 \begin{array}{ll}
 \min & \mathbb{E}_{R(\xi)}  \mathbf{c}^T X\xi\\
@@ -110,7 +110,7 @@ s.t. & ZX\xi \geq 0 \\
 & \forall \xi \in \tilde{L}(\Xi)
 \end{array}
 $$
-And actually $\tilde{R}(\cdot)$ could be replaced by a matrix $\hat{R}$. Now we are going to discuss about $L(\Xi)$.As we want to utilize duality arguments, so we need to replace $L(\Xi)$ with $conv L(\Xi)$. It could be no better if we don't have to add more constraints in LP during lifting.As we all know,
+And actually $\tilde{R}(\cdot)$ could be replaced by a matrix $\hat{R}$. Now we are going to discuss about $L(\Xi)$.As we want to utilize duality arguments, so we need to replace $\tilde{L}(\Xi)$ with $conv \tilde{L}(\Xi)$. It could be no better if we don't have to add more constraints in LP during lifting.As we all know,
 $$conv\tilde{L}(\Xi) = \prod\limits_{i=1}^{len} conv L^i(\Xi) $$
 So we only need to care about singe variable lifting $L^i(\xi) = L(\xi_i)$ again. That is why I call it single variable scenarios.For the sake of simplicity synonym, I will omit index $i$ on both $L^i(\cdot)$ and $\xi_i$ now.As for $conv L(\xi)$,actually we have
 $$
@@ -182,25 +182,38 @@ The left problem is how to get $conv\Xi'$.In fact,
 $$
 \begin{array}{ll}
 \Xi' = &\{(\xi_1',\xi_2',\cdots,\xi'_T,\xi'_{T+1},\xi'_{T+2},\cdots,\xi'_{T+T-1})^T:l_i\leq \xi'_i \leq u_i,1\leq i \leq T,\\
-&\xi'_{T+t}\in \bigcup\limits_{i,j,k} conv\{\mathbf{e_i},\mathbf{e_j},\mathbf{e_k}\}\text{(i,j,k are neighbourhood points)},\\
+&\xi'_{T+t}\in \bigcup\limits_{i,j,k} conv\{\mathbf{e_i},\mathbf{e_j},\mathbf{e_k}\}\text{($i,j,k$ are neighbourhood points)},\\
 & \sum\limits_{i=1}^t \xi'_i = (R(\xi'_{T+t}))_1,\xi_{t+1} = (R(\xi'_{T+t}))_2, 1\leq t\leq T-1 \}
 \end{array}
 $$
-Therefore,
+Let 
 $$
 \begin{array}{ll}
-conv\Xi' = &\{(\xi_1',\xi_2',\cdots,\xi'_T,\xi'_{T+1},\xi'_{T+2},\cdots,\xi'_{T+T-1})^T:l_i\leq \xi'_i \leq u_i,1\leq i \leq T,\\
-&\xi'_{T+t}\in \bigcup\limits_{i,j,k} conv\{\mathbf{e_i},\mathbf{e_j},\mathbf{e_k}\}\text{(i,j,k are neighbourhood points)},\\
+A = &\{(\xi_1',\xi_2',\cdots,\xi'_T,\xi'_{T+1},\xi'_{T+2},\cdots,\xi'_{T+T-1})^T:l_i\leq \xi'_i \leq u_i,1\leq i \leq T,\\
+&\xi'_{T+t}\in \bigcup\limits_{i,j,k} conv\{\mathbf{e_i},\mathbf{e_j},\mathbf{e_k}\}\text{($i,j,k$ are neighbourhood points)},1\leq t\leq T-1\}\\
+\end{array}
+$$
+$$
+\begin{array}{ll}
+B = &\{(\xi_1',\xi_2',\cdots,\xi'_T,\xi'_{T+1},\xi'_{T+2},\cdots,\xi'_{T+T-1})^T:l_i\leq \xi'_i \leq u_i,1\leq i \leq T,\\
 & \sum\limits_{i=1}^t \xi'_i = (R(\xi'_{T+t}))_1,\xi_{t+1} = (R(\xi'_{T+t}))_2, 1\leq t\leq T-1 \}
 \end{array}
 $$
-Obviously as $\{\mathbf{e_0},\mathbf{e_1},\cdots,\mathbf{e_n}\}$ still are corner points of $conv\{\mathbf{e_0},\mathbf{e_1},\cdots,\mathbf{e_n}\}$, we won't change constraints.
-
+We have $conv(A\bigcap B)$ = $convA \bigcap B$
+\begin{proof}
+Assuming it is false, there will be a element $\xi$ in $convA \bigcap B$ but not in $conv(A\bigcap B)$. As $\xi \in convA$, so we can let $\xi = \lambda_1 \xi_1+\lambda_2 \xi_2 (\lambda_1\geq0,\lambda_2> 0,\lambda_1+\lambda_2 \leq 1)$,where $\xi_1 \in A\bigcap B$  and $\xi_2 \in A\backslash(A\bigcap B)$. But as we can see, the constraints in B is linear. So $\xi$ mustn't belong to B otherwise $\xi_2 = (\xi-\lambda_1 \xi_1)/\lambda_2 \in B$.
+\end{proof}
+In other words, we have
 $$
 \begin{array}{ll}
-\tilde{\xi} \in \Xi' =& \{(\xi'_1,\xi'_2,\cdots,\xi'_T,\xi'_{T+1},\xi'_{T+2},\cdots,\xi_{T+T-1}):l_i\leq \xi'_i \leq u_i,1\leq i \leq T,\\
-&\sum\limits_{i=1}^t \xi'_i = (R (\xi'_{T+t}))_1,\xi'_{t+1} = (R(\xi'_{T+t}))_2, 1\leq t\leq T-1\}
+conv\Xi' = &conv\{(\xi_1',\xi_2',\cdots,\xi'_T,\xi'_{T+1},\xi'_{T+2},\cdots,\xi'_{T+T-1})^T:l_i\leq \xi'_i \leq u_i,1\leq i \leq T,\\
+&\xi'_{T+t}\in \bigcup\limits_{i,j,k} conv\{\mathbf{e_i},\mathbf{e_j},\mathbf{e_k}\}\text{($i,j,k$ are neighbourhood points)},1\leq t\leq T-1\}\\
+&\bigcap\{(\xi_1',\xi_2',\cdots,\xi'_T,\xi'_{T+1},\xi'_{T+2},\cdots,\xi'_{T+T-1})^T:l_i\leq \xi'_i \leq u_i,1\leq i \leq T,\\
+&\sum\limits_{i=1}^t \xi'_i = (R(\xi'_{T+t}))_1,\xi_{t+1} = (R(\xi'_{T+t}))_2, 1\leq t\leq T-1 \}\\
+& = \{(\xi_1',\xi_2',\cdots,\xi'_T,\xi'_{T+1},\xi'_{T+2},\cdots,\xi'_{T+T-1})^T:l_i\leq \xi'_i \leq u_i,1\leq i \leq T,\\
+&\xi'_{T+t}\in conv\{\mathbf{e_0},\mathbf{e_1},\cdots,\mathbf{e_n}\},\sum\limits_{i=1}^t \xi'_i = (R(\xi'_{T+t}))_1,\xi_{t+1} = (R(\xi'_{T+t}))_2, 1\leq t\leq T-1 \}\\
 \end{array}
 $$
-Also,it is possible for us to approach original problem with $x(\max\{\xi_1,\xi_2,\cdots,\xi_{t-1}\},\xi_t)$
+Therefore, we won't change constraints in the end.
+Also,it is possible for us to approach original problem with $x(\max\{\xi_1,\xi_2,\cdots,\xi_{t-1}\},\xi_t)$.
 \end{document}

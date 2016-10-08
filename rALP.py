@@ -130,6 +130,21 @@ class rALP:
                         
     def solve(self):
         self.m.optimize()
+        for t in range(0,self.t):
+            for i in range(0,self.i):
+                for k in range(0,self.c[i]):
+                    if self.y[t,i,k].X < -0.1:
+                        print "LESS　THAN 0"
+        for t in range(0,self.t):
+            for j in range(0,self.j):
+                for i in range(0,self.i):
+                    for k in range(0,int(self.c[i])):
+                        if self.z[t,j,i,k].X <-0.1:
+                            print "LESS　THAN 0"
+        for t in range(0,self.t):
+            for j in range(0,self.j):
+                if self.q[t,j].X < -0.1:
+                    print "LESS　THAN 0"
         return self.m.ObjVal
     
     def reptxu(self,t,x,u):
