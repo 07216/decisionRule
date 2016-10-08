@@ -24,7 +24,7 @@ secondCaseInReSolve=2
 choose,t,limt,d,T = int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),int(sys.argv[4]),int(sys.argv[5])
 demander = CustomizeDemand.CustomizeDemand(choose,t,limt,d,T)
 '''
-demander = CustomizeDemand.CustomizeDemand(1,5,5,1,1)
+demander = CustomizeDemand.CustomizeDemand(1,20,5,1,1)
 first = 0
 
 if first == 0:#Decision Rule Approch 
