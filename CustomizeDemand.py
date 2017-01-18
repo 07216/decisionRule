@@ -11,6 +11,7 @@ from scipy.special import gamma
 from scipy.stats import gamma as Gamma
 from scipy.stats import poisson
 from scipy.integrate import quad
+import fun
 import Input
 
 class CustomizeDemand:
@@ -24,6 +25,7 @@ class CustomizeDemand:
         self.a = 7
         self.b = 10
         self.r = self.a * self.b
+        self.fun = fun.linear
         
         if choose ==0:
             self.reader = self.reductionALPReadIn()
